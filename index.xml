@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Even - A super concise theme for Hugo</title>
+    <link>http://ilikehaskell.hithub.io/</link>
+    <description>Recent content on Even - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 28 Oct 2021 15:30:37 +0300</lastBuildDate><atom:link href="http://ilikehaskell.hithub.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My First Post</title>
+      <link>http://ilikehaskell.hithub.io/posts/my-first-post/</link>
+      <pubDate>Thu, 28 Oct 2021 15:30:37 +0300</pubDate>
+      
+      <guid>http://ilikehaskell.hithub.io/posts/my-first-post/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Haha</title>
+      <link>http://ilikehaskell.hithub.io/haha/</link>
+      <pubDate>Thu, 28 Oct 2021 15:29:09 +0300</pubDate>
+      
+      <guid>http://ilikehaskell.hithub.io/haha/</guid>
+      <description>HAHAH</description>
+    </item>
+    
+    <item>
+      <title>Hello World</title>
+      <link>http://ilikehaskell.hithub.io/post/hello-world/</link>
+      <pubDate>Thu, 28 Oct 2021 15:13:56 +0300</pubDate>
+      
+      <guid>http://ilikehaskell.hithub.io/post/hello-world/</guid>
+      <description>this blog will be about (one or more from this list):
+ machine learning  text-to-speach and voice cloning neural systems recommender systems sentiment analysis   understanding Python and how it differs from other languages modern ANSI C and when to use it  </description>
+    </item>
+    
+  </channel>
+</rss>
