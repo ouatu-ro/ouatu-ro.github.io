@@ -52,7 +52,7 @@ It&rsquo;s closures. They&rsquo;re there thanks to your language having first-cl
 It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild.">
 <meta itemprop="datePublished" content="2021-11-06T02:53:16+02:00" />
 <meta itemprop="dateModified" content="2021-11-06T02:53:16+02:00" />
-<meta itemprop="wordCount" content="1792">
+<meta itemprop="wordCount" content="1780">
 
 
 
@@ -460,12 +460,12 @@ Now, since the aggregator is so fancy, we may wish to programatically generate s
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">labeling_function</span> <span class="ow">in</span> <span class="n">labeling_functions</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">labeling_functions</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">labeling_function</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
-</div><pre><code>[&lt;function labeling_function at 0x7fa698152b80&gt;, &lt;function labeling_function at 0x7fa698152550&gt;, &lt;function labeling_function at 0x7fa698152a60&gt;]
-[&lt;function labeling_function at 0x7fa698152b80&gt;, &lt;function labeling_function at 0x7fa698152550&gt;, &lt;function labeling_function at 0x7fa698152a60&gt;]
-[&lt;function labeling_function at 0x7fa698152b80&gt;, &lt;function labeling_function at 0x7fa698152550&gt;, &lt;function labeling_function at 0x7fa698152a60&gt;]
+</div><pre><code>&lt;bound method LabelingCallable.labeling_function of &lt;__main__.LabelingCallable object at 0x7fa6981669a0&gt;&gt;
+&lt;bound method LabelingCallable.labeling_function of &lt;__main__.LabelingCallable object at 0x7fa698166d30&gt;&gt;
+&lt;bound method LabelingCallable.labeling_function of &lt;__main__.LabelingCallable object at 0x7fa698166940&gt;&gt;
 </code></pre>
 <p>They point to the same memory address. This is because Python redefines functions in place.
 But this is not the only problem. Let&rsquo;s rewrite this with lambda functions.</p>
