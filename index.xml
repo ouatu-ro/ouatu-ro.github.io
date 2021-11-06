@@ -6,23 +6,25 @@
     <description>Recent content on Even - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 28 Oct 2021 15:30:37 +0300</lastBuildDate><atom:link href="http://ilikehaskell.hithub.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 06 Nov 2021 02:53:16 +0200</lastBuildDate><atom:link href="http://ilikehaskell.hithub.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My First Post</title>
-      <link>http://ilikehaskell.hithub.io/posts/my-first-post/</link>
-      <pubDate>Thu, 28 Oct 2021 15:30:37 +0300</pubDate>
+      <title>Friendly Python Clojures in an automatic Text Annotator</title>
+      <link>http://ilikehaskell.hithub.io/post/closures/</link>
+      <pubDate>Sat, 06 Nov 2021 02:53:16 +0200</pubDate>
       
-      <guid>http://ilikehaskell.hithub.io/posts/my-first-post/</guid>
-      <description></description>
+      <guid>http://ilikehaskell.hithub.io/post/closures/</guid>
+      <description>While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&amp;rsquo;t really get the gist of a basic block of programming.
+It&amp;rsquo;s closures. They&amp;rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&amp;rsquo;d seen them in the wild.</description>
     </item>
     
     <item>
-      <title>Haha</title>
-      <link>http://ilikehaskell.hithub.io/haha/</link>
-      <pubDate>Thu, 28 Oct 2021 15:29:09 +0300</pubDate>
+      <title>Do not base your life on statistics</title>
+      <link>http://ilikehaskell.hithub.io/post/do_not_base_your_life_on_statistics/</link>
+      <pubDate>Mon, 01 Nov 2021 14:36:49 +0200</pubDate>
       
-      <guid>http://ilikehaskell.hithub.io/haha/</guid>
-      <description>HAHAH</description>
+      <guid>http://ilikehaskell.hithub.io/post/do_not_base_your_life_on_statistics/</guid>
+      <description>Statistics is based on probability. Probability is a purely epistemological measure. Meaning that probability is not connected to the object, but it&amp;rsquo;s just a measure of how strong is the evidence for some belief related to the analysed object.
+Take an example: what&amp;rsquo;s the probability of you dying in a car crash? Noow what;s the probability of you dying in a car crash given that you have broken breaks and you are going down a hill?</description>
     </item>
     
     <item>
