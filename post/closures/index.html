@@ -1,782 +1,378 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Friendly Python Clojures in an automatic Text Annotator - Even - A super concise theme for Hugo</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>Friendly Python Clojures in an automatic Text Annotator - Even - A super concise theme for Hugo</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="Bogdan"><meta name=description content="While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&amp;rsquo;t really get the gist of a basic block of programming.
+It&amp;rsquo;s closures. They&amp;rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&amp;rsquo;d seen them in the wild."><meta name=keywords content="machine learning,Python,ANSI C"><meta name=generator content="Hugo 0.80.0 with theme even"><link rel=canonical href=http://ilikehaskell.hithub.io/post/closures/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link href=/sass/main.min.2e81bbed97b8b282c1aeb57488cc71c8d8c8ec559f3931531bd396bf31e0d4dd.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="Friendly Python Clojures in an automatic Text Annotator"><meta property="og:description" content="While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&rsquo;t really get the gist of a basic block of programming.
+It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild."><meta property="og:type" content="article"><meta property="og:url" content="http://ilikehaskell.hithub.io/post/closures/"><meta property="article:published_time" content="2021-11-06T02:53:16+02:00"><meta property="article:modified_time" content="2021-11-06T02:53:16+02:00"><meta itemprop=name content="Friendly Python Clojures in an automatic Text Annotator"><meta itemprop=description content="While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&rsquo;t really get the gist of a basic block of programming.
+It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild."><meta itemprop=datePublished content="2021-11-06T02:53:16+02:00"><meta itemprop=dateModified content="2021-11-06T02:53:16+02:00"><meta itemprop=wordCount content="1780"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="Friendly Python Clojures in an automatic Text Annotator"><meta name=twitter:description content="While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&rsquo;t really get the gist of a basic block of programming.
+It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild."><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>Come in</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a><a href=/categories/><li class=mobile-menu-item>Categories</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>Come in</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li><li class=menu-item><a class=menu-item-link href=/categories/>Categories</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>Friendly Python Clojures in an automatic Text Annotator</h1><div class=post-meta><span class=post-time>2021-11-06</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>Contents</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><ul><li><a href=#spacy-objects>SpaCy objects</a></li></ul></li><li><a href=#skweak-functions>skweak functions</a></li><li><a href=#the-problem>The problem</a></li><li><a href=#ending-notes>Ending notes</a></li></ul></nav></div></div><div class=post-content><p>While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&rsquo;t really get the gist of a basic block of programming.</p><p>It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild.</p><p>In Python at least, you won&rsquo;t need to know closures to solve most simple business problems. But once a more sofisticated system is in place and you won&rsquo;t want to change parts of the system (in many chases it&rsquo;s not practical due to the parts being held in out-of-your-control packages), sometimes a closure comes in handy for providig data encapsulation, feels idiomatic and will reduce the mental overload you&rsquo;d have to deal with when using a more complex structure, such as a class.</p><p>Still here? Then I&rsquo;ll reconstruct some <a href=https://spacy.io/>SpaCy</a> and <a href=https://github.com/NorskRegnesentral/skweak>skweak</a> functionalities for you so you&rsquo;ll better understant when to use these closures.</p><h2 id=spacy-objects>SpaCy objects</h2><p><a href=https://spacy.io/>SpaCy</a> is here for you to help you build easy NLP pypelines.
+Central to this package are the <code>Doc</code> objects (short for document). It&rsquo;s a neatly way to pack data for NLP and if it doesn&rsquo;t provide what you need out of the box, you can <a href=https://spacy.io/usage/processing-pipelines#custom-components-attributes>always extend it&rsquo;s functionalities</a> to match your usecase.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>typing</span> <span class=kn>import</span> <span class=n>Callable</span><span class=p>,</span> <span class=n>Generator</span><span class=p>,</span> <span class=n>Iterable</span><span class=p>,</span> <span class=n>List</span>
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="Bogdan" /><meta name="description" content="While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&amp;rsquo;t really get the gist of a basic block of programming.
-It&amp;rsquo;s closures. They&amp;rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&amp;rsquo;d seen them in the wild." /><meta name="keywords" content="machine learning, Python, ANSI C" />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.80.0 with theme even" />
-
-
-<link rel="canonical" href="http://ilikehaskell.hithub.io/post/closures/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-
-<link href="/sass/main.min.2e81bbed97b8b282c1aeb57488cc71c8d8c8ec559f3931531bd396bf31e0d4dd.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
-
-
-<meta property="og:title" content="Friendly Python Clojures in an automatic Text Annotator" />
-<meta property="og:description" content="While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&rsquo;t really get the gist of a basic block of programming.
-It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="http://ilikehaskell.hithub.io/post/closures/" />
-<meta property="article:published_time" content="2021-11-06T02:53:16+02:00" />
-<meta property="article:modified_time" content="2021-11-06T02:53:16+02:00" />
-<meta itemprop="name" content="Friendly Python Clojures in an automatic Text Annotator">
-<meta itemprop="description" content="While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&rsquo;t really get the gist of a basic block of programming.
-It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild.">
-<meta itemprop="datePublished" content="2021-11-06T02:53:16+02:00" />
-<meta itemprop="dateModified" content="2021-11-06T02:53:16+02:00" />
-<meta itemprop="wordCount" content="1780">
-
-
-
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Friendly Python Clojures in an automatic Text Annotator"/>
-<meta name="twitter:description" content="While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&rsquo;t really get the gist of a basic block of programming.
-It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild."/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">Come in</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/">
-        <li class="mobile-menu-item">Home</li>
-      </a><a href="/post/">
-        <li class="mobile-menu-item">Archives</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">Tags</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">Categories</li>
-      </a>
-  </ul>
-
-  
-
-
-</nav>
-
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">Come in</a>
-</div>
-
-
-
-
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/">Home</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/post/">Archives</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">Tags</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">Categories</a>
-      </li>
-  </ul>
-</nav>
-
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
-    
-    <header class="post-header">
-      <h1 class="post-title">Friendly Python Clojures in an automatic Text Annotator</h1>
-
-      <div class="post-meta">
-        <span class="post-time"> 2021-11-06 </span>
-        
-        
-      </div>
-    </header>
-
-    <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">Contents</h2>
-  <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#spacy-objects">SpaCy objects</a></li>
-      </ul>
-    </li>
-    <li><a href="#skweak-functions">skweak functions</a></li>
-    <li><a href="#the-problem">The problem</a></li>
-    <li><a href="#ending-notes">Ending notes</a></li>
-  </ul>
-</nav>
-  </div>
-</div>
-    <div class="post-content">
-      <p>While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&rsquo;t really get the gist of a basic block of programming.</p>
-<p>It&rsquo;s closures. They&rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&rsquo;d seen them in the wild.</p>
-<p>In Python at least, you won&rsquo;t need to know closures to solve most simple business problems. But once a more sofisticated system is in place and you won&rsquo;t want to change parts of the system (in many chases it&rsquo;s not practical due to the parts being held in out-of-your-control packages), sometimes a closure comes in handy for providig data encapsulation, feels idiomatic and will reduce the mental overload you&rsquo;d have to deal with when using a more complex structure, such as a class.</p>
-<p>Still here? Then I&rsquo;ll reconstruct some <a href="https://spacy.io/">SpaCy</a> and <a href="https://github.com/NorskRegnesentral/skweak">skweak</a> functionalities for you so you&rsquo;ll better understant when to use these closures.</p>
-<h2 id="spacy-objects">SpaCy objects</h2>
-<p><a href="https://spacy.io/">SpaCy</a> is here for you to help you build easy NLP pypelines.
-Central to this package are the <code>Doc</code> objects (short for document). It&rsquo;s a neatly way to pack data for NLP and if it doesn&rsquo;t provide what you need out of the box, you can <a href="https://spacy.io/usage/processing-pipelines#custom-components-attributes">always extend it&rsquo;s functionalities</a> to match your usecase.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
-
-<span class="k">class</span> <span class="nc">Doc</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spans</span><span class="p">:</span> <span class="n">Span</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">)</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>By implementing <code>__len__</code> and <code>__getitem__</code> <a href="https://www.geeksforgeeks.org/dunder-magic-methods-python/">double-under functions</a> we got the ability to iterate through the Doc&rsquo;s tokens with a simple for as below. This is thanks to the Python datamodel. It&rsquo;s outside the scope of this post, but learning to leverage the datamodel will pay dividends on your effectiveness in Python. The first chapter of <a href="https://learning.oreilly.com/library/view/fluent-python/9781491946237/">Fluent Python</a> introduces it in the first chapter in a very neat way. If you like video format more, <a href="https://www.youtube.com/watch?v=AmHE0kZhLIQ">James Powell</a> got you covered.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">doc</span> <span class="o">=</span> <span class="n">Doc</span><span class="p">(</span><span class="s2">&#34;Today I ate garbonzo beans&#34;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>Today
+<span class=k>class</span> <span class=nc>Doc</span><span class=p>:</span>
+    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>text</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=bp>None</span><span class=p>:</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>text</span> <span class=o>=</span> <span class=n>text</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>tokens</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=n>text</span><span class=o>.</span><span class=n>split</span><span class=p>()</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>spans</span><span class=p>:</span> <span class=n>Span</span> <span class=o>=</span> <span class=p>[]</span>
+    <span class=k>def</span> <span class=fm>__len__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+        <span class=k>return</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>tokens</span><span class=p>)</span>
+    <span class=k>def</span> <span class=fm>__getitem__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>position</span><span class=p>):</span>
+        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>tokens</span><span class=p>[</span><span class=n>position</span><span class=p>]</span>
+</code></pre></td></tr></table></div></div><p>By implementing <code>__len__</code> and <code>__getitem__</code> <a href=https://www.geeksforgeeks.org/dunder-magic-methods-python/>double-under functions</a> we got the ability to iterate through the Doc&rsquo;s tokens with a simple for as below. This is thanks to the Python datamodel. It&rsquo;s outside the scope of this post, but learning to leverage the datamodel will pay dividends on your effectiveness in Python. The first chapter of <a href=https://learning.oreilly.com/library/view/fluent-python/9781491946237/>Fluent Python</a> introduces it in the first chapter in a very neat way. If you like video format more, <a href="https://www.youtube.com/watch?v=AmHE0kZhLIQ">James Powell</a> got you covered.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=n>doc</span> <span class=o>=</span> <span class=n>Doc</span><span class=p>(</span><span class=s2>&#34;Today I ate garbonzo beans&#34;</span><span class=p>)</span>
+<span class=k>for</span> <span class=n>token</span> <span class=ow>in</span> <span class=n>doc</span><span class=p>:</span>
+    <span class=k>print</span><span class=p>(</span><span class=n>token</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><pre><code>Today
 I
 ate
 garbonzo
 beans
-</code></pre>
-<p>A <code>Span</code> is a slice of a <code>Doc</code>. Usually it can.. span multiple tokens, but today I have a feeling that all the spans we&rsquo;ll look at will match exactly one token. Also, in our case the spans will be always labeled.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span>
+</code></pre><p>A <code>Span</code> is a slice of a <code>Doc</code>. Usually it can.. span multiple tokens, but today I have a feeling that all the spans we&rsquo;ll look at will match exactly one token. Also, in our case the spans will be always labeled.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>typing</span> <span class=kn>import</span> <span class=n>NamedTuple</span>
 
-<span class="k">class</span> <span class="nc">Span</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="n">position</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
+<span class=k>class</span> <span class=nc>Span</span><span class=p>(</span><span class=n>NamedTuple</span><span class=p>):</span>
+    <span class=n>position</span><span class=p>:</span> <span class=nb>int</span>
+    <span class=n>label</span><span class=p>:</span> <span class=nb>str</span>
 
-</code></pre></td></tr></table>
-</div>
-</div><h1 id="skweak-functions">skweak functions</h1>
-<p>If you haven&rsquo;t looked at the <a href="https://github.com/NorskRegnesentral/skweak">skweak repo</a> yet, it suffices to know that it provides a neat way of composing simple annotators to get a better one.
-Now, skweak provides us with some very interesting classes. One is a <code>FunctionAnnotator</code>. This takes a function that returns a list of spans from a document and attaches these spans to the given document.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">FunctionAnnotator</span><span class="p">:</span>
-    <span class="s2">&#34;&#34;&#34;Annotation based on a heuristic function that generates (start,end,label)
-</span><span class="s2">    given a spacy document&#34;&#34;&#34;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Doc</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Span</span><span class="p">]]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">find_spans</span> <span class="o">=</span> <span class="n">function</span>
+</code></pre></td></tr></table></div></div><h1 id=skweak-functions>skweak functions</h1><p>If you haven&rsquo;t looked at the <a href=https://github.com/NorskRegnesentral/skweak>skweak repo</a> yet, it suffices to know that it provides a neat way of composing simple annotators to get a better one.
+Now, skweak provides us with some very interesting classes. One is a <code>FunctionAnnotator</code>. This takes a function that returns a list of spans from a document and attaches these spans to the given document.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>class</span> <span class=nc>FunctionAnnotator</span><span class=p>:</span>
+    <span class=s2>&#34;&#34;&#34;Annotation based on a heuristic function that generates (start,end,label)
+</span><span class=s2>    given a spacy document&#34;&#34;&#34;</span>
+    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>function</span><span class=p>:</span> <span class=n>Callable</span><span class=p>[[</span><span class=n>Doc</span><span class=p>],</span> <span class=n>Iterable</span><span class=p>[</span><span class=n>Span</span><span class=p>]]):</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>find_spans</span> <span class=o>=</span> <span class=n>function</span>
 		
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Doc</span><span class="p">:</span>
-        <span class="c1"># We start by clearing all existing annotations</span>
-        <span class="n">doc</span><span class="o">.</span><span class="n">spans</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class=k>def</span> <span class=fm>__call__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>doc</span><span class=p>:</span> <span class=n>Doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Doc</span><span class=p>:</span>
+        <span class=c1># We start by clearing all existing annotations</span>
+        <span class=n>doc</span><span class=o>.</span><span class=n>spans</span> <span class=o>=</span> <span class=p>[]</span>
 
-        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_spans</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
-            <span class="n">doc</span><span class="o">.</span><span class="n">spans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
+        <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>label</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>find_spans</span><span class=p>(</span><span class=n>doc</span><span class=p>):</span>
+            <span class=n>doc</span><span class=o>.</span><span class=n>spans</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=n>label</span><span class=p>))</span>
 
-        <span class="k">return</span> <span class="n">doc</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>Let&rsquo;s see a simple labeling function we may use</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">animal_labeling_function</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Span</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
-    <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tokens</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="s1">&#39;ANIMAL&#39;</span><span class="p">)</span>
+        <span class=k>return</span> <span class=n>doc</span>
+</code></pre></td></tr></table></div></div><p>Let&rsquo;s see a simple labeling function we may use</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>animal_labeling_function</span><span class=p>(</span><span class=n>doc</span><span class=p>:</span> <span class=n>Doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Generator</span><span class=p>[</span><span class=n>Span</span><span class=p>,</span> <span class=bp>None</span><span class=p>,</span> <span class=bp>None</span><span class=p>]:</span>
+    <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>token</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>tokens</span><span class=p>):</span>
+        <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;a&#39;</span><span class=p>):</span>
+            <span class=k>yield</span> <span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=s1>&#39;ANIMAL&#39;</span><span class=p>)</span>
 
-<span class="n">doc</span> <span class="o">=</span> <span class="n">Doc</span><span class="p">(</span><span class="s1">&#39;this animal is some kind of antilope&#39;</span><span class="p">)</span>
-<span class="n">animal_annotator</span> <span class="o">=</span> <span class="n">FunctionAnnotator</span><span class="p">(</span><span class="n">animal_labeling_function</span><span class="p">)</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">animal_annotator</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class=n>doc</span> <span class=o>=</span> <span class=n>Doc</span><span class=p>(</span><span class=s1>&#39;this animal is some kind of antilope&#39;</span><span class=p>)</span>
+<span class=n>animal_annotator</span> <span class=o>=</span> <span class=n>FunctionAnnotator</span><span class=p>(</span><span class=n>animal_labeling_function</span><span class=p>)</span>
+<span class=n>doc</span> <span class=o>=</span> <span class=n>animal_annotator</span><span class=p>(</span><span class=n>doc</span><span class=p>)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">spans</span><span class="p">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>[Span(position=1, label='ANIMAL'), Span(position=6, label='ANIMAL')]
-</code></pre>
-<p>The <code>FunctionAnnotatorAggregator</code> takes multiple annotator functions and combines them in some fancy way. We won&rsquo;t do it justice with the implementation below.
-We&rsquo;ll just make it force our documents to have a maximum of one label per span. We will also sort them by the order of appearance.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">FunctionAnnotatorAggregator</span><span class="p">:</span>
-    <span class="s2">&#34;&#34;&#34;Base aggregator to combine all labelling sources into a single annotation layer&#34;&#34;&#34;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">FunctionAnnotator</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">annotators</span> <span class="o">=</span> <span class="n">annotators</span>
+<span class=k>print</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>spans</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><pre><code>[Span(position=1, label='ANIMAL'), Span(position=6, label='ANIMAL')]
+</code></pre><p>The <code>FunctionAnnotatorAggregator</code> takes multiple annotator functions and combines them in some fancy way. We won&rsquo;t do it justice with the implementation below.
+We&rsquo;ll just make it force our documents to have a maximum of one label per span. We will also sort them by the order of appearance.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>class</span> <span class=nc>FunctionAnnotatorAggregator</span><span class=p>:</span>
+    <span class=s2>&#34;&#34;&#34;Base aggregator to combine all labelling sources into a single annotation layer&#34;&#34;&#34;</span>
+    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>annotators</span><span class=p>:</span> <span class=n>Iterable</span><span class=p>[</span><span class=n>FunctionAnnotator</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=bp>None</span><span class=p>:</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>annotators</span> <span class=o>=</span> <span class=n>annotators</span>
     
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Doc</span><span class="p">:</span>
-        <span class="n">spans_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">annotator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotators</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">span</span> <span class="ow">in</span> <span class="n">annotator</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span><span class="o">.</span><span class="n">spans</span><span class="p">:</span>
-                <span class="n">spans_dict</span><span class="p">[</span><span class="n">span</span><span class="o">.</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">span</span><span class="o">.</span><span class="n">label</span>
+    <span class=k>def</span> <span class=fm>__call__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>doc</span><span class=p>:</span> <span class=n>Doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Doc</span><span class=p>:</span>
+        <span class=n>spans_dict</span> <span class=o>=</span> <span class=nb>dict</span><span class=p>()</span>
+        <span class=k>for</span> <span class=n>annotator</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>annotators</span><span class=p>:</span>
+            <span class=k>for</span> <span class=n>span</span> <span class=ow>in</span> <span class=n>annotator</span><span class=p>(</span><span class=n>doc</span><span class=p>)</span><span class=o>.</span><span class=n>spans</span><span class=p>:</span>
+                <span class=n>spans_dict</span><span class=p>[</span><span class=n>span</span><span class=o>.</span><span class=n>position</span><span class=p>]</span> <span class=o>=</span> <span class=n>span</span><span class=o>.</span><span class=n>label</span>
         
         
-        <span class="n">doc</span><span class="o">.</span><span class="n">spans</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">spans_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">doc</span><span class="o">.</span><span class="n">spans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
-        <span class="n">doc</span><span class="o">.</span><span class="n">spans</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class=n>doc</span><span class=o>.</span><span class=n>spans</span> <span class=o>=</span> <span class=p>[]</span>
+        <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>label</span> <span class=ow>in</span> <span class=n>spans_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+            <span class=n>doc</span><span class=o>.</span><span class=n>spans</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=n>label</span><span class=p>))</span>
+        <span class=n>doc</span><span class=o>.</span><span class=n>spans</span><span class=o>.</span><span class=n>sort</span><span class=p>()</span>
         
-        <span class="k">return</span> <span class="n">doc</span>
-</code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">verb_labeling_function</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Span</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
-    <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tokens</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;has&#39;</span><span class="p">]:</span>
-            <span class="k">yield</span> <span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="s1">&#39;VERB&#39;</span><span class="p">)</span>
+        <span class=k>return</span> <span class=n>doc</span>
+</code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>verb_labeling_function</span><span class=p>(</span><span class=n>doc</span><span class=p>:</span> <span class=n>Doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Generator</span><span class=p>[</span><span class=n>Span</span><span class=p>,</span> <span class=bp>None</span><span class=p>,</span> <span class=bp>None</span><span class=p>]:</span>
+    <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>token</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>tokens</span><span class=p>):</span>
+        <span class=k>if</span> <span class=n>token</span> <span class=ow>in</span> <span class=p>[</span><span class=s1>&#39;is&#39;</span><span class=p>,</span> <span class=s1>&#39;has&#39;</span><span class=p>]:</span>
+            <span class=k>yield</span> <span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=s1>&#39;VERB&#39;</span><span class=p>)</span>
 
-<span class="n">verb_annotator</span> <span class="o">=</span> <span class="n">FunctionAnnotator</span><span class="p">(</span><span class="n">verb_labeling_function</span><span class="p">)</span>
+<span class=n>verb_annotator</span> <span class=o>=</span> <span class=n>FunctionAnnotator</span><span class=p>(</span><span class=n>verb_labeling_function</span><span class=p>)</span>
 
-<span class="n">aggregated_annotator</span> <span class="o">=</span> <span class="n">FunctionAnnotatorAggregator</span><span class="p">([</span><span class="n">animal_annotator</span><span class="p">,</span> <span class="n">verb_annotator</span><span class="p">])</span>
+<span class=n>aggregated_annotator</span> <span class=o>=</span> <span class=n>FunctionAnnotatorAggregator</span><span class=p>([</span><span class=n>animal_annotator</span><span class=p>,</span> <span class=n>verb_annotator</span><span class=p>])</span>
 
-<span class="n">doc</span> <span class="o">=</span> <span class="n">aggregated_annotator</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class=n>doc</span> <span class=o>=</span> <span class=n>aggregated_annotator</span><span class=p>(</span><span class=n>doc</span><span class=p>)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">spans</span><span class="p">)</span>
+<span class=k>print</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>spans</span><span class=p>)</span>
 
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>[Span(position=1, label='ANIMAL'), Span(position=2, label='VERB'), Span(position=6, label='ANIMAL')]
-</code></pre>
-<h1 id="the-problem">The problem</h1>
-<p>All nice and dandy, the packages are well implemented and work as expected!
+</code></pre></td></tr></table></div></div><pre><code>[Span(position=1, label='ANIMAL'), Span(position=2, label='VERB'), Span(position=6, label='ANIMAL')]
+</code></pre><h1 id=the-problem>The problem</h1><p>All nice and dandy, the packages are well implemented and work as expected!
 Now, since the aggregator is so fancy, we may wish to programatically generate some labeling functions from a list of excellent heuristic parameters
-<a id='problem_cell'></a></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">heuristic_parameters</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;MAMMAL&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;FISH&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;BIRD&#39;</span><span class="p">)</span>
-    <span class="p">]</span>
+<a id=problem_cell></a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=n>heuristic_parameters</span> <span class=o>=</span> <span class=p>[</span>
+    <span class=p>(</span><span class=s1>&#39;M&#39;</span><span class=p>,</span> <span class=s1>&#39;MAMMAL&#39;</span><span class=p>),</span>
+    <span class=p>(</span><span class=s1>&#39;F&#39;</span><span class=p>,</span> <span class=s1>&#39;FISH&#39;</span><span class=p>),</span>
+    <span class=p>(</span><span class=s1>&#39;B&#39;</span><span class=p>,</span> <span class=s1>&#39;BIRD&#39;</span><span class=p>)</span>
+    <span class=p>]</span>
 
-<span class="n">labeling_functions</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">heuristic_parameters</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">labeling_function</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Span</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tokens</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">strats_with</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
-    <span class="n">labeling_functions</span> <span class="o">+=</span> <span class="p">[</span><span class="n">labeling_function</span><span class="p">]</span>
+<span class=n>labeling_functions</span> <span class=o>=</span> <span class=p>[]</span>
+<span class=k>for</span> <span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span> <span class=ow>in</span> <span class=n>heuristic_parameters</span><span class=p>:</span>
+    <span class=k>def</span> <span class=nf>labeling_function</span><span class=p>(</span><span class=n>doc</span><span class=p>:</span> <span class=n>Doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Generator</span><span class=p>[</span><span class=n>Span</span><span class=p>,</span> <span class=bp>None</span><span class=p>,</span> <span class=bp>None</span><span class=p>]:</span>
+        <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>word</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>tokens</span><span class=p>):</span>
+            <span class=k>if</span> <span class=n>word</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>strats_with</span><span class=p>):</span>
+                <span class=k>yield</span> <span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span>
+    <span class=n>labeling_functions</span> <span class=o>+=</span> <span class=p>[</span><span class=n>labeling_function</span><span class=p>]</span>
 
-<span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;BOVINE&#39;</span>
+<span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span> <span class=o>=</span> <span class=s1>&#39;B&#39;</span><span class=p>,</span> <span class=s1>&#39;BOVINE&#39;</span>
 
-</code></pre></td></tr></table>
-</div>
-</div><p><a id='problem_cell_2'></a></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">doc</span> <span class="o">=</span> <span class="n">Doc</span><span class="p">(</span><span class="s2">&#34;Monkeys are red. Firefish are blue; Besra is a bird and so are you&#34;</span><span class="p">)</span>
+</code></pre></td></tr></table></div></div><p><a id=problem_cell_2></a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=n>doc</span> <span class=o>=</span> <span class=n>Doc</span><span class=p>(</span><span class=s2>&#34;Monkeys are red. Firefish are blue; Besra is a bird and so are you&#34;</span><span class=p>)</span>
 
-<span class="c1"># we&#39;ll define this function since we&#39;ll use it a lot more below</span>
-<span class="k">def</span> <span class="nf">print_spans_from_labelers</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">labeling_functions</span><span class="p">):</span>
-    <span class="n">annotators</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionAnnotator</span><span class="p">(</span><span class="n">labeling_function</span><span class="p">)</span> <span class="k">for</span> <span class="n">labeling_function</span> <span class="ow">in</span> <span class="n">labeling_functions</span><span class="p">]</span>
-    <span class="n">aggregated_annotator</span> <span class="o">=</span> <span class="n">FunctionAnnotatorAggregator</span><span class="p">(</span><span class="n">annotators</span><span class="p">)</span>
+<span class=c1># we&#39;ll define this function since we&#39;ll use it a lot more below</span>
+<span class=k>def</span> <span class=nf>print_spans_from_labelers</span><span class=p>(</span><span class=n>doc</span><span class=p>,</span> <span class=n>labeling_functions</span><span class=p>):</span>
+    <span class=n>annotators</span> <span class=o>=</span> <span class=p>[</span><span class=n>FunctionAnnotator</span><span class=p>(</span><span class=n>labeling_function</span><span class=p>)</span> <span class=k>for</span> <span class=n>labeling_function</span> <span class=ow>in</span> <span class=n>labeling_functions</span><span class=p>]</span>
+    <span class=n>aggregated_annotator</span> <span class=o>=</span> <span class=n>FunctionAnnotatorAggregator</span><span class=p>(</span><span class=n>annotators</span><span class=p>)</span>
 
-    <span class="n">doc</span> <span class="o">=</span> <span class="n">aggregated_annotator</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class=n>doc</span> <span class=o>=</span> <span class=n>aggregated_annotator</span><span class=p>(</span><span class=n>doc</span><span class=p>)</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">spans</span><span class="p">)</span>
-<span class="n">print_spans_from_labelers</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">labeling_functions</span><span class="p">)</span>
+    <span class=k>print</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>spans</span><span class=p>)</span>
+<span class=n>print_spans_from_labelers</span><span class=p>(</span><span class=n>doc</span><span class=p>,</span> <span class=n>labeling_functions</span><span class=p>)</span>
 
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>[Span(position=6, label='BOVINE')]
-</code></pre>
-<p>What happened? It seems that only the last function was applied. Let&rsquo;s look at the <code>labeling_functions</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">labeling_function</span> <span class="ow">in</span> <span class="n">labeling_functions</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">labeling_function</span><span class="p">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>&lt;bound method LabelingCallable.labeling_function of &lt;__main__.LabelingCallable object at 0x7fa6981669a0&gt;&gt;
+</code></pre></td></tr></table></div></div><pre><code>[Span(position=6, label='BOVINE')]
+</code></pre><p>What happened? It seems that only the last function was applied. Let&rsquo;s look at the <code>labeling_functions</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>for</span> <span class=n>labeling_function</span> <span class=ow>in</span> <span class=n>labeling_functions</span><span class=p>:</span>
+    <span class=k>print</span><span class=p>(</span><span class=n>labeling_function</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><pre><code>&lt;bound method LabelingCallable.labeling_function of &lt;__main__.LabelingCallable object at 0x7fa6981669a0&gt;&gt;
 &lt;bound method LabelingCallable.labeling_function of &lt;__main__.LabelingCallable object at 0x7fa698166d30&gt;&gt;
 &lt;bound method LabelingCallable.labeling_function of &lt;__main__.LabelingCallable object at 0x7fa698166940&gt;&gt;
-</code></pre>
-<p>They point to the same memory address. This is because Python redefines functions in place.
-But this is not the only problem. Let&rsquo;s rewrite this with lambda functions.</p>
-<p><em>Note</em> if you haven&rsquo;t worked with list comprehensions before: don&rsquo;t worry about it; think of the code below as a way to create a new function without replacing the existing function with the same name</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">labeling_functions</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="k">lambda</span> <span class="n">doc</span><span class="p">:</span> 
-                            <span class="p">(</span> <span class="c1"># this is also a generator in Python; it&#39;s the same syntax as list comprehension</span>
-                            <span class="c1"># but we use round braces instead of square ones</span>
-                                <span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> 
-                                    <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tokens</span><span class="p">)</span> 
-                                    <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">strats_with</span><span class="p">)</span>
-                            <span class="p">)</span>
-                        <span class="k">for</span> <span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">heuristic_parameters</span>
-                    <span class="p">]</span>
+</code></pre><p>They point to the same memory address. This is because Python redefines functions in place.
+But this is not the only problem. Let&rsquo;s rewrite this with lambda functions.</p><p><em>Note</em> if you haven&rsquo;t worked with list comprehensions before: don&rsquo;t worry about it; think of the code below as a way to create a new function without replacing the existing function with the same name</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=n>labeling_functions</span> <span class=o>=</span> <span class=p>[</span>
+                        <span class=k>lambda</span> <span class=n>doc</span><span class=p>:</span> 
+                            <span class=p>(</span> <span class=c1># this is also a generator in Python; it&#39;s the same syntax as list comprehension</span>
+                            <span class=c1># but we use round braces instead of square ones</span>
+                                <span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span> 
+                                    <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>word</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>tokens</span><span class=p>)</span> 
+                                    <span class=k>if</span> <span class=n>word</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>strats_with</span><span class=p>)</span>
+                            <span class=p>)</span>
+                        <span class=k>for</span> <span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span> <span class=ow>in</span> <span class=n>heuristic_parameters</span>
+                    <span class=p>]</span>
 
-<span class="k">for</span> <span class="n">labeling_function</span> <span class="ow">in</span> <span class="n">labeling_functions</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">labeling_function</span><span class="p">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>&lt;function &lt;listcomp&gt;.&lt;lambda&gt; at 0x7fa69815f160&gt;
+<span class=k>for</span> <span class=n>labeling_function</span> <span class=ow>in</span> <span class=n>labeling_functions</span><span class=p>:</span>
+    <span class=k>print</span><span class=p>(</span><span class=n>labeling_function</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><pre><code>&lt;function &lt;listcomp&gt;.&lt;lambda&gt; at 0x7fa69815f160&gt;
 &lt;function &lt;listcomp&gt;.&lt;lambda&gt; at 0x7fa69815f1f0&gt;
 &lt;function &lt;listcomp&gt;.&lt;lambda&gt; at 0x7fa69815f280&gt;
-</code></pre>
-<p>But when we want to print the function the problem stays.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">print_spans_from_labelers</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">labeling_functions</span><span class="p">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>[Span(position=6, label='BIRD')]
-</code></pre>
-<p>This is because of scoping. The problem is that, since we didn&rsquo;t declare strats_with, label in the lambda body or parameters, the lambdas will always look in the scope immediately outside them and they will find the last values that <code>strats_with</code>, <code>label</code> had.
-If you come from other languages it might be strange to you, but Python doesn&rsquo;t create a new scope for the <code>for</code> body. Instead it uses the same local scope. This is why <code>strats_with, label = 'B', 'BOVINE'</code> in snippet <a href="#problem_cell">8</a> produced snippet <a href="#problem_cell_2">9</a> to display the label as &lsquo;BOVINE&rsquo;</p>
-<p>But be not affraid! There is a solution:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">function_closure</span><span class="p">(</span><span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
-    <span class="n">local_strats_with</span><span class="p">,</span> <span class="n">local_label</span> <span class="o">=</span> <span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span>
-    <span class="k">def</span> <span class="nf">labeling_function</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Span</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tokens</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">local_strats_with</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">local_label</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">labeling_function</span>
+</code></pre><p>But when we want to print the function the problem stays.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=n>print_spans_from_labelers</span><span class=p>(</span><span class=n>doc</span><span class=p>,</span> <span class=n>labeling_functions</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><pre><code>[Span(position=6, label='BIRD')]
+</code></pre><p>This is because of scoping. The problem is that, since we didn&rsquo;t declare strats_with, label in the lambda body or parameters, the lambdas will always look in the scope immediately outside them and they will find the last values that <code>strats_with</code>, <code>label</code> had.
+If you come from other languages it might be strange to you, but Python doesn&rsquo;t create a new scope for the <code>for</code> body. Instead it uses the same local scope. This is why <code>strats_with, label = 'B', 'BOVINE'</code> in snippet <a href=#problem_cell>8</a> produced snippet <a href=#problem_cell_2>9</a> to display the label as &lsquo;BOVINE&rsquo;</p><p>But be not affraid! There is a solution:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>function_closure</span><span class=p>(</span><span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span><span class=p>):</span>
+    <span class=n>local_strats_with</span><span class=p>,</span> <span class=n>local_label</span> <span class=o>=</span> <span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span>
+    <span class=k>def</span> <span class=nf>labeling_function</span><span class=p>(</span><span class=n>doc</span><span class=p>:</span> <span class=n>Doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Generator</span><span class=p>[</span><span class=n>Span</span><span class=p>,</span> <span class=bp>None</span><span class=p>,</span> <span class=bp>None</span><span class=p>]:</span>
+        <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>word</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>tokens</span><span class=p>):</span>
+            <span class=k>if</span> <span class=n>word</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>local_strats_with</span><span class=p>):</span>
+                <span class=k>yield</span> <span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=n>local_label</span><span class=p>)</span>
+    <span class=k>return</span> <span class=n>labeling_function</span>
 
-<span class="n">labeling_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">function_closure</span><span class="p">(</span><span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="k">for</span> <span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">heuristic_parameters</span><span class="p">]</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>Now, when we get the annotators things go as expected.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">print_spans_from_labelers</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">labeling_functions</span><span class="p">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>[Span(position=0, label='MAMMAL'), Span(position=3, label='FISH'), Span(position=6, label='BIRD')]
-</code></pre>
-<p>But why is this different from the last attempt? This time, by calling <code>function_closure</code> we are creating a local scope around the labeling function and put the <code>strats_with</code> and <code>label</code> variables in it. These variables are recreated every time we call <code>function_closure</code>. It also recreates <code>labeling_function</code> since functions are regular objects in Python and different calls can’t trample on one another’s local variables.</p>
-<p>A good mental model is to think of function values as containing both the code in their body and the environment in which they are created.*</p>
-<p>*lifted from <a href="https://eloquentjavascript.net/03_functions.html"><em>Eloquent Javascript</em></a> book</p>
-<p>Inspecting the functions will also confirm this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">labeling_functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">labeling_functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>&lt;function function_closure.&lt;locals&gt;.labeling_function at 0x7fa698152ca0&gt;
+<span class=n>labeling_functions</span> <span class=o>=</span> <span class=p>[</span><span class=n>function_closure</span><span class=p>(</span><span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span> <span class=k>for</span> <span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span> <span class=ow>in</span> <span class=n>heuristic_parameters</span><span class=p>]</span>
+</code></pre></td></tr></table></div></div><p>Now, when we get the annotators things go as expected.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=n>print_spans_from_labelers</span><span class=p>(</span><span class=n>doc</span><span class=p>,</span> <span class=n>labeling_functions</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><pre><code>[Span(position=0, label='MAMMAL'), Span(position=3, label='FISH'), Span(position=6, label='BIRD')]
+</code></pre><p>But why is this different from the last attempt? This time, by calling <code>function_closure</code> we are creating a local scope around the labeling function and put the <code>strats_with</code> and <code>label</code> variables in it. These variables are recreated every time we call <code>function_closure</code>. It also recreates <code>labeling_function</code> since functions are regular objects in Python and different calls can’t trample on one another’s local variables.</p><p>A good mental model is to think of function values as containing both the code in their body and the environment in which they are created.*</p><p>*lifted from <a href=https://eloquentjavascript.net/03_functions.html><em>Eloquent Javascript</em></a> book</p><p>Inspecting the functions will also confirm this:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>print</span><span class=p>(</span><span class=nb>repr</span><span class=p>(</span><span class=n>labeling_functions</span><span class=p>[</span><span class=mi>0</span><span class=p>]))</span>
+<span class=k>print</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>labeling_functions</span><span class=p>[</span><span class=mi>0</span><span class=p>]))</span>
+</code></pre></td></tr></table></div></div><pre><code>&lt;function function_closure.&lt;locals&gt;.labeling_function at 0x7fa698152ca0&gt;
 &lt;class 'function'&gt;
-</code></pre>
-<p>One improvement we can make is not using <code>local_strats_with</code>, <code>local_label</code>, since parameters are themselves local variables</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">function_closure</span><span class="p">(</span><span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">labeling_function</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Span</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tokens</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">strats_with</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">labeling_function</span>
+</code></pre><p>One improvement we can make is not using <code>local_strats_with</code>, <code>local_label</code>, since parameters are themselves local variables</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>function_closure</span><span class=p>(</span><span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span><span class=p>):</span>
+    <span class=k>def</span> <span class=nf>labeling_function</span><span class=p>(</span><span class=n>doc</span><span class=p>:</span> <span class=n>Doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Generator</span><span class=p>[</span><span class=n>Span</span><span class=p>,</span> <span class=bp>None</span><span class=p>,</span> <span class=bp>None</span><span class=p>]:</span>
+        <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>word</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>tokens</span><span class=p>):</span>
+            <span class=k>if</span> <span class=n>word</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>strats_with</span><span class=p>):</span>
+                <span class=k>yield</span> <span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span>
+    <span class=k>return</span> <span class=n>labeling_function</span>
 
-<span class="n">labeling_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">function_closure</span><span class="p">(</span><span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="k">for</span> <span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">heuristic_parameters</span><span class="p">]</span>
-<span class="n">print_spans_from_labelers</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">labeling_functions</span><span class="p">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>[Span(position=0, label='MAMMAL'), Span(position=3, label='FISH'), Span(position=6, label='BIRD')]
-</code></pre>
-<p>Now compare it with how you&rsquo;d implement a regular class:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">LabelingCallable</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starts_with</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">starts_with</span> <span class="o">=</span> <span class="n">starts_with</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+<span class=n>labeling_functions</span> <span class=o>=</span> <span class=p>[</span><span class=n>function_closure</span><span class=p>(</span><span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span> <span class=k>for</span> <span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span> <span class=ow>in</span> <span class=n>heuristic_parameters</span><span class=p>]</span>
+<span class=n>print_spans_from_labelers</span><span class=p>(</span><span class=n>doc</span><span class=p>,</span> <span class=n>labeling_functions</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><pre><code>[Span(position=0, label='MAMMAL'), Span(position=3, label='FISH'), Span(position=6, label='BIRD')]
+</code></pre><p>Now compare it with how you&rsquo;d implement a regular class:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>class</span> <span class=nc>LabelingCallable</span><span class=p>:</span>
+    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>starts_with</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=bp>None</span><span class=p>:</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>starts_with</span> <span class=o>=</span> <span class=n>starts_with</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>label</span> <span class=o>=</span> <span class=n>label</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Span</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tokens</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starts_with</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class=k>def</span> <span class=fm>__call__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Generator</span><span class=p>[</span><span class=n>Span</span><span class=p>,</span> <span class=bp>None</span><span class=p>,</span> <span class=bp>None</span><span class=p>]:</span>
+        <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>word</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>tokens</span><span class=p>):</span>
+            <span class=k>if</span> <span class=n>word</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>starts_with</span><span class=p>):</span>
+                <span class=k>yield</span> <span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>label</span><span class=p>)</span>
 
-<span class="n">labeling_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">LabelingCallable</span><span class="p">(</span><span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="k">for</span> <span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">heuristic_parameters</span><span class="p">]</span>
-<span class="n">print_spans_from_labelers</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">labeling_functions</span><span class="p">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>[Span(position=0, label='MAMMAL'), Span(position=3, label='FISH'), Span(position=6, label='BIRD')]
-</code></pre>
-<p>The object is used only because it can function as a regular function - something that a regular function is more fit to do. This also requires you to come up with a naming convention for this kind of classes. And it doesn&rsquo;t fit with the fact that <code>skweak</code> expects a function (as the code and docstrings imply), even if it masquerades as one.</p>
-<p>You can also do something like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">LabelingCallable</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starts_with</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">starts_with</span> <span class="o">=</span> <span class="n">starts_with</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+<span class=n>labeling_functions</span> <span class=o>=</span> <span class=p>[</span><span class=n>LabelingCallable</span><span class=p>(</span><span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span> <span class=k>for</span> <span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span> <span class=ow>in</span> <span class=n>heuristic_parameters</span><span class=p>]</span>
+<span class=n>print_spans_from_labelers</span><span class=p>(</span><span class=n>doc</span><span class=p>,</span> <span class=n>labeling_functions</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><pre><code>[Span(position=0, label='MAMMAL'), Span(position=3, label='FISH'), Span(position=6, label='BIRD')]
+</code></pre><p>The object is used only because it can function as a regular function - something that a regular function is more fit to do. This also requires you to come up with a naming convention for this kind of classes. And it doesn&rsquo;t fit with the fact that <code>skweak</code> expects a function (as the code and docstrings imply), even if it masquerades as one.</p><p>You can also do something like this:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-python data-lang=python><span class=k>class</span> <span class=nc>LabelingCallable</span><span class=p>:</span>
+    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>starts_with</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=bp>None</span><span class=p>:</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>starts_with</span> <span class=o>=</span> <span class=n>starts_with</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>label</span> <span class=o>=</span> <span class=n>label</span>
 
-    <span class="k">def</span> <span class="nf">labeling_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Span</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tokens</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starts_with</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="n">Span</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class=k>def</span> <span class=nf>labeling_function</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>doc</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Generator</span><span class=p>[</span><span class=n>Span</span><span class=p>,</span> <span class=bp>None</span><span class=p>,</span> <span class=bp>None</span><span class=p>]:</span>
+        <span class=k>for</span> <span class=n>position</span><span class=p>,</span> <span class=n>word</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>doc</span><span class=o>.</span><span class=n>tokens</span><span class=p>):</span>
+            <span class=k>if</span> <span class=n>word</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>starts_with</span><span class=p>):</span>
+                <span class=k>yield</span> <span class=n>Span</span><span class=p>(</span><span class=n>position</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>label</span><span class=p>)</span>
 
-<span class="n">labeling_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">LabelingCallable</span><span class="p">(</span><span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">labeling_function</span> <span class="k">for</span> <span class="n">strats_with</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">heuristic_parameters</span><span class="p">]</span>
-<span class="n">print_spans_from_labelers</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">labeling_functions</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">labeling_functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">labeling_functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-</code></pre></td></tr></table>
-</div>
-</div><pre><code>[Span(position=0, label='MAMMAL'), Span(position=3, label='FISH'), Span(position=6, label='BIRD')]
+<span class=n>labeling_functions</span> <span class=o>=</span> <span class=p>[</span><span class=n>LabelingCallable</span><span class=p>(</span><span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span><span class=p>)</span><span class=o>.</span><span class=n>labeling_function</span> <span class=k>for</span> <span class=n>strats_with</span><span class=p>,</span> <span class=n>label</span> <span class=ow>in</span> <span class=n>heuristic_parameters</span><span class=p>]</span>
+<span class=n>print_spans_from_labelers</span><span class=p>(</span><span class=n>doc</span><span class=p>,</span> <span class=n>labeling_functions</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=nb>repr</span><span class=p>(</span><span class=n>labeling_functions</span><span class=p>[</span><span class=mi>0</span><span class=p>]))</span>
+<span class=k>print</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>labeling_functions</span><span class=p>[</span><span class=mi>0</span><span class=p>]))</span>
+</code></pre></td></tr></table></div></div><pre><code>[Span(position=0, label='MAMMAL'), Span(position=3, label='FISH'), Span(position=6, label='BIRD')]
 &lt;bound method LabelingCallable.labeling_function of &lt;__main__.LabelingCallable object at 0x7fa6981669a0&gt;&gt;
 &lt;class 'method'&gt;
-</code></pre>
-<p>Maybe this is something you&rsquo;ll eventually want but, for our intended purposes, this is basically a closure with extra steps.</p>
-<h1 id="ending-notes">Ending notes</h1>
-<p>In this post we explored closures, a solution for providing data locality.
-We saw one usecase in which they can be helpful and are better suited than classes.</p>
-<p>If this is the kind of content you enjoy, let me know!</p>
-
-    </div>
-
-    <div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">Author</span>
-    <span class="item-content">Bogdan</span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">LastMod</span>
-    <span class="item-content">
-        2021-11-06
-        
-    </span>
-  </p>
-  
-  
-</div>
-<footer class="post-footer">
-      
-      <nav class="post-nav">
-        
-        <a class="next" href="/post/do_not_base_your_life_on_statistics/">
-            <span class="next-text nav-default">Do not base your life on statistics</span>
-            <span class="next-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
-        </div>
-        
-
-  
-
-  
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
-      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
-      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
-      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
-      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
-      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
-      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
-      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
-      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
-      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
-      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
-      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
-      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
-      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
-      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
-  <a href="http://ilikehaskell.hithub.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme - 
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy; 
-    2017 - 
-    2021<span class="heart"><i class="iconfont icon-heart"></i></span><span>Bogdan</span>
-  </span>
-</div>
-
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
-    </div>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-
-
-
-<script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
-
-
-
-
-
-
-
-
-</body>
-</html>
+</code></pre><p>Maybe this is something you&rsquo;ll eventually want but, for our intended purposes, this is basically a closure with extra steps.</p><h1 id=ending-notes>Ending notes</h1><p>In this post we explored closures, a solution for providing data locality.
+We saw one usecase in which they can be helpful and are better suited than classes.</p><p>If this is the kind of content you enjoy, let me know!</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>Author</span>
+<span class=item-content>Bogdan</span></p><p class=copyright-item><span class=item-title>LastMod</span>
+<span class=item-content>2021-11-06</span></p></div><footer class=post-footer><nav class=post-nav><a class=next href=/post/hello-world/><span class="next-text nav-default">Hello World</span>
+<span class="next-text nav-mobile">Next</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=social-links><a href=mailto:your@email.com class="iconfont icon-email" title=email></a><a href=http://localhost:1313 class="iconfont icon-stack-overflow" title=stack-overflow></a><a href=http://localhost:1313 class="iconfont icon-twitter" title=twitter></a><a href=http://localhost:1313 class="iconfont icon-facebook" title=facebook></a><a href=http://localhost:1313 class="iconfont icon-linkedin" title=linkedin></a><a href=http://localhost:1313 class="iconfont icon-google" title=google></a><a href=http://localhost:1313 class="iconfont icon-github" title=github></a><a href=http://localhost:1313 class="iconfont icon-weibo" title=weibo></a><a href=http://localhost:1313 class="iconfont icon-zhihu" title=zhihu></a><a href=http://localhost:1313 class="iconfont icon-douban" title=douban></a><a href=http://localhost:1313 class="iconfont icon-pocket" title=pocket></a><a href=http://localhost:1313 class="iconfont icon-tumblr" title=tumblr></a><a href=http://localhost:1313 class="iconfont icon-instagram" title=instagram></a><a href=http://localhost:1313 class="iconfont icon-gitlab" title=gitlab></a><a href=http://localhost:1313 class="iconfont icon-bilibili" title=bilibili></a><a href=http://ilikehaskell.hithub.io/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a></div><div class=copyright><span class=power-by>Powered by <a class=hexo-link href=https://gohugo.io>Hugo</a></span>
+<span class=division>|</span>
+<span class=theme-info>Theme -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span>
+<span class=copyright-year>&copy;
+2017 -
+2022<span class=heart><i class="iconfont icon-heart"></i></span><span>Bogdan</span></span></div></footer><div class=back-to-top id=back-to-top><i class="iconfont icon-up"></i></div></div><script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script><script type=text/javascript src=/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js></script></body></html>
