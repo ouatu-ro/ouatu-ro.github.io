@@ -1,3 +1,50 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Even - A super concise theme for Hugo</title><link>http://ilikehaskell.hithub.io/</link><description>Recent content on Even - A super concise theme for Hugo</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 06 Nov 2021 02:53:16 +0200</lastBuildDate><atom:link href="http://ilikehaskell.hithub.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Friendly Python Clojures in an automatic Text Annotator</title><link>http://ilikehaskell.hithub.io/post/closures/</link><pubDate>Sat, 06 Nov 2021 02:53:16 +0200</pubDate><guid>http://ilikehaskell.hithub.io/post/closures/</guid><description>While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&amp;rsquo;t really get the gist of a basic block of programming.
-It&amp;rsquo;s closures. They&amp;rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&amp;rsquo;d seen them in the wild.</description></item><item><title>Hello World</title><link>http://ilikehaskell.hithub.io/post/hello-world/</link><pubDate>Thu, 28 Oct 2021 15:13:56 +0300</pubDate><guid>http://ilikehaskell.hithub.io/post/hello-world/</guid><description>this blog will be about (one or more from this list):
-machine learning text-to-speach and voice cloning neural systems recommender systems sentiment analysis understanding Python and how it differs from other languages modern ANSI C and when to use it</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Even - A super concise theme for Hugo</title>
+    <link>http://ilikehaskell.hithub.io/</link>
+    <description>Recent content on Even - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 28 Mar 2022 00:29:54 +0300</lastBuildDate><atom:link href="http://ilikehaskell.hithub.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MVP Tips</title>
+      <link>http://ilikehaskell.hithub.io/post/mvp-tips/</link>
+      <pubDate>Mon, 28 Mar 2022 00:29:54 +0300</pubDate>
+      
+      <guid>http://ilikehaskell.hithub.io/post/mvp-tips/</guid>
+      <description>Some context I had a visualisation app I built for exploring if our aspect based sentimet analysis (ABSA) pipeline. The image below explains both what ABSA is and what the app did. Some people (backend people) in my company needed to explore text messages to see what problems users complain about and how many messages they write about each problem. So I took the visualisation app and the ABSA pipeline and just ran it on the new dataset.</description>
+    </item>
+    
+    <item>
+      <title>Friendly Python Clojures in an automatic Text Annotator</title>
+      <link>http://ilikehaskell.hithub.io/post/closures/</link>
+      <pubDate>Sat, 06 Nov 2021 02:53:16 +0200</pubDate>
+      
+      <guid>http://ilikehaskell.hithub.io/post/closures/</guid>
+      <description>While creating some pipelines for automatic text annotation, I encountered a bug that made me realise that I didn&amp;rsquo;t really get the gist of a basic block of programming.
+It&amp;rsquo;s closures. They&amp;rsquo;re there thanks to your language having first-class functions and you may have encountered them in academia or some programming tutorial, even used them in some toy examples. I know I had. Closures in a sandbox are straight forward. Still, you may not know their power until you&amp;rsquo;d seen them in the wild.</description>
+    </item>
+    
+    <item>
+      <title>Do not base your life on statistics</title>
+      <link>http://ilikehaskell.hithub.io/drafts/do_not_base_your_life_on_statistics/</link>
+      <pubDate>Mon, 01 Nov 2021 14:36:49 +0200</pubDate>
+      
+      <guid>http://ilikehaskell.hithub.io/drafts/do_not_base_your_life_on_statistics/</guid>
+      <description>Statistics is based on probability. Probability is a purely epistemological measure. Meaning that probability is not connected to the object, but it&amp;rsquo;s just a measure of how strong is the evidence for some belief related to the analysed object.
+Take an example: what&amp;rsquo;s the probability of you dying in a car crash? Noow what;s the probability of you dying in a car crash given that you have broken breaks and you are going down a hill?</description>
+    </item>
+    
+    <item>
+      <title>Hello World</title>
+      <link>http://ilikehaskell.hithub.io/post/hello-world/</link>
+      <pubDate>Thu, 28 Oct 2021 15:13:56 +0300</pubDate>
+      
+      <guid>http://ilikehaskell.hithub.io/post/hello-world/</guid>
+      <description>this blog will be about (one or more from this list):
+ machine learning  text-to-speach and voice cloning neural systems recommender systems sentiment analysis   understanding Python and how it differs from other languages modern ANSI C and when to use it  </description>
+    </item>
+    
+  </channel>
+</rss>
