@@ -7,6 +7,7 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   site: "https://ouatu.ro/",
   integrations: [mdx(), sitemap()],
+  base: "/",
   markdown: {
     shikiConfig: {
       theme: "github-dark",
