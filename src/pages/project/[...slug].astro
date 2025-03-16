@@ -13,29 +13,7 @@ interface Project {
   homepage: string;
   description: string;
   githubUrl: string | null;
-}
-
-// Helper function to read manual projects
-function readManualProjects(): Project[] {
-  try {
-    const manualProjectsPath = path.join(process.cwd(), 'public', 'manual-projects-data.json');
-    if (fs.existsSync(manualProjectsPath)) {
-      const data = JSON.parse(fs.readFileSync(manualProjectsPath, 'utf8'));
-      return data.manualProjects || [];
-    }
-  } catch (error) {
-    console.warn('Could not read manual-projects-data.json:', error);
-  }
-  
-  // Fallback to default manual project
-  return [
-    {
-      name: 'Verbalate',
-      homepage: 'https://verbalate.ai/',
-      description: 'Project for Audio-Visual translation with support for voice cloning and AI lip-sync. For professionals and amateurs alike.',
-      githubUrl: null
-    }
-  ];
+  slug?: string;
 }
 
 // Required for static site generation with dynamic routes
@@ -45,21 +23,41 @@ export async function getStaticPaths() {
   // Try to read projects-data.json at build time
   try {
     const projectsFilePath = path.join(process.cwd(), 'public', 'projects-data.json');
-    const projectsData = JSON.parse(fs.readFileSync(projectsFilePath, 'utf8'));
-    projects = projectsData.projects || [];
+    if (fs.existsSync(projectsFilePath)) {
+      const projectsData = JSON.parse(fs.readFileSync(projectsFilePath, 'utf8'));
+      projects = projectsData.projects || [];
+    } else {
+      console.warn('projects-data.json does not exist, trying manual projects');
+      
+      // Try to read manual projects as fallback
+      try {
+        const manualProjectsPath = path.join(process.cwd(), 'public', 'manual-projects-data.json');
+        if (fs.existsSync(manualProjectsPath)) {
+          const data = JSON.parse(fs.readFileSync(manualProjectsPath, 'utf8'));
+          projects = data.manualProjects || [];
+        } else {
+          console.warn('manual-projects-data.json does not exist');
+        }
+      } catch (manualError) {
+        console.warn('Error reading manual-projects-data.json:', manualError);
+      }
+    }
   } catch (error) {
-    console.warn('Could not read projects-data.json, falling back to manual projects:', error);
-    // Fallback to manual projects if file doesn't exist
-    projects = readManualProjects();
+    console.warn('Error reading projects-data.json:', error);
   }
   
+  if (projects.length === 0) {
+    console.error('No projects found! Please ensure the GitHub Action has generated the projects-data.json file.');
+  }
+  
+  console.log(`Generating static paths for ${projects.length} projects`);
+  
   // Generate paths for each project
-  // With [...slug], we need to handle the slug differently
   return projects.map(project => {
-    const slug = slugify(project.name);
+    const slug = project.slug || slugify(project.name);
     return {
-      params: { slug }, // For [...slug] routing, this becomes the path segments
-      props: { project }
+      params: { slug },
+      props: { project: { ...project, slug } }
     };
   });
 }

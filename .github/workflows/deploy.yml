@@ -39,6 +39,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install node-fetch for projects script
+        run: pnpm add node-fetch@2 --save-dev
+
+      - name: Generate projects data
+        run: node .github/workflows/update-projects-script.cjs
+
       - name: Build with Astro
         run: pnpm build
 

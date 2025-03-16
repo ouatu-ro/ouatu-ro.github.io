@@ -24,6 +24,7 @@ function readProjectsData(): Project[] {
       const data = JSON.parse(fs.readFileSync(projectsFilePath, 'utf8'));
       return data.projects || [];
     }
+    console.warn('projects-data.json does not exist, trying manual projects');
   } catch (error) {
     console.warn('Could not read projects-data.json:', error);
   }
@@ -35,19 +36,14 @@ function readProjectsData(): Project[] {
       const data = JSON.parse(fs.readFileSync(manualProjectsPath, 'utf8'));
       return data.manualProjects || [];
     }
+    console.warn('manual-projects-data.json does not exist');
   } catch (error) {
     console.warn('Could not read manual-projects-data.json:', error);
   }
   
-  // Fallback to default project if nothing else is available
-  return [
-    {
-      name: 'Verbalate',
-      homepage: 'https://verbalate.ai/',
-      description: 'Project for Audio-Visual translation with support for voice cloning and AI lip-sync. For professionals and amateurs alike.',
-      githubUrl: null
-    }
-  ];
+  // If nothing found, return empty array
+  console.error('No projects found! Please ensure the GitHub Action has generated the projects-data.json file.');
+  return [];
 }
 
 // Get projects at build time
@@ -55,6 +51,8 @@ const projects = readProjectsData().map(project => ({
   ...project,
   slug: project.slug || slugify(project.name)
 }));
+
+console.log(`Loaded ${projects.length} projects for the homepage`);
 
 ---
 <!DOCTYPE html>
@@ -87,21 +85,27 @@ const projects = readProjectsData().map(project => ({
           Here are some fully fledged products or proofs-of-concept I built. Most of the list is generated dynamically from my GitHub repositories.
         </p>
         <ul id="projects-list">
-          {projects.map((project) => (
-            <li>
-              <div class="project-link-wrapper">
-                <a href={`/project/${project.slug}`}>{project.name}</a>
+          {projects.length > 0 ? (
+            projects.map((project) => (
+              <li>
+                <div class="project-link-wrapper">
+                  <a href={`/project/${project.slug}`}>{project.name}</a>
+                  {project.description && (
+                    <button class="info-btn" aria-label="Show project description">
+                      <i class="fas fa-info-circle"></i>
+                    </button>
+                  )}
+                </div>
                 {project.description && (
-                  <button class="info-btn" aria-label="Show project description">
-                    <i class="fas fa-info-circle"></i>
-                  </button>
+                  <div class="project-description">{project.description}</div>
                 )}
-              </div>
-              {project.description && (
-                <div class="project-description">{project.description}</div>
-              )}
+              </li>
+            ))
+          ) : (
+            <li class="no-projects-message">
+              <p>Projects are currently being updated. Please check back soon!</p>
             </li>
-          ))}
+          )}
         </ul>
       </section>
 
