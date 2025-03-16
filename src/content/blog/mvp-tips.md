@@ -1,10 +1,8 @@
 ---
 title: MVP Tips for Building Effective Analytics Tools
 pubDate: 2022-03-28T00:29:54+03:00
-description: \"Learn key insights from developing a visualization tool that empowered multiple teams with aspect-based sentiment analysis (ABSA).\"
+description: "Learn key insights from developing a visualization tool that empowered multiple teams with aspect-based sentiment analysis (ABSA)."
 ---
-
-# Introduction
 
 Creating analytics tools that are both powerful and user-friendly can feel overwhelming. In this post, I'll share practical insights from my experience as a Machine Learning Engineer at an e-commerce company, where I developed a visualization app used for aspect-based sentiment analysis (ABSA). Both our developer and UX teams needed to analyze user requests, yet they had distinctly different experiences with the tool. You'll learn valuable lessons for building effective analytics tools that cater to diverse user needs.
 
