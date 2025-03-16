@@ -1,39 +1,53 @@
 ---
-title: MVP Tips for Analytics Tools
+title: MVP Tips for Building Effective Analytics Tools
 pubDate: 2022-03-28T00:29:54+03:00
-description: "Explore the lessons learned from developing a visualization app that assisted different teams in my company with aspect-based sentiment analysis (ABSA)."
+description: \"Learn key insights from developing a visualization tool that empowered multiple teams with aspect-based sentiment analysis (ABSA).\"
 ---
 
 # Introduction
 
-Navigating the challenges of creating a user-friendly, effective analytics tool can be daunting. This post will share real-world experiences from developing a visualization app used for aspect-based sentiment analysis (ABSA). We'll dive into how it benefited backend and UX teams differently and offer some crucial takeaways for anyone involved in analytics tool development.
+Creating analytics tools that are both powerful and user-friendly can feel overwhelming. In this post, I'll share practical insights from my experience as a Machine Learning Engineer at an e-commerce company, where I developed a visualization app used for aspect-based sentiment analysis (ABSA). Both our developer and UX teams needed to analyze user requests, yet they had distinctly different experiences with the tool. You'll learn valuable lessons for building effective analytics tools that cater to diverse user needs.
 
 ![ABSA Workflow](/absa-example.png)
 
-## The Backstory: Meeting Different Needs with One App
+## The Backstory: One App, Different Experiences
 
-Initially, I created a visualization app to explore our ABSA pipeline. It quickly gained traction among the backend team who needed to explore text messages for customer complaints. Upon applying the ABSA pipeline to a new dataset, the team found the tool extremely useful.
+Initially, I created a visualization app to explore our ABSA pipeline, quickly gaining popularity among our developer team. They found it particularly helpful for analyzing customer complaints, enabling them to rapidly identify pain points. When applied to new datasets, the app quickly became essential for their workflow.
 
-### UX Team: A Different Story
+On the other hand, the UX team faced different challenges. Despite similar analytical needs, they struggled with the tool’s complexity, including jargon like \"named entities\" and unclear sections such as \"random samples.\" During user testing sessions, it became clear that pages lacking immediate visualizations were often ignored.
 
-On the flip side, the UX team had a more challenging experience. Despite having similar needs, they struggled with aspects like understanding jargon on the website such as named entities or random samples. When sitting down with them for user testing, I realized they often ignored full pages because there were no visualisations by default on the page.
+# Essential Lessons Learned
 
-# What I've Learned
+### Be Opinionated in Your Design
 
-- **Be Opinionated in Design**: Don't overload your users with choices. Make intelligent decisions on their behalf to guide them toward solving their problems effectively.
+Avoid overwhelming users with excessive choices. Thoughtfully guide your users by making intentional design decisions. Clearly defined interactions help users efficiently reach their goals without confusion.
 
-- **Focus on Solving One Problem**: By trying to tackle multiple issues, you risk diluting the tool's effectiveness. Stick to solving one problem well.
+### Solve One Problem at a Time
 
-- **Get Fast Feedback**: Best way is to find a possible user, give them the app link and observe what they do next. Observe users in action, record or take notes during these user interviews, and iterate your design based on this feedback.
+Attempting to address multiple issues simultaneously can dilute your tool’s effectiveness. Clearly define the primary problem your analytics tool addresses, and ensure it solves that specific issue exceptionally well.
 
-- **Simplify Code**: When reusing code for a diferent project, you’ll find that an even simpler solution would have done a better job (even for the original problem)and you'll end up deleting lots of it.
+### Seek Rapid Feedback
 
-# Particular for Analytics Tools
+The most effective way to enhance your tool is through real user feedback. Provide a link to potential users and observe their interactions directly. Take detailed notes or record these user tests, and iteratively refine your tool based on their behavior.
 
-- **Be Clear About Controls and Views**: Ensure that it's clear which controls are associated with what view.
-- **Always Offer a Preview**: Offer a preview or some cues that visualizations will be displayed when users interact with your controls like buttons and sliders. Otherwise, users might not even attempt to use them.
-- **Don't Underestimate a Good Data Grid**: A well-designed data grid can be a powerful tool for data analysis, so don't underestimate its impact.
+### Simplify Your Codebase
+
+When reusing code for new projects, you'll often discover simpler, more efficient solutions than your initial approach. Striving for simplicity not only streamlines your code but can also improve performance and maintainability. Don't hesitate to remove redundant or overly complex code.
+
+# Special Considerations for Analytics Tools
+
+### Clarify Controls and Views
+
+Clearly associate each control with its respective visualization or data view. Ambiguity can discourage users, especially those unfamiliar with your tool's internal logic.
+
+### Always Provide Visual Previews
+
+Ensure your analytics tool communicates clearly that interaction with controls will yield immediate visual feedback. Visual previews encourage exploration and reassure users that their inputs produce tangible results.
+
+### Embrace the Power of a Good Data Grid
+
+Never underestimate the effectiveness of a well-designed data grid. It provides users with an intuitive way to explore and analyze complex datasets, significantly enhancing their analytical capabilities.
 
 # Conclusion
 
-Creating an analytics tool that satisfies all types of users is challenging. The key is to be opinionated in your design choices, focus on solving one core problem, and continually seek user feedback for iterative improvement. Following these principles won't just make your tool more effective; it'll make it indispensable.
+Building an analytics tool that effectively caters to diverse user groups is challenging but achievable. By making intentional, opinionated design choices, clearly defining your core problem, simplifying your codebase, and continually refining your tool based on rapid user feedback, you'll create analytics tools that users find indispensable.

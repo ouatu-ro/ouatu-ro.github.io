@@ -1,0 +1,9 @@
+build:
+  preset: static
+  static:
+    source: dist
+
+pages:
+  branch: gh-pages
+  workflow:
+    auto: true

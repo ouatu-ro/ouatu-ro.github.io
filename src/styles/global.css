@@ -7,6 +7,14 @@ p {
   font-size: 1.2em;
 }
 
+h1 {
+  font-size: 2.2em;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 h2 {
   font-size: 1.8em;
   margin-bottom: 1.5rem;
@@ -171,4 +179,123 @@ footer {
   opacity: 0;
   transition: opacity 0.2s ease;
   z-index: 1000;
+}
+
+/* Code blocks styling */
+pre {
+  margin: 2rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #232323;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Language display for code blocks with explicit language */
+pre[data-language]:not([data-language="plaintext"])::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #333;
+  color: #aaa;
+  font-size: 0.8em;
+  font-family: "Fira Code", "Courier New", monospace;
+  padding: 0.2em 0.7em;
+  border-bottom-right-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+  z-index: 10;
+}
+
+/* Line numbers using CSS counters - only for programming languages with explicit language */
+pre[data-language]:not([data-language="plaintext"]) {
+  padding-left: 0.5rem;
+  padding-top: 2rem;
+}
+
+/* Hide line numbers for plaintext */
+pre[data-language="plaintext"] {
+  padding: 1rem;
+}
+
+pre[data-language="plaintext"] code {
+  padding-left: 0 !important;
+  counter-reset: none !important;
+}
+
+pre[data-language="plaintext"] .line::before {
+  display: none !important;
+  content: none !important;
+  counter-increment: none !important;
+}
+
+/* Regular code blocks and indented blocks without line numbers */
+pre:not([data-language]) {
+  padding: 1rem;
+  counter-reset: none;
+}
+
+pre:not([data-language]) .line::before {
+  display: none;
+  content: none;
+  counter-increment: none;
+}
+
+pre[data-language] code {
+  counter-reset: step;
+  counter-increment: step 0;
+  display: block;
+  padding: 0.3em 0 0.4em 3.5rem;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+pre[data-language] .line {
+  display: inline-block;
+  width: 100%;
+  line-height: 1.1;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
+  min-height: 1.1em;
+}
+
+pre[data-language] .line::before {
+  content: counter(step);
+  counter-increment: step;
+  display: inline-block;
+  width: 2rem;
+  position: absolute;
+  left: -2.8rem;
+  top: 0;
+  color: #666;
+  user-select: none;
+  text-align: right;
+  line-height: 1.1;
+}
+
+/* Remove line number from empty last line */
+pre[data-language] .line:last-child:empty {
+  display: none;
+}
+
+pre[data-language] .line:last-child:empty::before {
+  content: none;
+  counter-increment: none;
+}
+
+code {
+  font-family: "Fira Code", "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+
+/* Inline code styling */
+:not(pre) > code {
+  background-color: #333333;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  color: #cccccc;
 }
