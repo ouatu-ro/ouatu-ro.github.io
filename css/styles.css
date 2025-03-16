@@ -79,3 +79,31 @@ footer {
 .social-icon {
   margin-right: 10px;
 }
+
+/* Projects Section Styling */
+#projects ul {
+  list-style: none;
+  padding: 0;
+}
+
+#projects li {
+  margin-bottom: 1rem;
+}
+
+#projects a:hover {
+  text-decoration: underline;
+}
+
+/* Tooltip Styling */
+#tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 300px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}

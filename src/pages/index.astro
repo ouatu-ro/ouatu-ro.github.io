@@ -1,0 +1,51 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <BaseHead 
+      title="Bogdan Develops" 
+      description="Bogdan Ouatu’s personal site for innovative software and projects" 
+    />
+
+  </head>
+  <body>
+    <Header />
+
+    <!-- Tooltip element for JS interactions -->
+    <div id="tooltip"></div>
+    <main>
+      <section id="about" class="bg-primary">
+        <h2>About Me</h2>
+        <p>
+          I'm Bogdan Ouatu. I focus on building innovative software and exploring new technologies.
+          Currently, I'm exploring ML for audio-visual generation, translation, durable execution, reactive execution,
+          and collaborative products (similar to tools like Figma or Google Docs). Feel free to contact me if you're interested.
+        </p>
+      </section>
+
+      <section id="projects">
+        <h2>Projects</h2>
+        <p>
+          Here are some fully fledged products or proofs-of-concept I built. Most of the list is generated dynamically from my GitHub repositories.
+        </p>
+        <ul id="projects-list">
+          <!-- Project items will be dynamically inserted via JS -->
+        </ul>
+      </section>
+
+      <section id="contact">
+        <h2>Contact Me Now</h2>
+        <p>Email: bogdan *@* ouatu.ro</p>
+      </section>
+    </main>
+
+    <Footer />
+
+    <!-- Custom JS for tooltips and project fetching -->
+    <script type="module" src="/scripts/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+		  /* Main Content */
+		main {
+			max-width: 960px;
+			margin: 0 auto;
+			padding: 2rem 1rem;
+		  }
+		  
+		  /* Blog Post Grid */
+		  ul {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 2rem;
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+			align-items: stretch; /* Ensures all items align properly */
+		  }
+		  
+		  /* First post full width, others in two columns */
+		  ul li {
+			width: calc(50% - 1rem);
+			display: flex;
+			flex-direction: column;
+		  }
+		  
+		  /* First blog post takes full width */
+		  ul li:first-child {
+			width: 100%;
+			text-align: center;
+		  }
+		  
+		  ul li:first-child img {
+			width: 100%;
+		  }
+		  
+		  /* Blog Post Images */
+		  ul li img {
+			width: 100%;
+			height: auto;
+			object-fit: cover;
+			margin-bottom: 0.5rem;
+			border-radius: 12px;
+		  }
+		  
+		  /* Blog Post Title */
+		  .title {
+			margin: 0;
+			color: #ffffff;
+			font-size: 1.5rem;
+			font-weight: bold;
+		  }
+		  
+		  /* Blog Post Date */
+		  .date {
+			margin: 0.3rem 0;
+			color: rgb(180, 180, 180);
+			font-size: 1rem;
+		  }
+		  
+		  /* Hover Effects */
+		  ul li a {
+			display: block;
+			text-decoration: none;
+			transition: 0.2s ease-in-out;
+		  }
+		  
+		  ul li a:hover .title,
+		  ul li a:hover .date {
+			color: rgb(var(--accent));
+		  }
+		  
+		  ul li a:hover img {
+			box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+		  }
+		  
+		  /* Responsive Fix for Smaller Screens */
+		  @media (max-width: 720px) {
+			ul {
+			  flex-direction: column;
+			  gap: 1rem;
+			}
+			
+			ul li {
+			  width: 100%;
+			  text-align: center;
+			}
+		  
+			.title {
+			  font-size: 1.3rem;
+			}
+		  }
+	</style>		  
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section>
+				<ul>
+					{
+						posts.map((post) => (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<img width={720} height={360} src={post.data.heroImage} alt="" />
+									<h4 class="title">{post.data.title}</h4>
+									<p class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>

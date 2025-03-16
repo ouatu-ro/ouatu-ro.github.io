@@ -1,0 +1,132 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			/* Ensure full width without overflowing */
+			main {
+				width: 100%;
+				margin: 0 auto;
+				padding: 0;
+				overflow-x: hidden; /* Prevents content from exceeding screen width */
+			}
+
+			/* Full-width hero image */
+			.hero-image {
+				max-width: 1000px; /* Match the content width */
+				width: 100%;
+				margin: 0 auto 2rem auto; /* Center the container */
+				padding: 0 5vw; /* Match content padding */
+			}
+			.hero-image img {
+				display: block;
+				width: 100%;
+				height: auto;
+				border-radius: 12px;
+				box-shadow: var(--box-shadow);
+			}
+
+			/* Blog content should not go outside the page */
+			.prose {
+				width: 100%;
+				max-width: 1200px; /* Prevents text from stretching too much */
+				margin: 0 auto;
+				padding: 2rem 5vw; /* Adds some side padding */
+				color: rgb(var(--gray-dark));
+				line-height: 1.75;
+			}
+
+			/* Blog title styling */
+			.title {
+				margin-bottom: 1.5em;
+				padding: 1em 0;
+				text-align: left;
+				line-height: 1.2;
+			}
+			.title h1 {
+				margin: 0 0 0.5em 0;
+				font-size: 2.5em;
+			}
+			.date {
+				margin-bottom: 0.5em;
+				color: rgb(var(--gray));
+			}
+			.last-updated-on {
+				font-style: italic;
+			}
+
+			/* Blog content adjustments */
+			.prose p,
+			.prose ul,
+			.prose ol {
+				width: 100%;
+				max-width: 1000px; /* Ensures it doesn't go too wide */
+				margin: 0 auto 1.5em auto; /* Centers paragraphs */
+			}
+
+			/* Prevent overflow issues */
+			.prose,
+			.prose * {
+				box-sizing: border-box; /* Prevents unexpected overflow */
+			}
+
+			/* Responsive Adjustments */
+			@media (max-width: 900px) {
+				.prose {
+					padding: 1.5rem 4vw;
+				}
+			}
+			@media (max-width: 600px) {
+				.prose {
+					padding: 1rem 3vw;
+				}
+				.hero-image img {
+					border-radius: 8px;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<Header />
+		<main>
+			<article>
+				<!-- Full-width hero image -->
+				<div class="hero-image">
+					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
+				</div>
+
+				<!-- Blog Content -->
+				<div class="prose">
+					<div class="title">
+						<div class="date">
+							<FormattedDate date={pubDate} />
+							{
+								updatedDate && (
+									<div class="last-updated-on">
+										Last updated on <FormattedDate date={updatedDate} />
+									</div>
+								)
+							}
+						</div>
+						<h1>{title}</h1>
+						<hr />
+					</div>
+					<slot />
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>

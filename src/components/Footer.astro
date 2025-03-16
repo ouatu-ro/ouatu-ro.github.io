@@ -1,0 +1,41 @@
+---
+const today = new Date();
+---
+<footer>
+  <h4>You can also find me here</h4>
+  <div class="social-links">
+    <a href="https://www.linkedin.com/in/bogdan-ouatu-2788a1b7/" class="social-icon" target="_blank">
+      <i class="fab fa-linkedin-in"></i>
+    </a>
+    <a href="https://github.com/ouatu-ro/" class="social-icon" target="_blank">
+      <i class="fab fa-github"></i>
+    </a>
+    <a href="https://www.kaggle.com/ilikehaskell/discussion/" class="social-icon" target="_blank">
+      <i class="fab fa-kaggle"></i>
+    </a>
+  </div>
+  <p>&copy; {today.getFullYear()} Bogdan Ouatu. All rights reserved.</p>
+</footer>
+
+<style>
+  footer {
+    padding: 2em 1em 6em 1em;
+    background-color: #232323 !important; /* Force dark background */
+    color: #ffffff;
+    text-align: center;
+  }
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    margin: 1em 0;
+  }
+  .social-icon {
+    color: #cccccc;
+    font-size: 32px;
+    text-decoration: none;
+  }
+  .social-icon:hover {
+    color: #ffffff;
+  }
+</style>
