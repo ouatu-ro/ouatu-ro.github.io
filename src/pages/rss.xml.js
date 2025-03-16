@@ -19,6 +19,9 @@ export async function GET(context) {
   //     });
   //   }
 
+  // Create the RSS feed URL for self-reference
+  const rssURL = new URL("rss.xml", context.site).toString();
+
   return rss({
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
@@ -51,6 +54,23 @@ export async function GET(context) {
             code: ["class"],
             pre: ["class"],
           },
+          // Transform relative URLs to absolute URLs
+          transformTags: {
+            img: (tagName, attribs) => {
+              // Convert relative image URLs to absolute
+              if (attribs.src && attribs.src.startsWith("/")) {
+                attribs.src = new URL(attribs.src, context.site).toString();
+              }
+              return { tagName, attribs };
+            },
+            a: (tagName, attribs) => {
+              // Convert relative link URLs to absolute
+              if (attribs.href && attribs.href.startsWith("/")) {
+                attribs.href = new URL(attribs.href, context.site).toString();
+              }
+              return { tagName, attribs };
+            },
+          },
         }),
         customData: post.data.heroImage
           ? `<enclosure url="${new URL(
@@ -61,7 +81,12 @@ export async function GET(context) {
         link: `/blog/${post.id}/`,
       };
     }),
-    customData: `<language>en-us</language>`,
+    customData: `<language>en-us</language>
+    <atom:link href="${rssURL}" rel="self" type="application/rss+xml" />`,
+    // Include atom namespace in the XML
+    xmlns: {
+      atom: "http://www.w3.org/2005/Atom",
+    },
     stylesheet: "/rss/styles.xsl",
   });
 }
