@@ -1,4 +1,4 @@
-# Astro Starter Kit: Blog
+# My personal website
 
 ```sh
 pnpm create astro@latest -- --template blog
