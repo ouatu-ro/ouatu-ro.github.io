@@ -15,5 +15,8 @@
     "astro": "^5.5.2",
     "markdown-it": "^14.1.0",
     "sanitize-html": "^2.14.0"
+  },
+  "devDependencies": {
+    "node-fetch": "2"
   }
 }

@@ -25,37 +25,18 @@ function hideTooltip() {
   tooltip.style.opacity = 0;
 }
 
-// Projects functionality
-const CACHE_KEY = "github_projects";
-const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
+// Initialize project descriptions and tooltips
+function initializeProjectInteractions() {
+  const infoButtons = document.querySelectorAll(".info-btn");
 
-function createProjectElement(project) {
-  const item = document.createElement("li");
-  const linkWrapper = document.createElement("div");
-  linkWrapper.className = "project-link-wrapper";
-
-  const link = document.createElement("a");
-  link.href = project.homepage || project.html_url;
-  link.target = "_blank";
-  link.textContent = project.name;
-
-  linkWrapper.appendChild(link);
-
-  // Create description element and info button
-  if (project.description?.trim()) {
-    const infoBtn = document.createElement("button");
-    infoBtn.className = "info-btn";
-    infoBtn.innerHTML = '<i class="fas fa-info-circle"></i>';
-    infoBtn.setAttribute("aria-label", "Show project description");
-    linkWrapper.appendChild(infoBtn);
-
-    const descriptionEl = document.createElement("div");
-    descriptionEl.className = "project-description";
-    descriptionEl.textContent = project.description;
+  infoButtons.forEach((infoBtn) => {
+    const item = infoBtn.closest("li");
+    const descriptionEl = item.querySelector(".project-description");
+    const description = descriptionEl ? descriptionEl.textContent : "";
 
     // Desktop tooltip on info button
     infoBtn.addEventListener("mouseenter", (event) =>
-      showTooltip(event, project.description)
+      showTooltip(event, description)
     );
     infoBtn.addEventListener("mousemove", moveTooltip);
     infoBtn.addEventListener("mouseleave", hideTooltip);
@@ -82,93 +63,17 @@ function createProjectElement(project) {
         }, 0);
       }
     });
-
-    item.appendChild(linkWrapper);
-    item.appendChild(descriptionEl);
-  } else {
-    item.appendChild(linkWrapper);
-  }
-
-  return item;
+  });
 }
 
-async function fetchAndDisplayProjects() {
-  const list = document.getElementById("projects-list");
-  if (!list) return;
+// Initialize project interactions on page load and after navigation
+document.addEventListener("DOMContentLoaded", initializeProjectInteractions);
+document.addEventListener("astro:after-swap", initializeProjectInteractions);
 
-  // Manual projects
-  const manualProjects = [
-    {
-      name: "Verbalate",
-      homepage: "https://verbalate.ai/",
-      description:
-        "Project for Audio-Visual translation with support for voice cloning and AI lip-sync. For professionals and amateurs alike.",
-    },
-  ];
-
-  // Display cached data first if available
-  const cached = localStorage.getItem(CACHE_KEY);
-  if (cached) {
-    const { data, timestamp } = JSON.parse(cached);
-    if (Date.now() - timestamp < CACHE_DURATION) {
-      list.innerHTML = ""; // Clear list before adding cached items
-      // Add manual projects
-      data.manualProjects.forEach((project) => {
-        list.appendChild(createProjectElement(project));
-      });
-      // Add GitHub projects
-      data.githubProjects.forEach((project) => {
-        list.appendChild(createProjectElement(project));
-      });
-    }
-  }
-
-  try {
-    // Fetch GitHub repositories
-    const response = await fetch("https://api.github.com/users/ouatu-ro/repos");
-    const repos = await response.json();
-
-    // Filter and process GitHub projects
-    const githubProjects = repos.filter(
-      (repo) => repo.homepage?.trim() && !repo.fork
-    );
-
-    // Clear the list and add fresh data
-    list.innerHTML = "";
-
-    // Add manual projects first
-    manualProjects.forEach((project) => {
-      list.appendChild(createProjectElement(project));
-    });
-
-    // Add GitHub projects
-    githubProjects.forEach((project) => {
-      list.appendChild(createProjectElement(project));
-    });
-
-    // Cache the data
-    localStorage.setItem(
-      CACHE_KEY,
-      JSON.stringify({
-        data: {
-          manualProjects,
-          githubProjects,
-        },
-        timestamp: Date.now(),
-      })
-    );
-  } catch (error) {
-    console.error("Error fetching repos:", error);
-    // If fetch fails and we don't have cached data, show manual projects
-    if (!cached) {
-      list.innerHTML = "";
-      manualProjects.forEach((project) => {
-        list.appendChild(createProjectElement(project));
-      });
-    }
-  }
+// Call immediately in case the DOM is already loaded
+if (
+  document.readyState === "complete" ||
+  document.readyState === "interactive"
+) {
+  setTimeout(initializeProjectInteractions, 1);
 }
-
-// Initialize projects on page load and after navigation
-document.addEventListener("DOMContentLoaded", fetchAndDisplayProjects);
-document.addEventListener("astro:after-swap", fetchAndDisplayProjects);

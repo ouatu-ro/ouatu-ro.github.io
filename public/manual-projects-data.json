@@ -1,0 +1,10 @@
+{
+  "manualProjects": [
+    {
+      "name": "Verbalate",
+      "homepage": "https://verbalate.ai/",
+      "description": "Project for Audio-Visual translation with support for voice cloning and AI lip-sync. For professionals and amateurs alike.",
+      "githubUrl": null
+    }
+  ]
+}
