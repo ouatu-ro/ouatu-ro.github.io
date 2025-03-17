@@ -5,7 +5,16 @@
       "homepage": "https://verbalate.ai/",
       "description": "Project for Audio-Visual translation with support for voice cloning and AI lip-sync. For professionals and amateurs alike.",
       "githubUrl": null,
-      "pubDate": "2024-01-01"
+      "pubDate": "2024-01-01",
+      "slug": "verbalate"
+    },
+    {
+      "name": "This website",
+      "homepage": "https://ouatu.ro/",
+      "description": "Blog made in Astro.js, completely open source.",
+      "githubUrl": "https://github.com/ouatu-ro/ouatu-ro.github.io",
+      "pubDate": "2024-01-01",
+      "slug": "this-website"
     }
   ]
 }
