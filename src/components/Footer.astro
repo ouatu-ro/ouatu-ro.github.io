@@ -13,10 +13,23 @@ const today = new Date();
     <a href="https://www.kaggle.com/ilikehaskell/discussion/" class="social-icon" target="_blank">
       <i class="fab fa-kaggle"></i>
     </a>
-    <a href="/rss.xml" class="social-icon" title="RSS Feed" target="_blank">
-      <i class="fas fa-rss"></i>
-    </a>
   </div>
+  
+  <div class="rss-section">
+    <h5>Subscribe via RSS</h5>
+    <div class="rss-links">
+      <a href="/rss.xml" class="rss-link-footer" title="Subscribe to all content">
+        <i class="fas fa-rss"></i> All Content
+      </a>
+      <a href="/blog-rss.xml" class="rss-link-footer" title="Subscribe to blog posts">
+        <i class="fas fa-rss"></i> Blog Posts
+      </a>
+      <a href="/projects-rss.xml" class="rss-link-footer" title="Subscribe to projects">
+        <i class="fas fa-rss"></i> Projects
+      </a>
+    </div>
+  </div>
+  
   <p>&copy; {today.getFullYear()} Bogdan Ouatu. All rights reserved.</p>
 </footer>
 
@@ -40,5 +53,30 @@ const today = new Date();
   }
   .social-icon:hover {
     color: #ffffff;
+  }
+  .rss-section {
+    margin: 1.5em 0;
+  }
+  .rss-section h5 {
+    margin-bottom: 0.5em;
+    font-size: 1em;
+  }
+  .rss-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5em;
+    flex-wrap: wrap;
+  }
+  .rss-link-footer {
+    color: #ff7b00;
+    text-decoration: none;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+  }
+  .rss-link-footer:hover {
+    color: #ff9d40;
+    text-decoration: underline;
   }
 </style>

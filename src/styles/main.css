@@ -102,3 +102,17 @@ section ul {
     padding: 0.5rem;
   }
 }
+
+/* RSS Link */
+.rss-link {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  vertical-align: middle;
+  color: #ff7b00;
+  transition: color 0.2s ease;
+}
+
+.rss-link:hover {
+  color: #ff9d40;
+}

@@ -56,38 +56,75 @@ if (typeof module !== 'undefined' && module.exports) {
   );
 }
 
-async function readManualProjects() {
-  try {
-    // Read manual projects from public/manual-projects-data.json
-    const manualProjectsPath = path.join(
-      process.cwd(),
-      "public",
-      "manual-projects-data.json"
-    );
-    if (fs.existsSync(manualProjectsPath)) {
+// Ensure manual-projects-data.json exists with necessary fields
+function ensureManualProjectsFileExists() {
+  const manualProjectsPath = path.join(
+    process.cwd(),
+    "public",
+    "manual-projects-data.json"
+  );
+
+  let manualProjects = [];
+
+  // Try to read existing file
+  if (fs.existsSync(manualProjectsPath)) {
+    try {
       const data = JSON.parse(fs.readFileSync(manualProjectsPath, "utf8"));
-      console.log(
-        `Successfully loaded ${
-          data.manualProjects?.length || 0
-        } manual projects from manual-projects-data.json`
+      manualProjects = data.manualProjects || [];
+      console.log(`Found ${manualProjects.length} existing manual projects`);
+    } catch (error) {
+      console.warn(
+        "Error reading manual-projects-data.json, creating a new one:",
+        error
       );
-      return data.manualProjects || [];
     }
-  } catch (error) {
-    console.warn("Error reading manual-projects-data.json:", error);
   }
 
-  // Fallback to default manual project if file doesn't exist or can't be read
-  console.log("Using default manual project as fallback");
-  return [
-    {
-      name: "Verbalate",
-      homepage: "https://verbalate.ai/",
-      description:
-        "Project for Audio-Visual translation with support for voice cloning and AI lip-sync. For professionals and amateurs alike.",
-      githubUrl: null,
-    },
-  ];
+  // If no file or empty array, create a default entry
+  if (manualProjects.length === 0) {
+    manualProjects = [
+      {
+        name: "Verbalate",
+        homepage: "https://verbalate.ai/",
+        description:
+          "Project for Audio-Visual translation with support for voice cloning and AI lip-sync. For professionals and amateurs alike.",
+        githubUrl: null,
+        pubDate: new Date().toISOString(),
+      },
+    ];
+  }
+
+  // Make sure all manual projects have required fields
+  manualProjects.forEach((project) => {
+    // Add slug if missing
+    if (!project.slug) {
+      project.slug = slugify(project.name);
+    }
+
+    // Add/update pubDate if missing
+    if (!project.pubDate) {
+      project.pubDate = new Date(
+        Date.now() - 2 * 24 * 60 * 60 * 1000
+      ).toISOString();
+    }
+
+    // Make sure URLs use HTTPS
+    if (project.homepage) {
+      project.homepage = project.homepage.replace(/^http:\/\//i, "https://");
+    }
+  });
+
+  // Write the file
+  fs.writeFileSync(
+    manualProjectsPath,
+    JSON.stringify({ manualProjects }, null, 2)
+  );
+
+  console.log(
+    `Updated manual-projects-data.json with ${manualProjects.length} projects`
+  );
+
+  return manualProjects;
 }
 
 async function updateProjectsData() {
@@ -100,8 +137,8 @@ async function updateProjectsData() {
     // Ensure slugify.js exists
     ensureSlugifyScriptExists();
 
-    // Get manual projects from JSON file
-    const manualProjects = await readManualProjects();
+    // Ensure manual projects file exists with proper structure
+    const manualProjects = ensureManualProjectsFileExists();
 
     // Fetch GitHub repositories
     console.log(
@@ -129,20 +166,15 @@ async function updateProjectsData() {
         description: repo.description || "",
         githubUrl: repo.html_url,
         slug: slugify(repo.name), // Add slug for reference
+        // Add creation date (GitHub's created_at) for the RSS feed
+        pubDate: repo.created_at || new Date().toISOString(),
+        // Add last update date for additional info
+        updatedDate: repo.updated_at || new Date().toISOString(),
       }));
 
     console.log(
       `Found ${githubProjects.length} GitHub projects with homepages`
     );
-
-    // Add slugs to manual projects too
-    manualProjects.forEach((project) => {
-      project.slug = slugify(project.name);
-      // Ensure HTTPS for manual projects too
-      if (project.homepage) {
-        project.homepage = project.homepage.replace(/^http:\/\//i, "https://");
-      }
-    });
 
     // Combine all projects
     const allProjects = [...manualProjects, ...githubProjects];

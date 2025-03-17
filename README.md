@@ -79,3 +79,38 @@ Check out [Astro documentation](https://docs.astro.build) or jump into the [Astr
 ## Credit
 
 This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+
+## Project Data
+
+### Project Publication Dates
+
+The RSS feeds use project publication dates to organize and sort projects. The system handles dates in the following ways:
+
+1. **GitHub Projects**: For projects from GitHub repositories, the system automatically uses:
+
+   - `pubDate`: The repository creation date from GitHub
+   - `updatedDate`: The repository's last update date from GitHub
+
+2. **Manual Projects**: For projects added manually in `public/manual-projects-data.json`, you can:
+   - Specify a `pubDate` manually in ISO format (e.g., `"2023-01-15T12:00:00Z"`)
+   - If not specified, the system will auto-assign a date 2 days before the time of generation
+
+### Adding Manual Projects
+
+To add a project manually, edit the `public/manual-projects-data.json` file with this structure:
+
+```json
+{
+  "manualProjects": [
+    {
+      "name": "Project Name",
+      "homepage": "https://project-url.com/",
+      "description": "Description of the project",
+      "githubUrl": null,
+      "pubDate": "2023-05-15T10:30:00Z"
+    }
+  ]
+}
+```
+
+The `pubDate` field is optional but recommended for proper sorting in the RSS feeds.

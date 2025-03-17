@@ -19,6 +19,8 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={new URL('rss.xml', Astro.site)} />
+<link rel="alternate" type="application/rss+xml" title={`${SITE_TITLE} - Blog Posts`} href={new URL('blog-rss.xml', Astro.site)} />
+<link rel="alternate" type="application/rss+xml" title={`${SITE_TITLE} - Projects`} href={new URL('projects-rss.xml', Astro.site)} />
 <meta name="generator" content={Astro.generator} />
 
 <!-- Font Preloads -->
