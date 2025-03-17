@@ -111,7 +111,7 @@ export async function GET(context) {
 
   // Create RSS feed items from projects
   const projectItems = projects.map((project) => ({
-    title: project.name,
+    title: `Project: ${project.name}`,
     // Use the real creation date from GitHub if available, otherwise use a fallback date
     pubDate: project.pubDate
       ? new Date(project.pubDate)
