@@ -2,7 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, CONTACT_EMAIL } from '../consts';
 import fs from 'node:fs';
 import path from 'node:path';
 import { slugify } from '../utils/slugify';
@@ -71,18 +71,16 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
     <div id="tooltip"></div>
     <main>
       <section id="about" class="bg-primary">
-        <h2>About Me</h2>
-        <p>
-          I'm Bogdan Ouatu and I focus on building innovative software and exploring new technologies.
-          Currently, I'm exploring ML for audio-visual generation, translation, durable execution, reactive programming,
-          and making collaborative products (similar to tools like Figma or Google Docs). Feel free to contact me if you're interested in discussing any of these topics.
+        <h2 class="heading-font">About Me</h2>
+        <p class="body-font">
+          Currently, I'm exploring ML for audio-visual content generation, translation, durable execution, reactive programming, and collaborative products (similar to tools like Figma or Google Docs). Feel free to reach out if you'd like to discuss these topics.
         </p>
       </section>
 
       <section id="projects">
         <h2>Projects <a href="/projects-rss.xml" class="rss-link" title="Projects RSS Feed"><i class="fas fa-rss"></i></a></h2>
         <p>
-          Here are some fully fledged products or proofs-of-concept I built. Most of the list is generated dynamically from my GitHub repositories.
+          Here are some fully fledged products and proofs-of-concept I built. This list is dynamically generated from my GitHub repositories directly into this website.
         </p>
         <ul id="projects-list">
           {projects.length > 0 ? (
@@ -110,8 +108,8 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
       </section>
 
       <section id="contact">
-        <h2>Contact Me Now</h2>
-        <p>Email: bogdan *@* ouatu.ro</p>
+        <h2>Get in touch</h2>
+        <p>Email: {CONTACT_EMAIL.replace('@', ' *@* ')}</p>
       </section>
     </main>
 

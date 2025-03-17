@@ -1,16 +1,18 @@
 ---
+import { GITHUB_URL, LINKEDIN_URL, KAGGLE_URL, AUTHOR } from '../consts';
+
 const today = new Date();
 ---
 <footer>
-  <h4>You can also find me here</h4>
+  <h4 class="heading-font">You can also find me here</h4>
   <div class="social-links">
-    <a href="https://www.linkedin.com/in/bogdan-ouatu-2788a1b7/" class="social-icon" target="_blank">
+    <a href={LINKEDIN_URL} class="social-icon" target="_blank">
       <i class="fab fa-linkedin-in"></i>
     </a>
-    <a href="https://github.com/ouatu-ro/" class="social-icon" target="_blank">
+    <a href={GITHUB_URL} class="social-icon" target="_blank">
       <i class="fab fa-github"></i>
     </a>
-    <a href="https://www.kaggle.com/ilikehaskell/discussion/" class="social-icon" target="_blank">
+    <a href={KAGGLE_URL} class="social-icon" target="_blank">
       <i class="fab fa-kaggle"></i>
     </a>
   </div>

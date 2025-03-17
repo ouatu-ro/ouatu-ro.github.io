@@ -80,20 +80,6 @@ function ensureManualProjectsFileExists() {
     }
   }
 
-  // If no file or empty array, create a default entry
-  if (manualProjects.length === 0) {
-    manualProjects = [
-      {
-        name: "Verbalate",
-        homepage: "https://verbalate.ai/",
-        description:
-          "Project for Audio-Visual translation with support for voice cloning and AI lip-sync. For professionals and amateurs alike.",
-        githubUrl: null,
-        pubDate: new Date().toISOString(),
-      },
-    ];
-  }
-
   // Make sure all manual projects have required fields
   manualProjects.forEach((project) => {
     // Add slug if missing

@@ -2,7 +2,7 @@
 import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { SITE_TITLE } from '../../consts';
+import { SITE_TITLE, AUTHOR, AUTHOR_TITLE } from '../../consts';
 import fs from 'node:fs';
 import path from 'node:path';
 import { slugify } from '../../utils/slugify';
@@ -14,6 +14,8 @@ interface Project {
   description: string;
   githubUrl: string | null;
   slug?: string;
+  pubDate?: string;
+  updatedDate?: string;
 }
 
 // Required for static site generation with dynamic routes
@@ -66,12 +68,38 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 
 const pageTitle = `${project.name} - ${SITE_TITLE}`;
+// Rich description for SEO
+const richDescription = `${project.description} - A project by ${AUTHOR}, ${AUTHOR_TITLE}.`;
+
+// Format dates for structured data if available
+const pubDate = project.pubDate ? new Date(project.pubDate).toISOString() : new Date().toISOString();
+const updatedDate = project.updatedDate ? new Date(project.updatedDate).toISOString() : pubDate;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead title={pageTitle} description={project.description} />
+    <BaseHead title={pageTitle} description={richDescription} />
     <script is:inline src="/scripts/slugify.js"></script>
+    
+    <!-- Structured data for better SEO -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "${project.name}",
+        "description": "${project.description}",
+        "author": {
+          "@type": "Person",
+          "name": "${AUTHOR}",
+          "jobTitle": "${AUTHOR_TITLE}"
+        },
+        "url": "${project.homepage}",
+        "datePublished": "${pubDate}",
+        "dateModified": "${updatedDate}"
+        ${project.githubUrl ? `, "codeRepository": "${project.githubUrl}"` : ''}
+      }
+    </script>
+    
     <style>
       .project-container {
         max-width: 1200px;

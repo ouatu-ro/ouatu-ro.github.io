@@ -1,7 +1,11 @@
+---
+import { SITE_TITLE, TAGLINE_PRIMARY } from '../consts';
+---
 <header>
 	<nav>
 	  <div class="nav-brand">
-		<a href="/" class="home-link">Bogdan Develops</a>
+		<a href="/" class="home-link site-title">{SITE_TITLE}</a>
+		<span class="tagline heading-font">{TAGLINE_PRIMARY}</span>
 		<button class="burger-menu" aria-label="Toggle navigation menu">
 		  <span></span>
 		  <span></span>
@@ -39,6 +43,15 @@
   .nav-brand {
     display: flex;
     align-items: center;
+    gap: 1rem;
+  }
+
+  .tagline {
+    display: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    font-style: italic;
+    font-weight: 400;
   }
 
   .nav-links {
@@ -56,6 +69,12 @@
 
   nav a:hover {
     text-decoration: underline;
+  }
+
+  /* Styles for the site title */
+  .home-link.site-title {
+    font-weight: 700;
+    letter-spacing: -0.025em;
   }
 
   .burger-menu {
@@ -76,6 +95,13 @@
     height: 3px;
     background-color: white;
     transition: all 0.3s ease-in-out;
+  }
+
+  /* Show tagline on larger screens */
+  @media (min-width: 992px) {
+    .tagline {
+      display: block;
+    }
   }
 
   @media (max-width: 768px) {
