@@ -125,7 +125,7 @@ async function updateProjectsData() {
       .filter((repo) => repo.homepage && repo.homepage.trim() && !repo.fork)
       .map((repo) => ({
         name: repo.name,
-        homepage: repo.homepage,
+        homepage: repo.homepage.replace(/^http:\/\//i, "https://"),
         description: repo.description || "",
         githubUrl: repo.html_url,
         slug: slugify(repo.name), // Add slug for reference
@@ -138,6 +138,10 @@ async function updateProjectsData() {
     // Add slugs to manual projects too
     manualProjects.forEach((project) => {
       project.slug = slugify(project.name);
+      // Ensure HTTPS for manual projects too
+      if (project.homepage) {
+        project.homepage = project.homepage.replace(/^http:\/\//i, "https://");
+      }
     });
 
     // Combine all projects
