@@ -6,25 +6,24 @@ p {
 }
 
 h1 {
-  font-size: 2.2em;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0;
+  font-size: 2.5em; /* Largest heading */
+  margin: 1.5rem 0; /* Consistent vertical spacing */
   font-weight: 700;
   line-height: 1.2;
 }
 
 h2 {
-  font-size: 1.8em;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0;
-  border-bottom: none;
+  font-size: 2em; /* Slightly smaller than h1 */
+  margin: 1.2rem 0; /* Consistent vertical spacing */
+  font-weight: 600; /* Slightly lighter weight */
+  line-height: 1.3; /* Adjusted for readability */
 }
 
 h3 {
-  font-size: 1.5em;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0;
-  border-bottom: none;
+  font-size: 1.75em; /* Smaller than h2 */
+  margin: 1rem 0; /* Consistent vertical spacing */
+  font-weight: 500; /* Lighter weight for hierarchy */
+  line-height: 1.4; /* Adjusted for readability */
 }
 
 /* Base body styles */
