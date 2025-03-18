@@ -17,7 +17,10 @@ In recommendation systems, we typically have:
 - A set of items
 - A sparse matrix of known ratings or interactions
 
-Let's call this sparse matrix $R$ where $R_{ui}$ represents user $u$'s rating for item $i$. Most entries in $R$ are unknown (missing).
+Let's call this sparse matrix $R$ where $R_{ui}$ represents user $u$'s interaction with item $i$. Most entries in $R$ are missing. 
+
+The basic ALS formulation is particularly useful in **implicit feedback settings**, where zeros are assumed to be meaningful rather than missing data. This approach is commonly used in **implicit recommendation systems**, such as collaborative filtering for user interactions (e.g., clicks, purchases, or views).  
+However, in **explicit feedback settings** (e.g., movie ratings), missing values should be properly handled to avoid bias in factorization.
 
 The goal of matrix factorization is to approximate $R$ as the product of two lower-dimensional matrices:
 
@@ -34,7 +37,7 @@ $$
 $$
 
 
-Each row of $U$ represents a user's latent feature vector, and each row of $V$ represents an item's latent feature vector.
+Each row of $ U $ represents a **user’s latent preference vector**, which encodes how much they tend to interact with certain hidden factors. Likewise, each row of $ V $ represents an **item’s latent feature vector**, which captures how strongly an item aligns with those same factors. These vectors are learned such that their interactions best approximate the observed data in $ R $, revealing patterns in user behavior and item similarities.
 
 ### **Solving a Non-Convex Optimization Problem**
 
