@@ -6,17 +6,26 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "watch:notebooks": "node scripts/convert-notebooks.mjs",
+    "watch:notebooks:bg": "node scripts/convert-notebooks.mjs > logs/notebook-watcher.log 2>&1 &",
+    "watch:notebooks:stop": "ps aux | grep 'node scripts/convert-notebooks' | grep -v grep | awk '{print $2}' | xargs -r kill -9",
+    "watch:notebooks:log": "tail -f logs/notebook-watcher.log",
+    "dev:all": "npm-run-all --parallel dev watch:notebooks"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.2.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
     "astro": "^5.5.2",
+    "katex": "^0.16.21",
     "markdown-it": "^14.1.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "sanitize-html": "^2.14.0"
   },
   "devDependencies": {
-    "node-fetch": "2"
+    "node-fetch": "2",
+    "npm-run-all": "^4.1.5"
   }
 }

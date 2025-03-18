@@ -5,14 +5,31 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & {
+	math?: boolean;
+};
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, math } = Astro.props;
 ---
 
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
+		{math && (
+			<>
+				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+				<style>
+					/* Additional KaTeX styling */
+					.katex-display {
+						overflow-x: auto;
+						overflow-y: hidden;
+						padding: 0.2em 0; /* Reduced padding around math blocks */
+						margin-top: 0.5em;
+						margin-bottom: 0em;
+					}
+				</style>
+			</>
+		)}
 		<style>
 			/* Ensure full width without overflowing */
 			main {
