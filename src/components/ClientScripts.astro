@@ -35,6 +35,9 @@
 
     // Add copy buttons to code blocks
     addCopyButtonsToCodeBlocks();
+    
+    // Setup project info buttons
+    setupProjectInfoButtons();
   });
 
   // Add copy buttons to code blocks with data-language attribute
@@ -83,6 +86,109 @@
       
       // Add button to the code block
       block.appendChild(copyButton);
+    });
+  }
+  
+  // Setup project info buttons to show descriptions
+  function setupProjectInfoButtons() {
+    // Set up info button tooltips
+    const infoButtons = document.querySelectorAll('.info-btn');
+    
+    // Create tooltip element if not exists
+    let tooltip = document.getElementById('tooltip');
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.id = 'tooltip';
+      document.body.appendChild(tooltip);
+    }
+    
+    // For mobile: toggle project descriptions on click
+    infoButtons.forEach(button => {
+      // Get description element
+      const description = button.closest('.project-link-wrapper').nextElementSibling;
+      if (description && description.classList.contains('project-description')) {
+        // Mobile click behavior
+        button.addEventListener('click', () => {
+          description.classList.toggle('active');
+        });
+        
+        // Desktop hover behavior
+        if (window.innerWidth > 768) {
+          button.addEventListener('mouseenter', (e) => {
+            const descText = description.textContent;
+            tooltip.textContent = descText;
+            
+            // Get absolute position of the button in the document
+            const buttonRect = button.getBoundingClientRect();
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Calculate absolute position considering scroll
+            const absoluteTop = buttonRect.top + scrollTop;
+            const absoluteLeft = buttonRect.left + scrollLeft;
+            const absoluteRight = buttonRect.right + scrollLeft;
+            
+            // Position the tooltip - start by showing it so we can measure it
+            tooltip.style.opacity = '0';
+            tooltip.style.visibility = 'visible';
+            
+            // Calculate positions with bounds checking
+            let leftPos;
+            const viewportWidth = window.innerWidth;
+            
+            // Force browser to calculate tooltip size by accessing properties
+            tooltip.getBoundingClientRect();
+            const tooltipHeight = tooltip.offsetHeight;
+            const tooltipWidth = tooltip.offsetWidth;
+            
+            // Check if tooltip would go off-screen horizontally
+            if (absoluteRight + 10 + tooltipWidth > scrollLeft + viewportWidth) {
+              // Position to the left of the button
+              leftPos = absoluteLeft - tooltipWidth - 10;
+              tooltip.classList.add('tooltip-left');
+            } else {
+              // Position to the right of the button
+              leftPos = absoluteRight + 10;
+              tooltip.classList.remove('tooltip-left');
+            }
+            
+            // Vertical centering with bounds checking
+            let topPos = absoluteTop + (buttonRect.height / 2) - (tooltipHeight / 2);
+            const viewportHeight = window.innerHeight;
+            
+            // Make sure tooltip doesn't go off screen vertically
+            if (topPos + tooltipHeight > scrollTop + viewportHeight) {
+              // Adjust upward
+              topPos = scrollTop + viewportHeight - tooltipHeight - 10;
+            }
+            if (topPos < scrollTop) {
+              // Adjust downward
+              topPos = scrollTop + 10;
+            }
+            
+            // Set final position
+            tooltip.style.left = `${leftPos}px`;
+            tooltip.style.top = `${topPos}px`;
+            
+            // Make tooltip visible
+            tooltip.style.opacity = '1';
+          });
+          
+          button.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+            tooltip.style.visibility = 'hidden';
+          });
+        }
+      }
+    });
+    
+    // Close description when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.info-btn') && !e.target.closest('.project-description')) {
+        document.querySelectorAll('.project-description.active').forEach(desc => {
+          desc.classList.remove('active');
+        });
+      }
     });
   }
 </script> 
