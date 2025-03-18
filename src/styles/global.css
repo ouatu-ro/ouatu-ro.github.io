@@ -93,6 +93,7 @@ nav a:hover {
   text-decoration: underline;
 }
 
+/* Improved Burger Menu */
 .burger-menu {
   display: none;
   flex-direction: column;
@@ -104,13 +105,30 @@ nav a:hover {
   cursor: pointer;
   padding: 0;
   z-index: 10;
+  /* transition: transform 0.3s ease; */
 }
 
 .burger-menu span {
+  display: block;
   width: 100%;
   height: 3px;
   background-color: white;
+  border-radius: 3px;
   transition: all 0.3s ease-in-out;
+  transform-origin: center;
+}
+
+/* Burger menu animation when active */
+.burger-menu.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.burger-menu.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-menu.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
 }
 
 @media (max-width: 768px) {
@@ -134,6 +152,22 @@ nav a:hover {
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 0;
+    background-color: #232323;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease-in-out;
+    overflow: hidden;
+  }
+
+  @keyframes slideDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .nav-links.active {
@@ -144,6 +178,12 @@ nav a:hover {
     width: 100%;
     text-align: center;
     padding: 0.8rem;
+    /* transition: background-color 0.2s ease; */
+  }
+
+  nav a:hover {
+    background-color: #333333;
+    text-decoration: none;
   }
 }
 
@@ -211,6 +251,36 @@ pre[data-language]:not([data-language="plaintext"])::before {
   letter-spacing: 0.05em;
   user-select: none;
   z-index: 10;
+}
+
+/* Copy button for code blocks */
+pre[data-language]:not([data-language="plaintext"]) .copy-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #333;
+  color: #aaa;
+  border: none;
+  font-size: 0.8em;
+  font-family: "Fira Code", "Courier New", monospace;
+  padding: 0.2em 0.7em;
+  border-bottom-left-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+pre[data-language]:not([data-language="plaintext"]) .copy-button:hover {
+  background-color: #444;
+  color: #fff;
+}
+
+pre[data-language]:not([data-language="plaintext"]) .copy-button.copied {
+  background-color: #285e28;
+  color: #fff;
 }
 
 /* Line numbers using CSS counters - only for programming languages with explicit language */

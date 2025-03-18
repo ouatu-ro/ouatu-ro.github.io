@@ -27,35 +27,6 @@ function slugify(text) {
     .trim(); // Trim - from start and end
 }
 
-// Also copy the slugify function to the public script file to ensure consistency
-function ensureSlugifyScriptExists() {
-  // Make sure the scripts directory exists
-  const scriptsDir = path.join(process.cwd(), "public", "scripts");
-  if (!fs.existsSync(scriptsDir)) {
-    fs.mkdirSync(scriptsDir, { recursive: true });
-  }
-
-  fs.writeFileSync(
-    path.join(scriptsDir, "slugify.js"),
-    `// Function to convert project name to slug
-function slugify(text) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\\s+/g, '-')       // Replace spaces with -
-    .replace(/[^\\w\\-]+/g, '')   // Remove all non-word chars
-    .replace(/\\-\\-+/g, '-')     // Replace multiple - with single -
-    .trim();                    // Trim - from start and end
-}
-
-// Make it available for both browser and Node.js
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { slugify };
-}
-`
-  );
-}
-
 // Ensure manual-projects-data.json exists with necessary fields
 function ensureManualProjectsFileExists() {
   const manualProjectsPath = path.join(
@@ -120,12 +91,6 @@ async function updateProjectsData() {
   console.log(`Fetching repositories for GitHub user: ${githubUsername}`);
 
   try {
-    // Ensure slugify.js exists
-    ensureSlugifyScriptExists();
-
-    // Ensure manual projects file exists with proper structure
-    const manualProjects = ensureManualProjectsFileExists();
-
     // Fetch GitHub repositories
     console.log(
       `Fetching repositories from https://api.github.com/users/${githubUsername}/repos`
@@ -161,6 +126,9 @@ async function updateProjectsData() {
     console.log(
       `Found ${githubProjects.length} GitHub projects with homepages`
     );
+
+    // Ensure manual projects file exists with proper structure
+    const manualProjects = ensureManualProjectsFileExists();
 
     // Combine all projects
     const allProjects = [...manualProjects, ...githubProjects];

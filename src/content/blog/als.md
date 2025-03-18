@@ -164,7 +164,8 @@ for iteration in range(num_iterations):
 
     # Equivalent vectorized form for solving U:
     # U = (np.linalg.pinv(V.T @ V) @ V.T @ R.T).T
-    U = R @ V @ np.linalg.pinv(V.T @ V).T  # Efficient computation
+    # U = R @ V @ np.linalg.pinv(V.T @ V).T  
+    U = np.linalg.solve(V.T @ V, V.T @ R.T).T # this is more numerically stable
 
     # Without vectorization (per-row computation)
     # for i in range(V.shape[0]):
@@ -172,8 +173,9 @@ for iteration in range(num_iterations):
 
     # Equivalent vectorized form for solving V:
     # V = (np.linalg.pinv(U.T @ U) @ U.T @ R).T
-    V = R.T @ U @ np.linalg.pinv(U.T @ U).T  # Efficient computation
-
+    # V = R.T @ U @ np.linalg.pinv(U.T @ U).T 
+    V = np.linalg.solve(U.T @ U, U.T @ R).T
+    
     # Compute and store error after each iteration
     errors.append(np.linalg.norm(U @ V.T - R))
 
@@ -195,7 +197,7 @@ print(f"Final error after {num_iterations} iterations: {final_score:.4f}")
 import matplotlib.pyplot as plt
 plt.style.use('dark_background')
 plt.figure(figsize=(12, 6))
-plt.plot(errors[1:], marker="o", linestyle="-", markersize=3, label="Reconstruction Error") # drop first error since it's a big drop that hides the convergence process
+plt.plot(errors[1:], marker="o", linestyle="-", markersize=3, label="Reconstruction Error") # Exclude the first error value to better visualize the convergence process without the initial large drop.
 plt.xlabel("Iteration")
 plt.ylabel("Error (Frobenius Norm)")
 plt.title("ALS Error Convergence")
@@ -233,7 +235,33 @@ While this implementation presents the core idea of ALS, in practice, a few impo
 - **Alternatives to ALS**: Another common approach to matrix factorization is **Stochastic Gradient Descent (SGD)**, which iteratively updates each parameter using gradient-based optimization. Unlike ALS, which updates full rows at once, **SGD optimizes individual elements** — making it more suitable for **online learning** but slower for large datasets.
 
 These modifications and alternative approaches are worth exploring when adapting ALS to real-world scenarios.
+- **Weighted ALS**: This is better suited for explicit recommender systems, where the lack of interaction is treated as a missing value. [This resource](https://cs229.stanford.edu/proj2017/final-posters/5147271.pdf)[^2] provides a concise explanation and derivation of the Ordinary Least Squares formula.
+
+## Full Python implementation with regularisation
+
+
+```python
+import numpy as np
+np.random.seed(42)
+
+def als(R, num_features=10, num_iterations=100, lambda_reg=0.1):
+    users, items = R.shape
+    U = np.random.normal(0, 1, (users, num_features))
+    V = np.random.normal(0, 1, (items, num_features))
+
+    for _ in range(num_iterations):
+        U = np.linalg.solve(V.T @ V + lambda_reg * np.eye(num_features), V.T @ R.T).T
+        V = np.linalg.solve(U.T @ U + lambda_reg * np.eye(num_features), U.T @ R).T
+
+    return U, V
+
+users, items, features = 50, 30, 10
+R = np.random.choice([0, 1], size=(users, items), p=[0.9, 0.1])
+
+U, V = als(R, num_features=features, num_iterations=100, lambda_reg=0.1)
+reconstructed_R = U @ V.T
+```
 
 ## References:
 [^1]: https://mathworld.wolfram.com/NormalEquation.html
-
+[^2]: https://cs229.stanford.edu/proj2017/final-posters/5147271.pdf
