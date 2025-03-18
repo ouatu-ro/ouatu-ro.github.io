@@ -73,20 +73,13 @@
 }
 
 /* Blog Content */
-.prose {
-  width: 90%;
-  max-width: 1200px;
-  margin: auto;
-  padding: 2rem;
-  color: rgb(var(--gray-dark));
-  line-height: 1.75;
+.prose section {
+  width: 100%;
+  padding: 0rem 5vw;
+  transition: background-color 0.5s ease;
+  box-sizing: border-box;
 }
 
-.prose p,
-.prose li {
-  line-height: 1.75;
-  margin-bottom: 0.8em;
-}
 .prose li p {
   margin-bottom: 0.5em;
   margin-top: 0.25em;
@@ -105,7 +98,7 @@
 
 .prose a {
   font-size: inherit !important;
-  color: #cccccc;
+  color: #49c874;
   text-decoration: underline;
 }
 
@@ -144,5 +137,85 @@
   }
   .hero-image img {
     border-radius: 8px;
+  }
+}
+
+/* Additional Blog Post Styles from BlogPost.astro */
+/* Math styling for KaTeX */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2em 0; /* Reduced padding around math blocks */
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* Main container styling */
+main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  overflow-x: hidden; /* Prevents content from exceeding screen width */
+}
+
+/* Full-width hero image - additional styling */
+.hero-image {
+  max-width: 1000px; /* Match the content width */
+  width: 100%;
+  margin: 0 auto 2rem auto; /* Center the container */
+  padding: 0 5vw; /* Match content padding */
+}
+
+/* Blog content container */
+.prose {
+  width: 100%;
+  max-width: 1200px; /* Prevents text from stretching too much */
+  margin: 0 auto;
+  padding: 2rem 5vw; /* Adds some side padding */
+  color: rgb(var(--gray-dark));
+  line-height: 1.75;
+}
+
+/* Blog title styling */
+.title {
+  margin-bottom: 1.5em;
+  padding: 1em 0;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.title h1 {
+  margin: 0 0 0.5em 0;
+  font-size: 2.5em;
+}
+
+.date {
+  margin-bottom: 0.5em;
+  color: rgb(var(--gray));
+}
+
+.last-updated-on {
+  font-style: italic;
+}
+
+/* Blog content paragraph adjustments */
+.prose p,
+.prose ul,
+.prose ol {
+  width: 100%;
+  max-width: 1000px; /* Ensures it doesn't go too wide */
+  margin: 0 auto 0.5em auto; /* Centers paragraphs */
+}
+
+/* Prevent overflow issues */
+.prose,
+.prose * {
+  box-sizing: border-box; /* Prevents unexpected overflow */
+}
+
+/* Additional Responsive Adjustments */
+@media (max-width: 900px) {
+  .prose {
+    padding: 1.5rem 4vw;
   }
 }

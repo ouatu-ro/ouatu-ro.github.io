@@ -39,13 +39,12 @@ async function convertNotebook(notebookPath) {
 
     // Fix potentially broken math delimiters
     // Replace escaped $ with actual $
-    content = content.replace(/\\$\\$/g, "$$").replace(/\\\$/g, "$");
-    // replace /( and /) with $ and $)
+    // content = content.replace(/\\$\\$/g, "$$").replace(/\\\$/g, "$");
 
     // Ensure display math is properly formatted (double dollar signs at start and end of line)
-    content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, p1) => {
-      return `\n$$\n${p1.trim()}\n$$\n`;
-    });
+    // content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, p1) => {
+    //   return `\n$$\n${p1}\n$$\n`;
+    // });
 
     // Add frontmatter if needed
     if (!content.includes("---")) {
