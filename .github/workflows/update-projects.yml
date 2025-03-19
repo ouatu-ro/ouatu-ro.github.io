@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Ensure we get full commit history
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -23,14 +25,15 @@ jobs:
       - name: Update projects data
         run: node .github/workflows/update-projects-script.cjs
 
-      - name: Commit and push if changed
+      - name: Pull latest changes to prevent conflicts
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          # Force add the files ignoring gitignore
+          git pull --rebase origin master  # Rebase to avoid conflicts
+
+      - name: Commit and push if changed
+        run: |
+          # Force add the file if needed
           git add -f public/projects-data.json
-          # Configure Git to not show the "paths are ignored" warning
-          git config --global advice.addIgnoredFile false
-          # Attempt to commit and push
           git commit -m "Update projects data" || echo "No changes to commit"
-          git push || echo "No changes to push"
+          git push origin master || echo "No changes to push"
