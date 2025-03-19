@@ -184,11 +184,6 @@ main {
   line-height: 1.2;
 }
 
-.title h1 {
-  margin: 0 0 0.5em 0;
-  font-size: 2.5em;
-}
-
 .date {
   margin-bottom: 0.5em;
   color: rgb(var(--gray));
