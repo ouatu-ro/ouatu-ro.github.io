@@ -146,6 +146,25 @@ async function updateProjectsData() {
       JSON.stringify({ projects: allProjects }, null, 2)
     );
 
+    // Generate custom project URLs for the sitemap
+    const siteUrl = 'https://ouatu.ro';
+    const projectUrls = allProjects.map(project => {
+      return [
+        // Project landing page URL
+        `${siteUrl}/project/${project.slug}/`,
+        // Direct project URL (if it's hosted on the same domain)
+        project.homepage.startsWith(siteUrl) ? project.homepage : null
+      ].filter(Boolean); // Remove null values
+    }).flat();
+
+    // Write to project-urls.json for sitemap generation
+    const projectUrlsPath = path.join(publicDir, "project-urls.json");
+    fs.writeFileSync(
+      projectUrlsPath,
+      JSON.stringify({ urls: projectUrls }, null, 2)
+    );
+    console.log(`Generated ${projectUrls.length} URLs for the sitemap`);
+
     console.log(
       `Successfully updated ${projectsDataPath} with ${allProjects.length} projects`
     );

@@ -114,5 +114,51 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
     </main>
 
     <Footer />
+
+    <!-- SEO footer with direct project links - rendered server-side -->
+    <div class="seo-footer">
+      <div class="container">
+        <h3>Explore Projects</h3>
+        <div class="project-links">
+          {projects.map((project) => (
+            <a href={project.homepage} class="project-direct-link" target="_blank" rel="noopener">
+              {project.name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .seo-footer {
+        background-color: #232323;
+        padding: 1rem 0 2rem;
+        margin-top: -2rem;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+      .seo-footer h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        color: #ffffff;
+      }
+      .project-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+      .project-direct-link {
+        color: #aaa;
+        text-decoration: none;
+      }
+      .project-direct-link:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
+    </style>
   </body>
 </html>
