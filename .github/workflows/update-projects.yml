@@ -29,7 +29,6 @@ jobs:
           git config --global user.email 'action@github.com'
           # Force add the files ignoring gitignore
           git add -f public/projects-data.json
-          git add -f public/scripts/slugify.js
           # Configure Git to not show the "paths are ignored" warning
           git config --global advice.addIgnoredFile false
           # Attempt to commit and push
