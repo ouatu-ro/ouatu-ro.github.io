@@ -75,6 +75,24 @@ const richDescription = `${project.description} - A project by ${AUTHOR}, ${AUTH
 // Format dates for structured data if available
 const pubDate = project.pubDate ? new Date(project.pubDate).toISOString() : new Date().toISOString();
 const updatedDate = project.updatedDate ? new Date(project.updatedDate).toISOString() : pubDate;
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: project.name,
+  description: project.description,
+  author: {
+    "@type": "Person",
+    name: AUTHOR,
+    jobTitle: AUTHOR_TITLE,
+  },
+  url: project.homepage,
+  datePublished: pubDate,
+  dateModified: updatedDate,
+  ...(project.githubUrl && { codeRepository: project.githubUrl }),
+  "applicationCategory": "Application",
+  "operatingSystem": "Web"
+};
+
 ---
 
 <html lang="en">
@@ -83,23 +101,8 @@ const updatedDate = project.updatedDate ? new Date(project.updatedDate).toISOStr
     <ClientScripts />
     
     <!-- Structured data for better SEO -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "${project.name}",
-        "description": "${project.description}",
-        "author": {
-          "@type": "Person",
-          "name": "${AUTHOR}",
-          "jobTitle": "${AUTHOR_TITLE}"
-        },
-        "url": "${project.homepage}",
-        "datePublished": "${pubDate}",
-        "dateModified": "${updatedDate}"
-        ${project.githubUrl ? `, "codeRepository": "${project.githubUrl}"` : ''}
-      }
-    </script>
+    <script type="application/ld+json" set:html={JSON.stringify({structuredData})} />
+
     
     <style>
       .project-container {
