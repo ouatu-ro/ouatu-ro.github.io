@@ -1,13 +1,13 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import Icon from '../components/Icons.astro';
-import { SITE_TITLE, SITE_DESCRIPTION, CONTACT_EMAIL } from '../consts';
-import fs from 'node:fs';
-import path from 'node:path';
-import { slugify } from '../utils/slugify';
-import ClientScripts from '../components/ClientScripts.astro';
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Icon from "../components/Icons.astro";
+import { SITE_TITLE, SITE_DESCRIPTION, CONTACT_EMAIL } from "../consts";
+import fs from "node:fs";
+import path from "node:path";
+import { slugify } from "../utils/slugify";
+import ClientScripts from "../components/ClientScripts.astro";
 
 // Define Project interface
 interface Project {
@@ -21,43 +21,53 @@ interface Project {
 // Helper function to read projects data
 function readProjectsData(): Project[] {
   try {
-    const projectsFilePath = path.join(process.cwd(), 'public', 'projects-data.json');
+    const projectsFilePath = path.join(
+      process.cwd(),
+      "public",
+      "projects-data.json"
+    );
     if (fs.existsSync(projectsFilePath)) {
-      const data = JSON.parse(fs.readFileSync(projectsFilePath, 'utf8'));
+      const data = JSON.parse(fs.readFileSync(projectsFilePath, "utf8"));
       return data.projects || [];
     }
-    console.warn('projects-data.json does not exist, trying manual projects');
+    console.warn("projects-data.json does not exist, trying manual projects");
   } catch (error) {
-    console.warn('Could not read projects-data.json:', error);
+    console.warn("Could not read projects-data.json:", error);
   }
-  
+
   // Try reading manual projects as fallback
   try {
-    const manualProjectsPath = path.join(process.cwd(), 'public', 'manual-projects-data.json');
+    const manualProjectsPath = path.join(
+      process.cwd(),
+      "public",
+      "manual-projects-data.json"
+    );
     if (fs.existsSync(manualProjectsPath)) {
-      const data = JSON.parse(fs.readFileSync(manualProjectsPath, 'utf8'));
+      const data = JSON.parse(fs.readFileSync(manualProjectsPath, "utf8"));
       return data.manualProjects || [];
     }
-    console.warn('manual-projects-data.json does not exist');
+    console.warn("manual-projects-data.json does not exist");
   } catch (error) {
-    console.warn('Could not read manual-projects-data.json:', error);
+    console.warn("Could not read manual-projects-data.json:", error);
   }
-  
+
   // If nothing found, return empty array
-  console.error('No projects found! Please ensure the GitHub Action has generated the projects-data.json file.');
+  console.error(
+    "No projects found! Please ensure the GitHub Action has generated the projects-data.json file."
+  );
   return [];
 }
 
 // Get projects at build time
-const projects = readProjectsData().map(project => ({
+const projects = readProjectsData().map((project) => ({
   ...project,
-  slug: project.slug || slugify(project.name)
+  slug: project.slug || slugify(project.name),
 }));
 
 console.log(`Loaded ${projects.length} projects for the homepage`);
-
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
@@ -72,43 +82,61 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
       <section id="about" class="bg-primary">
         <h2 class="heading-font">About Me</h2>
         <p class="body-font">
-          Currently, I'm exploring ML for audio-visual content generation, translation, durable execution, reactive programming, and collaborative products (similar to tools like Figma or Google Docs). Feel free to reach out if you'd like to discuss these topics.
+          Currently, I'm exploring ML for audio-visual content generation,
+          translation, durable execution, reactive programming, and
+          collaborative products (similar to tools like Figma or Google Docs).
+          Feel free to reach out if you'd like to discuss these topics.
         </p>
       </section>
 
       <section id="projects">
-        <h2>Projects <a href="/projects-rss.xml" class="rss-link" title="Projects RSS Feed"><Icon name="rss" /></a></h2>
+        <h2>
+          Projects <a
+            href="/projects-rss.xml"
+            class="rss-link"
+            title="Projects RSS Feed"><Icon name="rss" /></a
+          >
+        </h2>
         <p>
-          Here are some fully fledged products and proofs-of-concept I built. This list is dynamically generated from my GitHub repositories directly into this website.
+          Here are some fully fledged products and proofs-of-concept I built.
+          This list is dynamically generated from my GitHub repositories
+          directly into this website.
         </p>
         <ul id="projects-list">
-          {projects.length > 0 ? (
-            projects.map((project) => (
-              <li>
-                <div class="project-link-wrapper">
-                  <a href={`/project/${project.slug}`}>{project.name}</a>
+          {
+            projects.length > 0 ? (
+              projects.map((project) => (
+                <li>
+                  <div class="project-link-wrapper">
+                    <a href={`/project/${project.slug}`}>{project.name}</a>
+                    {project.description && (
+                      <button
+                        class="info-btn"
+                        aria-label="Show project description"
+                      >
+                        <Icon name="info-circle" />
+                      </button>
+                    )}
+                  </div>
                   {project.description && (
-                    <button class="info-btn" aria-label="Show project description">
-                      <Icon name="info-circle" />
-                    </button>
+                    <div class="project-description">{project.description}</div>
                   )}
-                </div>
-                {project.description && (
-                  <div class="project-description">{project.description}</div>
-                )}
+                </li>
+              ))
+            ) : (
+              <li class="no-projects-message">
+                <p>
+                  Projects are currently being updated. Please check back soon!
+                </p>
               </li>
-            ))
-          ) : (
-            <li class="no-projects-message">
-              <p>Projects are currently being updated. Please check back soon!</p>
-            </li>
-          )}
+            )
+          }
         </ul>
       </section>
 
       <section id="contact">
         <h2>Get in touch</h2>
-        <p>Email: {CONTACT_EMAIL.replace('@', ' *@* ')}</p>
+        <p>Email: {CONTACT_EMAIL.replace("@", " *@* ")}</p>
       </section>
     </main>
 
@@ -119,11 +147,18 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
       <div class="container">
         <h3>Explore Projects</h3>
         <div class="project-links">
-          {projects.map((project) => (
-            <a href={project.homepage} class="project-direct-link" target="_blank" rel="noopener">
-              {project.name}
-            </a>
-          ))}
+          {
+            projects.map((project) => (
+              <a
+                href={project.homepage}
+                class="project-direct-link"
+                target="_blank"
+                rel="noopener"
+              >
+                {project.name}
+              </a>
+            ))
+          }
         </div>
       </div>
     </div>
