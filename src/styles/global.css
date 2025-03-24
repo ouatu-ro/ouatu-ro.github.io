@@ -28,7 +28,7 @@ h3 {
 
 /* Base body styles */
 body {
-  font-family: "Atkinson", Arial, sans-serif;
+  font-family: "Inter", "Source Sans Pro", system-ui, -apple-system, sans-serif;
   margin: 0;
   padding: 0;
   background-color: #121212;
