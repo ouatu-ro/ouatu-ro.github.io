@@ -55,6 +55,9 @@ export default defineConfig({
     },
   },
   vite: {
+    build: {
+      assetsInlineLimit: 65536,
+    },
     plugins: [
       viteCompression({
         algorithm: "brotliCompress", // or 'gzip'
