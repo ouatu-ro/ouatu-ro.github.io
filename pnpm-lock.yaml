@@ -45,6 +45,9 @@ importers:
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
       vite-plugin-compression:
         specifier: ^0.5.1
         version: 0.5.1(vite@6.2.2)
@@ -1605,6 +1608,11 @@ packages:
   postcss@8.5.3:
     resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
     engines: {node: ^10 || ^12 || >=14}
+
+  prettier@3.5.3:
+    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   prismjs@1.30.0:
     resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==}
@@ -4257,6 +4265,8 @@ snapshots:
       nanoid: 3.3.9
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  prettier@3.5.3: {}
 
   prismjs@1.30.0: {}
 

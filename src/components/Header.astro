@@ -1,26 +1,27 @@
 ---
-import { SITE_TITLE, TAGLINE_PRIMARY } from '../consts';
+import { SITE_TITLE, TAGLINE_PRIMARY } from "../consts";
 ---
+
 <header>
-	<nav>
-	  <div class="nav-brand">
-		<a href="/" class="home-link site-title">{SITE_TITLE}</a>
-		<span class="tagline heading-font">{TAGLINE_PRIMARY}</span>
-		<button class="burger-menu" aria-label="Toggle navigation menu">
-		  <span></span>
-		  <span></span>
-		  <span></span>
-		</button>
-	  </div>
-	  <div class="nav-links">
-		<a href="/blog">Blog</a>
-		<a href="/#about" class="nav-link" data-section="about">About me</a>
-		<a href="/#projects" class="nav-link" data-section="projects">Projects</a>
-		<a href="/#contact" class="nav-link" data-section="contact">Contact</a>
-	  </div>
-	</nav>
-  </header>
-  
+  <nav>
+    <div class="nav-brand">
+      <a href="/" class="home-link site-title">{SITE_TITLE}</a>
+      <span class="tagline heading-font">{TAGLINE_PRIMARY}</span>
+      <button class="burger-menu" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="nav-links">
+      <a href="/blog">Blog</a>
+      <a href="/#about" class="nav-link" data-section="about">About me</a>
+      <a href="/#projects" class="nav-link" data-section="projects">Projects</a>
+      <a href="/#contact" class="nav-link" data-section="contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
 <style>
   header {
     width: 100%;
@@ -144,7 +145,7 @@ import { SITE_TITLE, TAGLINE_PRIMARY } from '../consts';
     const section = document.getElementById(sectionId);
     if (section) {
       section.style.backgroundColor = "#454545";
-      setTimeout(() => section.style.backgroundColor = "#121212", 500);
+      setTimeout(() => (section.style.backgroundColor = "#121212"), 500);
     }
   }
 
@@ -162,23 +163,27 @@ import { SITE_TITLE, TAGLINE_PRIMARY } from '../consts';
     }
 
     // Handle section navigation
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const section = link.getAttribute('data-section');
+    document.querySelectorAll(".nav-link").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const section = link.getAttribute("data-section");
         if (section) {
           const targetSection = document.getElementById(section);
           if (targetSection) {
             e.preventDefault();
             targetSection.scrollIntoView();
             blinkSection(section);
-            history.pushState(null, '', `/#${section}`);
-            
+            history.pushState(null, "", `/#${section}`);
+
             // Close mobile menu if open
-            const burgerMenu = document.querySelector('.burger-menu');
-            const navLinks = document.querySelector('.nav-links');
-            if (burgerMenu && navLinks && navLinks.classList.contains('active')) {
-              burgerMenu.classList.remove('active');
-              navLinks.classList.remove('active');
+            const burgerMenu = document.querySelector(".burger-menu");
+            const navLinks = document.querySelector(".nav-links");
+            if (
+              burgerMenu &&
+              navLinks &&
+              navLinks.classList.contains("active")
+            ) {
+              burgerMenu.classList.remove("active");
+              navLinks.classList.remove("active");
             }
           }
         }
@@ -186,8 +191,8 @@ import { SITE_TITLE, TAGLINE_PRIMARY } from '../consts';
     });
 
     // Handle home link
-    document.querySelector('.home-link')?.addEventListener('click', (e) => {
-      if (window.location.pathname === '/') {
+    document.querySelector(".home-link")?.addEventListener("click", (e) => {
+      if (window.location.pathname === "/") {
         e.preventDefault();
         window.scrollTo({ top: 0 });
       }
@@ -195,10 +200,10 @@ import { SITE_TITLE, TAGLINE_PRIMARY } from '../consts';
   }
 
   // Initialize on direct page load
-  document.addEventListener('DOMContentLoaded', initializeNavigation);
+  document.addEventListener("DOMContentLoaded", initializeNavigation);
 
   // Initialize after navigation
-  document.addEventListener('astro:after-swap', () => {
+  document.addEventListener("astro:after-swap", () => {
     const hash = window.location.hash.slice(1);
     if (hash) {
       setTimeout(() => {
@@ -212,7 +217,7 @@ import { SITE_TITLE, TAGLINE_PRIMARY } from '../consts';
   });
 
   // Handle back/forward navigation
-  window.addEventListener('popstate', () => {
+  window.addEventListener("popstate", () => {
     const hash = window.location.hash.slice(1);
     if (hash) {
       const section = document.getElementById(hash);
@@ -223,4 +228,3 @@ import { SITE_TITLE, TAGLINE_PRIMARY } from '../consts';
     }
   });
 </script>
-  

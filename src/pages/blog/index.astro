@@ -6,7 +6,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import { getCollection } from "astro:content";
 import FormattedDate from "../../components/FormattedDate.astro";
 import "../../styles/blog.css";
-
+import ClientScripts from "../../components/ClientScripts.astro";
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
@@ -16,6 +16,7 @@ const posts = (await getCollection("blog")).sort(
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <ClientScripts />
     <style>
       /* Global wrapper to fix overflow */
       html,
