@@ -96,7 +96,7 @@ async function updateProjectsData() {
       `Fetching repositories from https://api.github.com/users/${githubUsername}/repos`
     );
     const response = await fetch(
-      `https://api.github.com/users/${githubUsername}/repos`
+      `https://api.github.com/users/${githubUsername}/repos?per_page=100`
     );
 
     if (!response.ok) {
@@ -147,15 +147,17 @@ async function updateProjectsData() {
     );
 
     // Generate custom project URLs for the sitemap
-    const siteUrl = 'https://ouatu.ro';
-    const projectUrls = allProjects.map(project => {
-      return [
-        // Project landing page URL
-        `${siteUrl}/project/${project.slug}/`,
-        // Direct project URL (if it's hosted on the same domain)
-        project.homepage.startsWith(siteUrl) ? project.homepage : null
-      ].filter(Boolean); // Remove null values
-    }).flat();
+    const siteUrl = "https://ouatu.ro";
+    const projectUrls = allProjects
+      .map((project) => {
+        return [
+          // Project landing page URL
+          `${siteUrl}/project/${project.slug}/`,
+          // Direct project URL (if it's hosted on the same domain)
+          project.homepage.startsWith(siteUrl) ? project.homepage : null,
+        ].filter(Boolean); // Remove null values
+      })
+      .flat();
 
     // Write to project-urls.json for sitemap generation
     const projectUrlsPath = path.join(publicDir, "project-urls.json");
