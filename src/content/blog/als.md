@@ -948,7 +948,6 @@ EOF
 
 In a realistic temporal split, **ALS performed well in implicit feedback**, with fast convergence and solid accuracy. On explicit feedback, **Weighted ALS (WALS)** outperformed plain ALS but still failed to beat strong baselines like item bias or Surprise’s SVD. **WALS is also much slower in Python**, due to per-user/item weighted matrix solves. Despite that, ALS remains a strong, efficient choice, especially for large-scale or implicit recommendation tasks.
 
-# References
 [^1]: https://mathworld.wolfram.com/NormalEquation.html
 [^2]: Stanford CS229 Project. "Weighted Alternating Least Squares." Accessed from: [https://cs229.stanford.edu/proj2017/final-posters/5147271.pdf](https://cs229.stanford.edu/proj2017/final-posters/5147271.pdf)
 
