@@ -2,12 +2,13 @@
 
 Features:
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+- Minimal styling (make it your own!)
+- 100/100 Lighthouse performance
+- SEO-friendly with canonical URLs and OpenGraph data
+- Sitemap support
+- Markdown & MDX support
+- Math typesetting support (TeX/LaTeX) via KaTeX
+- RSS Feed support
 
 ## 🚀 Deployment
 
