@@ -193,7 +193,7 @@ $$
 A X = B
 $$
 
-where \( A = V^T V \) and \( B = V^T R^T \) (for solving \( U \)), or \( A = U^T U \) and \( B = U^T R \) (for solving \( V \)). 
+where $A = V^T V$ and $B = V^T R^T$ (for solving $U$), or $A = U^T U$ and $B = U^T R$ (for solving $V$).
 
 Thus, the least squares updates can be computed efficiently and with better numerical stability as:
 
