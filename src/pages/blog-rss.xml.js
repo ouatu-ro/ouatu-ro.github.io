@@ -7,7 +7,11 @@ import MarkdownIt from "markdown-it";
 const parser = new MarkdownIt();
 
 export async function GET(context) {
-  const posts = await getCollection("blog");
+  const posts = (await getCollection("blog")).sort((a, b) => {
+    return (
+      new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+    );
+  });
 
   // Create the RSS feed URL for self-reference
   const rssURL = new URL("blog-rss.xml", context.site).toString();

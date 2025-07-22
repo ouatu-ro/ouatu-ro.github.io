@@ -41,10 +41,16 @@ function readProjectsData() {
 }
 
 export async function GET(context) {
-  const projects = readProjectsData().map((project) => ({
-    ...project,
-    slug: project.slug || slugify(project.name),
-  }));
+  const projects = readProjectsData()
+    .map((project) => ({
+      ...project,
+      slug: project.slug || slugify(project.name),
+    }))
+    .sort((a, b) => {
+      const dateA = new Date(a.pubDate || a.updatedDate || 0);
+      const dateB = new Date(b.pubDate || b.updatedDate || 0);
+      return dateB - dateA; // Descending
+    });
 
   // Create the RSS feed URL for self-reference
   const rssURL = new URL("projects-rss.xml", context.site).toString();

@@ -47,7 +47,11 @@ function readProjectsData() {
 
 export async function GET(context) {
   // Get blog posts
-  const posts = await getCollection("blog");
+  const posts = (await getCollection("blog")).sort((a, b) => {
+    return (
+      new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+    );
+  });
 
   // Get projects
   const projects = readProjectsData().map((project) => ({

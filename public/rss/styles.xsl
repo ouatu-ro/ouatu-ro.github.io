@@ -18,7 +18,7 @@
         <p><xsl:value-of select="/rss/channel/description"/></p>
         <p><a href="{/rss/channel/link}">Visit Website</a></p>
         
-        <h2>Recent Posts</h2>
+        <h2>Recent Content</h2>
         <xsl:for-each select="/rss/channel/item">
           <div class="item">
             <h3><a href="{link}"><xsl:value-of select="title"/></a></h3>
