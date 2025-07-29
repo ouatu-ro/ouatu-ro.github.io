@@ -14,21 +14,26 @@
     "dev:all": "npm-run-all --parallel dev watch:notebooks"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.2.0",
-    "@astrojs/rss": "^4.0.11",
-    "@astrojs/sitemap": "^3.2.1",
-    "astro": "^5.5.2",
-    "katex": "^0.16.21",
+    "@astrojs/mdx": "^4.3.1",
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.4.2",
+    "astro": "^5.12.4",
+    "katex": "^0.16.22",
     "markdown-it": "^14.1.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
-    "sanitize-html": "^2.14.0",
+    "sanitize-html": "^2.17.0",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
-    "node-fetch": "2",
+    "node-fetch": "^2.7.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "vite-plugin-compression": "^0.5.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
