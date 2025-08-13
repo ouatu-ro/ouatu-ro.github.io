@@ -5,20 +5,22 @@ description: "This article explores closures and partial function application in
 math: true
 ---
 
-While creating some pipelines for automatic text annotation, I encountered a bug that made me realize I didn't fully understand how closures work in Python. It's important to note that in Python, a for-loop does not create a new scope or its own context, which can affect how closures behave. <!--more-->
+While building some pipelines for automatic text annotation at work, I ran into a bug that completely threw me off. It made me realise I didn’t actually understand how Python closures behaved in a `for` loop. The catch was subtle: in Python, a `for` loop doesn’t create a new scope, and that detail can change the outcome of your code in surprising ways.
 
-When you're working with multiple packages in Python, you're essentially dealing with a complex ecosystem of code. You might often find that modifying components—be they functions, classes, or modules—is either impractical or impossible. This is especially true when those components are part of packages that are not under your control. Here's where closures can provide value:
+This wasn’t an academic exercise. We were integrating multiple NLP packages into our annotation workflow, including [SpaCy](https://spacy.io/) and [skweak](https://github.com/NorskRegnesentral/skweak). Once a new model or heuristic was ready, we’d hook it up to label customer complaint text and other incoming feedback. The pipelines were a mix of our own code and library components we couldn’t modify, which made isolating behaviour and managing state pretty important.
 
-1. **Data Encapsulation**: Closures can enclose state—variables from the outer function that the inner function relies on. This encapsulation can effectively isolate this pocket of state, minimizing the risk of unintended side-effects when integrating with external packages.
-   
-2. **Idiomatic Code**: Pythonic idioms encourage readability and simplicity. Using closures can be a more Pythonic way to achieve specific kinds of encapsulation and state management without resorting to creating full-blown classes.
-  
-3. **Reduced Mental Overhead**: When you're wrestling with a complex system, every bit of simplification helps. Closures can help you encapsulate specific behaviors and states into individual, manageable units without requiring you to understand or modify the complete architecture of an external package.
+That’s where closures became useful:
 
-By focusing on these benefits, closures can sometimes serve as a more straightforward, clean alternative to complex inheritance hierarchies or class compositions when dealing with multiple external packages.
+1. **Encapsulating state**
+   A closure can hold on to variables from its outer function, keeping them alive without exposing them globally. This made it easy to keep small, private bits of state for each annotation function without bleeding into the rest of the pipeline.
 
-In this article, I'll demonstrate the concept reconstructing functionalities from [SpaCy](https://spacy.io/) and [skweak](https://github.com/NorskRegnesentral/skweak). By the end, you should have a solid grasp of when and why to use closures, particularly in the context of Natural Language Processing (NLP).
+2. **Keeping it Pythonic**
+   Instead of introducing yet another class just to carry some parameters, a closure gave us a clear, lightweight way to add custom logic.
 
+3. **Reducing complexity**
+   In a large multi-package system, every small simplification counts. Closures let us wrap up behaviour in neat, self-contained units without needing to rework or fully understand the architecture of the external package we were plugging into.
+
+In this post, I’ll share the exact scenario where closures and partial functions turned out to be the cleanest solution. We’ll rebuild parts of SpaCy and skweak to make the example concrete, then see how these patterns can simplify state management in real NLP workflows.
 
 ## What Are Closures?
 
