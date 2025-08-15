@@ -4,13 +4,15 @@ pubDate: 2022-03-28T00:29:54+03:00
 description: "Learn practical insights from developing interactive visualization tools for analyzing customer feedback with aspect-based sentiment analysis (ABSA)."
 ---
 
-Building interactive visualization tools for text-based customer feedback, like aspect-based sentiment analysis (ABSA), can feel daunting at first. In this post, I want to share some lessons from my time as a Machine Learning Engineer at an e-commerce company, where I built a visualization app for ABSA. Our developer and UX teams both needed to make sense of customer feedback, but they experienced the tool in very different ways. What I learned shaped how I think about analytics tools today.
+Building interactive visualization tools for text-based customer feedback, like aspect-based sentiment analysis (ABSA), can feel daunting at first. In this post, I want to share some lessons from my time as a Machine Learning Engineer at an e-commerce company, where I built a visualization app for ABSA.
 
 ![ABSA Workflow](/absa-example.png)
 
+Our developer and UX teams both needed to make sense of customer feedback, but they experienced the tool in very different ways. What I learned shaped how I think about analytics tools today.
+
 ## The Backstory: One App, Different Experiences
 
-Initially, I created a visualization app to explore our ABSA pipeline, quickly gaining popularity among our developer team. They found it especially valuable for analyzing customer complaints, enabling them to rapidly identify pain points.
+Initially, I created a visualization app to explore our ABSA pipeline, quickly gaining popularity among one of our developer teams. They found it especially valuable for analyzing customer complaints, enabling them to rapidly identify pain points and used it to change the priority of what they were building.
 
 The UX team, on the other hand, had a harder time with it. Their analytical needs were similar, but the tool was full of jargon like “named entities” and sections such as “random samples” that didn’t click for them. During user testing, we noticed that any screen without an immediate visualization was usually ignored.
 
