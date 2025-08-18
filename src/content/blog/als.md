@@ -315,8 +315,8 @@ $$
 w_{mn} = w_0 + f(c_n)
 $$
 
-- \(w_0\) is a baseline weight, ensuring every interaction has a minimal influence.
-- \(c_n = \sum_{m} \mathbf{1}(R_{mn} > 0)\) is the number of non-zero ratings for item \(n\), representing the item's popularity.
+- $(w_0)$ is a baseline weight, ensuring every interaction has a minimal influence.
+- $ (c_n = \sum_{m} \mathbf{1}(R_{mn} > 0)) $ is the number of non-zero ratings for item \(n\), representing the item's popularity.
 
 Two common choices for the scaling function \(f(c_n)\) are:
 
@@ -352,7 +352,7 @@ When performing updates in WALS, the weight vector for each user or item is tran
   V_n = \left(U^T (\text{diag}(w_n)) U + \lambda I\right)^{-1} U^T (\text{diag}(w_n)) R_n
   $$
 
-In these equations, \(\text{diag}(w_m)\) and \(\text{diag}(w_n)\) explicitly create diagonal matrices from weight vectors \(w_m\) and \(w_n\), respectively, ensuring that each interaction is weighted correctly and independently.
+In these equations, $ \text{diag}(w_m) $ and $ \text{diag}(w_n) $ explicitly create diagonal matrices from weight vectors \(w_m\) and \(w_n\), respectively, ensuring that each interaction is weighted correctly and independently.
 
 A complete, efficient implementation of Weighted ALS using these updates will be provided in the full code example at the end of this blog post.
 
