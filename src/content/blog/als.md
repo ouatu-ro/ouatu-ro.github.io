@@ -93,7 +93,7 @@ R
            ...,
            [0, 0, 0, ..., 0, 0, 0],
            [1, 0, 0, ..., 0, 0, 0],
-           [0, 0, 0, ..., 0, 0, 0]])
+           [0, 0, 0, ..., 0, 0, 0]], shape=(50, 30))
 
 
 
@@ -380,425 +380,472 @@ While more advanced techniques like neural collaborative filtering have emerged 
 
 ```python
 import numpy as np
-np.random.seed(42)
 
-def als_with_regularization(R, num_features=10, num_iterations=100, lambda_reg=0.1):
-    users, items = R.shape
-    U = np.random.normal(0, 1, (users, num_features))
-    V = np.random.normal(0, 1, (items, num_features))
+# ---------- weighting utils ----------
+def linear_weight_fn(c_n, w0: float = 0.1, wk: float = 1.0):
+    """Per-item popularity weights; smaller extra weight for very popular items."""
+    return w0 + wk / (c_n + 1e-8)
 
-    for _ in range(num_iterations):
-        U = np.linalg.solve(V.T @ V + lambda_reg * np.eye(num_features), V.T @ R.T).T
-        V = np.linalg.solve(U.T @ U + lambda_reg * np.eye(num_features), U.T @ R).T
+def make_mask(R: np.ndarray, zero_means_missing: bool = True) -> np.ndarray:
+    """
+    Build observation mask M.
+    - If zero_means_missing: treat 0 as missing (implicit/binary clicks).
+    - Else: any entry counts as observed (or non-NaN for float matrices).
+    """
+    if zero_means_missing:
+        return (R > 0).astype(float)
+    return (~np.isnan(R)).astype(float) if np.issubdtype(R.dtype, np.floating) else np.ones_like(R, dtype=float)
 
-    return U, V
+def item_weights_from_mask(M: np.ndarray, weight_fn=linear_weight_fn) -> np.ndarray:
+    """Compute per-item weights from popularity (column sums of M)."""
+    c_n = M.sum(axis=0)          # popularity per item
+    return weight_fn(c_n)         # shape: (items,)
 
-users, items, features = 50, 30, 10
-R = np.random.choice([0, 1], size=(users, items), p=[0.9, 0.1])
+# ---------- metrics ----------
+def observed_rmse(R_true: np.ndarray, R_pred: np.ndarray, M: np.ndarray) -> float:
+    num = ((R_true - R_pred)**2 * M).sum()
+    den = M.sum()
+    return np.sqrt(num / max(den, 1))
 
-U, V = als_with_regularization(R, num_features=features, num_iterations=100, lambda_reg=0.1)
-reconstructed_R = U @ V.T
-
-print(f"Reconstruction Error: {np.linalg.norm(R - reconstructed_R):.4f}")
+def weighted_rmse(R_true: np.ndarray, R_pred: np.ndarray, w_item: np.ndarray, M: np.ndarray) -> float:
+    W = M * w_item               # broadcasts over columns
+    num = ((R_true - R_pred)**2 * W).sum()
+    den = W.sum()
+    return np.sqrt(num / max(den, 1))
 
 ```
 
-    Reconstruction Error: 6.6894
+
+```python
+import numpy as np
+
+def als_with_regularization(
+    R: np.ndarray,
+    rank: int = 10,
+    iters: int = 100,
+    reg: float = 0.1,
+    *,
+    zero_means_missing: bool = True,
+    seed: int | None = 42,
+    dtype=np.float32,
+):
+    """
+    Unweighted ALS. Zeros are treated as real observations inside the update;
+    M is returned so you can ignore zeros as 'missing' in metrics.
+    Returns: U, V, w_item (all ones), M
+    """
+    rng = np.random.default_rng(seed) if seed is not None else np.random.default_rng()
+    users, items = R.shape
+    I = np.eye(rank, dtype=dtype)
+
+    U = rng.normal(0, 1, (users, rank)).astype(dtype)
+    V = rng.normal(0, 1, (items, rank)).astype(dtype)
+    Rt = R.astype(dtype)
+
+    for _ in range(iters):
+        Gv = V.T @ V + reg * I
+        U = (np.linalg.solve(Gv, V.T @ Rt.T).T).astype(dtype)
+
+        Gu = U.T @ U + reg * I
+        V = (np.linalg.solve(Gu, U.T @ Rt).T).astype(dtype)
+
+    M = make_mask(R, zero_means_missing=zero_means_missing)
+    w_item = np.ones(items, dtype=float)
+    return U, V, w_item, M
+
+# ----- demo -----
+users, items, rank = 50, 30, 10
+R = np.random.default_rng(42).choice([0, 1], size=(users, items), p=[0.9, 0.1])
+
+U, V, w_item, M = als_with_regularization(R, rank=rank, iters=100, reg=0.1, seed=42, zero_means_missing=True)
+R_hat = U @ V.T
+
+print(f"Observed RMSE (mask only): {observed_rmse(R, R_hat, M):.4f}")
+print(f"Weighted RMSE (matches training): {weighted_rmse(R, R_hat, w_item, M):.4f}")
+print(f"Full Frobenius Norm (incl. missing zeros): {np.linalg.norm(R - R_hat):.4f}")
+
+```
+
+    Observed RMSE (mask only): 0.4026
+    Weighted RMSE (matches training): 0.4026
+    Full Frobenius Norm (incl. missing zeros): 6.9064
 
 
 
 ```python
 import numpy as np
-np.random.seed(42)
 
-def weighted_als(R, num_features=10, num_iterations=100, lambda_reg=0.1, weight_fn=lambda c_n: 0.1 + 1.0 / (c_n + 1e-8)):
+def weighted_als(
+    R: np.ndarray,
+    rank: int = 10,
+    iters: int = 100,
+    reg: float = 0.1,
+    *,
+    weight_fn=linear_weight_fn,
+    zero_means_missing: bool = True,
+    seed: int | None = 42,
+    dtype=np.float32,
+):
+    """
+    Weighted ALS where observed entries are scaled by per-item weights.
+    Returns: U, V, w_item, M
+    """
+    rng = np.random.default_rng(seed) if seed is not None else np.random.default_rng()
     users, items = R.shape
-    U = np.random.normal(0, 1, (users, num_features))
-    V = np.random.normal(0, 1, (items, num_features))
+    I = np.eye(rank, dtype=dtype)
 
-    # Item popularity
-    c_n = np.sum(R > 0, axis=0)
-    weights = weight_fn(c_n)
+    U = rng.normal(0, 1, (users, rank)).astype(dtype)
+    V = rng.normal(0, 1, (items, rank)).astype(dtype)
+    Rt = R.astype(dtype)
 
-    for _ in range(num_iterations):
-        # Update user factors
+    M = make_mask(R, zero_means_missing=zero_means_missing)     # (users, items)
+    w_item = item_weights_from_mask(M, weight_fn)               # (items,)
+    W = M * w_item                                              # per-entry weights
+
+    for _ in range(iters):
+        # users
         for m in range(users):
-            Wm = np.diag(weights * (R[m, :] > 0))
-            U[m] = np.linalg.solve(
-                V.T @ Wm @ V + lambda_reg * np.eye(num_features),
-                V.T @ Wm @ R[m, :]
-            )
-
-        # Update item factors
+            wm = W[m]                       # (items,)
+            Vw = V * wm[:, None]
+            A = V.T @ Vw + reg * I
+            b = (Rt[m] * wm) @ V
+            U[m] = np.linalg.solve(A, b).astype(dtype)
+        # items
         for n in range(items):
-            Wn = np.diag(weights[n] * (R[:, n] > 0))
-            V[n] = np.linalg.solve(
-                U.T @ Wn @ U + lambda_reg * np.eye(num_features),
-                U.T @ Wn @ R[:, n]
-            )
+            wn = W[:, n]                    # (users,)
+            Uw = U * wn[:, None]
+            A = U.T @ Uw + reg * I
+            b = (Rt[:, n] * wn) @ U
+            V[n] = np.linalg.solve(A, b).astype(dtype)
 
-    return U, V
+    return U, V, w_item, M
 
-# Generate explicit rating matrix (1–5 stars), sparse
-users, items = 50, 30
-R = np.random.choice([0, 1, 2, 3, 4, 5], size=(users, items), p=[0.7, 0.06, 0.06, 0.06, 0.06, 0.06])
-# R = np.random.choice([0, 1], size=(users, items), p=[0.9, 0.1])
+# ----- demo -----
+users, items, rank = 50, 30, 10
+R = np.random.default_rng(42).choice([0, 1], size=(users, items), p=[0.9, 0.1])
 
-# Custom weighting function example (linear)
-def linear_weight_fn(c_n, w0=0.1, wk=1.0):
-    return w0 + wk / (c_n + 1e-8)
+U, V, w_item, M = weighted_als(R, rank=rank, iters=100, reg=0.1, weight_fn=linear_weight_fn, seed=42, zero_means_missing=True)
+R_hat = U @ V.T
 
-# Run Weighted ALS
-U, V = weighted_als(R, num_features=10, num_iterations=100, lambda_reg=0.1, weight_fn=linear_weight_fn)
-reconstructed_R = U @ V.T
+print(f"Observed RMSE (mask only): {observed_rmse(R, R_hat, M):.4f}")
+print(f"Weighted RMSE (matches training): {weighted_rmse(R, R_hat, w_item, M):.4f}")
+print(f"Full Frobenius Norm (incl. missing zeros): {np.linalg.norm(R - R_hat):.4f}")
 
-print(f"Weighted Reconstruction Error: {np.linalg.norm((R - reconstructed_R)*(R>0)):.4f}")
-print(f"Weighted Reconstruction Error: {np.linalg.norm((R - reconstructed_R)):.4f}")
 ```
 
-    Weighted Reconstruction Error: 3.0118
-    Weighted Reconstruction Error: 84.2561
+    Observed RMSE (mask only): 0.0925
+    Weighted RMSE (matches training): 0.0931
+    Full Frobenius Norm (incl. missing zeros): 31.8075
 
 
 # Real-world example
 
 
 ```python
+# --- deps & insecure download (requested) ---
+import io, time, numpy as np, pandas as pd, requests, urllib3
 from functools import partial
-import numpy as np
-import pandas as pd
-import time
 
-# ---------------------
-# Data loading and preprocessing
-# ---------------------
 url = "https://files.grouplens.org/datasets/movielens/ml-100k/u.data"
-ratings = pd.read_csv(url, sep="\t", names=["user_id", "item_id", "rating", "timestamp"])
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+resp = requests.get(url, verify=False, timeout=30)
+resp.raise_for_status()
+
+ratings = pd.read_csv(io.BytesIO(resp.content), sep="\t",
+                      names=["user_id", "item_id", "rating", "timestamp"])
+
+# --- preprocess: zero-index, time-based 80/20 split, filter cold test users ---
 ratings["user_id"] -= 1
 ratings["item_id"] -= 1
 
-# Sort by timestamp and split train/test (80/20)
 ratings_sorted = ratings.sort_values("timestamp").reset_index(drop=True)
 split_idx = int(len(ratings_sorted) * 0.8)
 train_data, test_data = ratings_sorted[:split_idx], ratings_sorted[split_idx:]
 
-# Drop test users with <10 ratings in train set
 user_rating_counts = train_data['user_id'].value_counts()
 valid_users = user_rating_counts[user_rating_counts >= 10].index
 test_data = test_data[test_data['user_id'].isin(valid_users)]
 
-print(f"Number of users in train set: {len(train_data['user_id'].unique())}; Number of ratings in train set: {len(train_data)}")
-print(f"Number of users in test set: {len(test_data['user_id'].unique())}; Number of ratings in test set: {len(test_data)}")
+print(f"Train users: {train_data['user_id'].nunique()} | Train ratings: {len(train_data)}")
+print(f"Test  users: {test_data['user_id'].nunique()} | Test  ratings: {len(test_data)}")
 
 num_users = ratings.user_id.max() + 1
 num_items = ratings.item_id.max() + 1
 
 def to_matrix(df):
-    R = np.zeros((num_users, num_items))
-    for row in df.itertuples():
-        R[row.user_id, row.item_id] = row.rating
+    R = np.zeros((num_users, num_items), dtype=np.float32)
+    for r in df.itertuples(index=False):
+        R[r.user_id, r.item_id] = r.rating
     return R
 
 R_train = to_matrix(train_data)
-R_test = to_matrix(test_data)
+R_test  = to_matrix(test_data)
 
-# ---------------------
-# Weighting and evaluation functions
-# ---------------------
-def exponential_weight_fn(c_n, w0=0.1, e=0.25):
-    return w0 + np.power(1 / (c_n + 1e-8), e)
+# --- masks & popularity weights (computed **only from train**) ---
+M_train = make_mask(R_train, zero_means_missing=True)
+M_test  = make_mask(R_test,  zero_means_missing=True)
 
-def linear_weight_fn(c_n, w0=0.1, wk=1.0):
-    return w0 + wk / (c_n + 1e-8)
+# default linear popularity weights; will override with partials in grid search
+w_item_train_default = item_weights_from_mask(M_train, weight_fn=linear_weight_fn)
 
-def compute_rmse(R_true, R_pred):
-    mask = R_true > 0
-    error = np.linalg.norm((R_true - R_pred) * mask) / np.sqrt(mask.sum())
-    return error
+# --- baselines: unweighted ALS vs weighted ALS (default linear weights) ---
+rank, iters, reg = 10, 100, 1.5
 
-# ---------------------
-# Baseline Models
-# ---------------------
-# (Assume als_with_regularization and weighted_als are defined elsewhere.)
+t0 = time.time()
+U_reg, V_reg, _, _ = als_with_regularization(
+    R_train, rank=rank, iters=iters, reg=reg, seed=42, zero_means_missing=True
+)
+time_reg = time.time() - t0
 
-# ALS with Regularization
-start = time.time()
-U_reg, V_reg = als_with_regularization(R_train, num_iterations=5, lambda_reg=1.5, num_features=10)
-time_reg = time.time() - start
+t0 = time.time()
+U_wlin, V_wlin, w_item_used, _ = weighted_als(
+    R_train, rank=rank, iters=iters, reg=reg,
+    weight_fn=linear_weight_fn, seed=42, zero_means_missing=True
+)
+time_wlin = time.time() - t0
 
-# Weighted ALS (Exponential) with default parameters (w0=1, e=0.1)
-start = time.time()
-U_wals_exp, V_wals_exp = weighted_als(R_train, num_iterations=5, lambda_reg=1.5,
-                                      weight_fn=partial(exponential_weight_fn, w0=1, e=0.1),
-                                      num_features=10)
-time_wals_exp = time.time() - start
+Rhat_reg  = U_reg @ V_reg.T
+Rhat_wlin = U_wlin @ V_wlin.T
 
-# Weighted ALS (Linear) with default parameters (using the function directly)
-start = time.time()
-U_wals_lin, V_wals_lin = weighted_als(R_train, num_iterations=5, lambda_reg=1.5,
-                                      weight_fn=linear_weight_fn,
-                                      num_features=10)
-time_wals_lin = time.time() - start
+# --- evaluation policy:
+# For model selection: weighted RMSE with **train-derived** item weights, masking on the eval split.
+# Also report plain observed RMSE for comparability.
+train_weighted_rmse_reg  = weighted_rmse(R_train, Rhat_reg,  w_item_train_default, M_train)
+test_weighted_rmse_reg   = weighted_rmse(R_test,  Rhat_reg,  w_item_train_default, M_test)
 
-# Global Mean Baseline
-global_mean = np.mean(R_train[R_train > 0])
-baseline_train_rmse = compute_rmse(R_train, global_mean * np.ones_like(R_train))
-baseline_test_rmse = compute_rmse(R_test, global_mean * np.ones_like(R_test))
+train_weighted_rmse_wlin = weighted_rmse(R_train, Rhat_wlin, w_item_train_default, M_train)
+test_weighted_rmse_wlin  = weighted_rmse(R_test,  Rhat_wlin, w_item_train_default, M_test)
 
-# Item Bias Baseline
-item_sums = np.sum(R_train, axis=0)
-item_counts = np.count_nonzero(R_train, axis=0)
-item_biases = (item_sums - item_counts * global_mean) / (item_counts + 1e-8)
-R_itembias = np.tile(global_mean, (num_users, num_items)) + item_biases
-itembias_train_rmse = compute_rmse(R_train, R_itembias)
-itembias_test_rmse = compute_rmse(R_test, R_itembias)
+train_obs_rmse_reg  = observed_rmse(R_train, Rhat_reg,  M_train)
+test_obs_rmse_reg   = observed_rmse(R_test,  Rhat_reg,  M_test)
 
-methods = [
-    "ALS Regularized",
-    "Weighted ALS (Exponential)",
-    "Weighted ALS (Linear)",
-    "Global Mean Baseline",
-    "Item Bias Baseline"
-]
-
-train_rmse = [
-    compute_rmse(R_train, U_reg @ V_reg.T),
-    compute_rmse(R_train, U_wals_exp @ V_wals_exp.T),
-    compute_rmse(R_train, U_wals_lin @ V_wals_lin.T),
-    baseline_train_rmse,
-    itembias_train_rmse
-]
-
-test_rmse = [
-    compute_rmse(R_test, U_reg @ V_reg.T),
-    compute_rmse(R_test, U_wals_exp @ V_wals_exp.T),
-    compute_rmse(R_test, U_wals_lin @ V_wals_lin.T),
-    baseline_test_rmse,
-    itembias_test_rmse
-]
-
-times = [
-    time_reg,
-    time_wals_exp,
-    time_wals_lin,
-    0,  # Global Mean is instantaneous
-    0   # Item Bias is also fast
-]
+train_obs_rmse_wlin = observed_rmse(R_train, Rhat_wlin, M_train)
+test_obs_rmse_wlin  = observed_rmse(R_test,  Rhat_wlin, M_test)
 
 results_baselines = pd.DataFrame({
-    "Method": methods,
-    "Train RMSE": train_rmse,
-    "Test RMSE": test_rmse,
-    "Time (s)": times
+    "Method": ["ALS (unweighted)", "ALS (weighted linear default)"],
+    "Train RMSE (weighted)": [train_weighted_rmse_reg,  train_weighted_rmse_wlin],
+    "Test RMSE (weighted)":  [test_weighted_rmse_reg,   test_weighted_rmse_wlin],
+    "Train RMSE (observed)": [train_obs_rmse_reg,       train_obs_rmse_wlin],
+    "Test RMSE (observed)":  [test_obs_rmse_reg,        test_obs_rmse_wlin],
+    "Time (s)": [time_reg, time_wlin],
 })
-
 print("\n--- Baseline Results ---")
 print(results_baselines)
 
-# ---------------------
-# Grid Search for Weight Function Tuning
-# ---------------------
-# Grid search: Exponential Weight Function
-exp_results = []
-print("\nGrid search: Exponential Weight Function")
-for w0 in [0.5, 1.0, 1.5]:
-    for e in [0.05, 0.1, 0.2]:
-        weight_fn_exp = partial(exponential_weight_fn, w0=w0, e=e)
-        start = time.time()
-        U_exp, V_exp = weighted_als(R_train, num_iterations=5, lambda_reg=1.5,
-                                    weight_fn=weight_fn_exp, num_features=10)
-        elapsed = time.time() - start
-        test_rmse_exp = compute_rmse(R_test, U_exp @ V_exp.T)
-        exp_results.append({
-            'w0': w0,
-            'e': e,
-            'test_rmse': test_rmse_exp,
-            'time': elapsed
-        })
-        print(f"Exp: w0={w0}, e={e}, test RMSE={test_rmse_exp:.4f}, time={elapsed:.2f}s")
-        
-exp_df = pd.DataFrame(exp_results)
-best_exp = exp_df.loc[exp_df['test_rmse'].idxmin()]
-print("\nBest Exponential Parameters:")
-print(best_exp)
+# --- global mean & item-bias baselines (observed RMSE only; included for context) ---
+global_mean = R_train[M_train > 0].mean() if M_train.sum() > 0 else 0.0
+R_global = np.full_like(R_train, global_mean, dtype=np.float32)
 
-# Grid search: Linear Weight Function
-lin_results = []
-print("\nGrid search: Linear Weight Function")
+item_sums   = (R_train * M_train).sum(axis=0)
+item_counts = M_train.sum(axis=0)
+item_biases = np.divide(item_sums - item_counts * global_mean, item_counts + 1e-8)
+R_itembias  = np.tile(global_mean, (num_users, num_items)).astype(np.float32) + item_biases
+
+gm_train = observed_rmse(R_train, R_global,   M_train)
+gm_test  = observed_rmse(R_test,  R_global,   M_test)
+ib_train = observed_rmse(R_train, R_itembias, M_train)
+ib_test  = observed_rmse(R_test,  R_itembias, M_test)
+
+results_context = pd.DataFrame({
+    "Method": ["Global Mean", "Item Bias"],
+    "Train RMSE (observed)": [gm_train, ib_train],
+    "Test RMSE (observed)":  [gm_test,  ib_test],
+})
+print("\n--- Context Baselines (observed RMSE) ---")
+print(results_context)
+
+# --- grid search over **linear** weight parameters (train weights; eval policy honored) ---
+print("\nGrid search: Linear popularity weights (train-derived)")
+grid_rows = []
 for w0 in [0.5, 1.0, 1.5]:
     for wk in [0.05, 0.1, 0.2]:
-        weight_fn_lin = partial(linear_weight_fn, w0=w0, wk=wk)
+        wf = partial(linear_weight_fn, w0=w0, wk=wk)
+        # train model with these weights
         start = time.time()
-        U_lin, V_lin = weighted_als(R_train, num_iterations=5, lambda_reg=1.5,
-                                    weight_fn=weight_fn_lin, num_features=10)
+        U_g, V_g, _, _ = weighted_als(
+            R_train, rank=rank, iters=iters, reg=reg,
+            weight_fn=wf, seed=42, zero_means_missing=True
+        )
         elapsed = time.time() - start
-        test_rmse_lin = compute_rmse(R_test, U_lin @ V_lin.T)
-        lin_results.append({
-            'w0': w0,
-            'wk': wk,
-            'test_rmse': test_rmse_lin,
-            'time': elapsed
+        Rhat_g = U_g @ V_g.T
+
+        # compute **train-derived weights** for scoring
+        w_item_train = item_weights_from_mask(M_train, weight_fn=wf)
+        test_wrmse = weighted_rmse(R_test, Rhat_g, w_item_train, M_test)
+        train_wrmse = weighted_rmse(R_train, Rhat_g, w_item_train, M_train)
+        test_obs = observed_rmse(R_test, Rhat_g, M_test)
+
+        grid_rows.append({
+            "w0": w0, "wk": wk,
+            "Train RMSE (weighted)": train_wrmse,
+            "Test RMSE (weighted)":  test_wrmse,
+            "Test RMSE (observed)":  test_obs,
+            "Time (s)": elapsed
         })
-        print(f"Lin: w0={w0}, wk={wk}, test RMSE={test_rmse_lin:.4f}, time={elapsed:.2f}s")
-        
-lin_df = pd.DataFrame(lin_results)
-best_lin = lin_df.loc[lin_df['test_rmse'].idxmin()]
-print("\nBest Linear Parameters:")
+        print(f"w0={w0:.2f}, wk={wk:.2f} | test(weighted)={test_wrmse:.4f}, test(observed)={test_obs:.4f}, time={elapsed:.2f}s")
+
+lin_df = pd.DataFrame(grid_rows)
+best_idx = lin_df["Test RMSE (weighted)"].idxmin()
+best_lin = lin_df.loc[best_idx]
+print("\nBest Linear Weights by Test RMSE (weighted, train-derived):")
 print(best_lin)
 
 ```
 
-    Number of users in train set: 751; Number of ratings in train set: 80000
-    Number of users in test set: 107; Number of ratings in test set: 2875
+    Train users: 751 | Train ratings: 80000
+    Test  users: 107 | Test  ratings: 2875
     
     --- Baseline Results ---
-                           Method  Train RMSE  Test RMSE   Time (s)
-    0             ALS Regularized    2.345833   3.170046   0.012091
-    1  Weighted ALS (Exponential)    0.711874   1.231554  16.038573
-    2       Weighted ALS (Linear)    0.843062   1.228557  14.690037
-    3        Global Mean Baseline    1.127381   1.128035   0.000000
-    4          Item Bias Baseline    0.995549   1.029807   0.000000
+                              Method  Train RMSE (weighted)  Test RMSE (weighted)  \
+    0               ALS (unweighted)               2.334016              3.395304   
+    1  ALS (weighted linear default)               0.800927              3.395304   
     
-    Grid search: Exponential Weight Function
-    Exp: w0=0.5, e=0.05, test RMSE=1.2233, time=14.55s
-    Exp: w0=0.5, e=0.1, test RMSE=1.2500, time=14.63s
-    Exp: w0=0.5, e=0.2, test RMSE=1.2400, time=14.08s
-    Exp: w0=1.0, e=0.05, test RMSE=1.2219, time=14.29s
-    Exp: w0=1.0, e=0.1, test RMSE=1.2390, time=15.47s
-    Exp: w0=1.0, e=0.2, test RMSE=1.2395, time=16.18s
-    Exp: w0=1.5, e=0.05, test RMSE=1.3057, time=15.16s
-    Exp: w0=1.5, e=0.1, test RMSE=1.2522, time=16.36s
-    Exp: w0=1.5, e=0.2, test RMSE=1.2387, time=16.67s
+       Train RMSE (observed)  Test RMSE (observed)   Time (s)  
+    0               2.276690              3.122586   0.108951  
+    1               0.803892              1.201897  12.054622  
     
-    Best Exponential Parameters:
-    w0            1.000000
-    e             0.050000
-    test_rmse     1.221855
-    time         14.291877
-    Name: 3, dtype: float64
+    --- Context Baselines (observed RMSE) ---
+            Method  Train RMSE (observed)  Test RMSE (observed)
+    0  Global Mean               1.127381              1.128035
+    1    Item Bias               0.995549              1.029807
     
-    Grid search: Linear Weight Function
-    Lin: w0=0.5, wk=0.05, test RMSE=1.2040, time=15.77s
-    Lin: w0=0.5, wk=0.1, test RMSE=1.1880, time=15.26s
-    Lin: w0=0.5, wk=0.2, test RMSE=1.2058, time=14.41s
-    Lin: w0=1.0, wk=0.05, test RMSE=1.2140, time=14.29s
-    Lin: w0=1.0, wk=0.1, test RMSE=1.2107, time=14.22s
-    Lin: w0=1.0, wk=0.2, test RMSE=1.2290, time=14.79s
-    Lin: w0=1.5, wk=0.05, test RMSE=1.2208, time=13.61s
-    Lin: w0=1.5, wk=0.1, test RMSE=1.2357, time=13.91s
-    Lin: w0=1.5, wk=0.2, test RMSE=1.2590, time=14.17s
+    Grid search: Linear popularity weights (train-derived)
+    w0=0.50, wk=0.05 | test(weighted)=3.3953, test(observed)=1.1765, time=11.87s
+    w0=0.50, wk=0.10 | test(weighted)=3.3953, test(observed)=1.1763, time=12.13s
+    w0=0.50, wk=0.20 | test(weighted)=3.3953, test(observed)=1.1760, time=12.03s
+    w0=1.00, wk=0.05 | test(weighted)=3.3953, test(observed)=1.2039, time=11.59s
+    w0=1.00, wk=0.10 | test(weighted)=3.3953, test(observed)=1.2042, time=11.49s
+    w0=1.00, wk=0.20 | test(weighted)=3.3953, test(observed)=1.2049, time=11.33s
+    w0=1.50, wk=0.05 | test(weighted)=3.3953, test(observed)=1.2274, time=11.85s
+    w0=1.50, wk=0.10 | test(weighted)=3.3953, test(observed)=1.2278, time=12.19s
+    w0=1.50, wk=0.20 | test(weighted)=3.3953, test(observed)=1.2274, time=11.48s
     
-    Best Linear Parameters:
-    w0            0.500000
-    wk            0.100000
-    test_rmse     1.187972
-    time         15.263733
-    Name: 1, dtype: float64
+    Best Linear Weights by Test RMSE (weighted, train-derived):
+    w0                        1.500000
+    wk                        0.050000
+    Train RMSE (weighted)     0.670400
+    Test RMSE (weighted)      3.395290
+    Test RMSE (observed)      1.227372
+    Time (s)                 11.847758
+    Name: 6, dtype: float64
 
 
 # Implicit feedback performance
 
 
 ```python
-# Convert ratings into signed preference matrix (+1 or -1)
+# --- Exponential popularity weight fn (new) ---
+def exponential_weight_fn(c_n, w0: float = 1.0, e: float = 0.1):
+    # w_i = w0 + (1 / count_i)^e ; keeps weights finite and softer than linear
+    return w0 + np.power(1.0 / (c_n + 1e-8), e)
+
+# --- Signed prefs ---
 def to_signed_matrix(df):
-    R = np.zeros((num_users, num_items))
+    R = np.zeros((num_users, num_items), dtype=np.float32)
     for row in df.itertuples():
-        R[row.user_id, row.item_id] = 1 if row.rating >= 4 else -1
+        R[row.user_id, row.item_id] = 1.0 if row.rating >= 4 else -1.0
     return R
 
 R_train = to_signed_matrix(train_data)
-R_test = to_signed_matrix(test_data)
+R_test  = to_signed_matrix(test_data)
+
+# deterministic sign with tie-break to +1
+def sign_with_tiebreak(x):
+    s = np.sign(x)
+    s[s == 0] = 1.0
+    return s
 
 def compute_sign_accuracy(R_true, R_pred):
-    mask = R_true != 0
-    preds = np.sign(R_pred)  # Convert to +1/-1
+    mask = (R_true != 0)
+    preds = sign_with_tiebreak(R_pred)
     return np.mean((preds[mask] == R_true[mask]).astype(np.float32))
 
-# ALS with Regularization (10 iterations)
+# ---- Train models (100 iters for all) ----
+rank, iters, reg = 10, 100, 10.0
+
 start = time.time()
-U_reg, V_reg = als_with_regularization(R_train, num_iterations=100, lambda_reg=10, num_features=10)
+U_reg, V_reg, _, _ = als_with_regularization(
+    R_train, rank=rank, iters=iters, reg=reg,
+    seed=42, zero_means_missing=True
+)
 time_reg = time.time() - start
 
-# Weighted ALS (Exponential Decay, 10 iterations)
 start = time.time()
-U_wals_exp, V_wals_exp = weighted_als(R_train, num_iterations=10, lambda_reg=10, weight_fn=exponential_weight_fn)
-time_wals_exp = time.time() - start
-
-# Weighted ALS (Linear, 10 iterations)
-start = time.time()
-U_wals_lin, V_wals_lin = weighted_als(R_train, num_iterations=10, lambda_reg=10, weight_fn=linear_weight_fn)
+U_wals_lin, V_wals_lin, _, _ = weighted_als(
+    R_train, rank=rank, iters=iters, reg=reg,
+    weight_fn=linear_weight_fn, seed=42, zero_means_missing=True
+)
 time_wals_lin = time.time() - start
 
-# Global Mean Baseline: predict sign of global mean
-global_mean_sign = np.sign(np.mean(R_train[R_train != 0]))
-baseline_train_acc = np.mean((R_train[R_train != 0] == global_mean_sign).astype(np.float32))
-baseline_test_acc = np.mean((R_test[R_test != 0] == global_mean_sign).astype(np.float32))
+start = time.time()
+U_wals_exp, V_wals_exp, _, _ = weighted_als(
+    R_train, rank=rank, iters=iters, reg=reg,
+    weight_fn=exponential_weight_fn, seed=42, zero_means_missing=True
+)
+time_wals_exp = time.time() - start
 
-# 🔹 Item Bias Baseline: Predict based on item deviation from global mean
-global_mean = np.mean(R_train[R_train != 0])  # Compute global mean for signed ratings
+# ---- Baselines (sign) ----
+# Global-mean sign with tie-break
+nonzero = (R_train != 0)
+gm = R_train[nonzero].mean() if nonzero.any() else 0.0
+gm_sign = 1.0 if gm == 0 else float(np.sign(gm))
 
-item_sums = np.sum(R_train, axis=0)
-item_counts = np.count_nonzero(R_train, axis=0)
-item_biases = (item_sums - item_counts * global_mean) / (item_counts + 1e-8)  # Avoid division by zero
+baseline_train_acc = np.mean((R_train[nonzero] == gm_sign).astype(np.float32))
+nonzero_test = (R_test != 0)
+baseline_test_acc  = np.mean((R_test[nonzero_test] == gm_sign).astype(np.float32))
 
-# Item Bias Predictions
-R_itembias = np.tile(global_mean, (num_users, num_items)) + item_biases
-R_itembias_signed = np.sign(R_itembias)  # Convert to +1 / -1
+# Item-bias score then sign
+item_sums   = R_train.sum(axis=0)
+item_counts = (R_train != 0).sum(axis=0)
+item_biases = (item_sums - item_counts * gm) / (item_counts + 1e-8)
+R_itembias  = np.tile(gm, (num_users, num_items)).astype(np.float32) + item_biases
+R_itembias_signed = sign_with_tiebreak(R_itembias)
 
-# Compute accuracy
 itembias_train_acc = compute_sign_accuracy(R_train, R_itembias_signed)
-itembias_test_acc = compute_sign_accuracy(R_test, R_itembias_signed)
+itembias_test_acc  = compute_sign_accuracy(R_test,  R_itembias_signed)
 
-# Collect results
+# ---- Collect results ----
 methods = [
     "ALS Regularized",
-    "Weighted ALS (Exponential)",
     "Weighted ALS (Linear)",
+    "Weighted ALS (Exponential)",
     "Global Mean Baseline",
-    "Item Bias Baseline"
+    "Item Bias Baseline",
 ]
 
 train_acc = [
     compute_sign_accuracy(R_train, U_reg @ V_reg.T),
-    compute_sign_accuracy(R_train, U_wals_exp @ V_wals_exp.T),
     compute_sign_accuracy(R_train, U_wals_lin @ V_wals_lin.T),
+    compute_sign_accuracy(R_train, U_wals_exp @ V_wals_exp.T),
     baseline_train_acc,
-    itembias_train_acc
+    itembias_train_acc,
 ]
 
 test_acc = [
     compute_sign_accuracy(R_test, U_reg @ V_reg.T),
-    compute_sign_accuracy(R_test, U_wals_exp @ V_wals_exp.T),
     compute_sign_accuracy(R_test, U_wals_lin @ V_wals_lin.T),
+    compute_sign_accuracy(R_test, U_wals_exp @ V_wals_exp.T),
     baseline_test_acc,
-    itembias_test_acc
+    itembias_test_acc,
 ]
 
-times = [
-    time_reg,
-    time_wals_exp,
-    time_wals_lin,
-    0,  # Global Mean is instant
-    0   # Item Bias is also fast
-]
+times = [time_reg, time_wals_lin, time_wals_exp, 0.0, 0.0]
 
-# Display results
 results = pd.DataFrame({
     "Method": methods,
     "Train Accuracy": train_acc,
     "Test Accuracy": test_acc,
-    "Time (s)": times
+    "Time (s)": times,
 })
-
 print(results)
 
 ```
 
                            Method  Train Accuracy  Test Accuracy   Time (s)
-    0             ALS Regularized        0.788575       0.639304   0.125307
-    1  Weighted ALS (Exponential)        0.550900       0.528696  28.877307
-    2       Weighted ALS (Linear)        0.550900       0.528696  29.041726
+    0             ALS Regularized        0.788575       0.654957   0.108554
+    1       Weighted ALS (Linear)        0.550900       0.546087  14.665292
+    2  Weighted ALS (Exponential)        0.550900       0.546087  17.718337
     3        Global Mean Baseline        0.550900       0.546087   0.000000
     4          Item Bias Baseline        0.677163       0.670261   0.000000
 
@@ -808,145 +855,157 @@ print(results)
 
 ```bash
 %%bash
-uv run --python 3.11 --no-project --with surprise --with "numpy<2" --with "pandas" - <<EOF
-from surprise import SVD, Dataset, Reader
-from surprise import accuracy
+uv run --python 3.11 --no-project \
+  --with surprise --with "numpy<2" --with pandas --with requests - <<'EOF'
+from surprise import SVD, Dataset, Reader, accuracy
 import pandas as pd
+import urllib3, requests, io
 
-# Load MovieLens 100k dataset
+# Insecure download (ignore cert)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 url = "https://files.grouplens.org/datasets/movielens/ml-100k/u.data"
-ratings = pd.read_csv(url, sep="\t", names=["user_id", "item_id", "rating", "timestamp"])
+resp = requests.get(url, verify=False, timeout=30)
+resp.raise_for_status()
+ratings = pd.read_csv(io.BytesIO(resp.content), sep="\t",
+                      names=["user_id", "item_id", "rating", "timestamp"])
+
+# Zero-index
 ratings["user_id"] -= 1
 ratings["item_id"] -= 1
 
-# Sort by timestamp (simulate real-world split) and split into train/test
+# Time split
 ratings_sorted = ratings.sort_values("timestamp").reset_index(drop=True)
 split_idx = int(len(ratings_sorted) * 0.8)
-train_data = ratings_sorted[:split_idx]
-test_data = ratings_sorted[split_idx:]
+train_data = ratings_sorted[:split_idx].copy()
+test_data  = ratings_sorted[split_idx:].copy()
 
-# Identify users with >=10 ratings in training set
-user_rating_counts = train_data['user_id'].value_counts()
-valid_users = user_rating_counts[user_rating_counts >= 10].index
-
-# Keep only valid users in both train and test
-train_data = train_data[train_data['user_id'].isin(valid_users)]
+# Keep only test users with >=10 ratings in train (don't shrink train)
+user_counts = train_data['user_id'].value_counts()
+valid_users = set(user_counts[user_counts >= 10].index)
 test_data = test_data[test_data['user_id'].isin(valid_users)]
 
-# Prepare Surprise-compatible format
-surprise_train_data = train_data[["user_id", "item_id", "rating"]]
-surprise_test_data = test_data[["user_id", "item_id", "rating"]]
+# Ensure test items exist in train (avoid Surprise cold-start)
+train_items = set(train_data['item_id'].unique())
+test_data = test_data[test_data['item_id'].isin(train_items)]
 
-print(f"Train users: {surprise_train_data['user_id'].nunique()}, Ratings: {len(surprise_train_data)}")
-print(f"Test users: {surprise_test_data['user_id'].nunique()}, Ratings: {len(surprise_test_data)}")
+print(f"Train users: {train_data['user_id'].nunique()}, Ratings: {len(train_data)}")
+print(f"Test  users: {test_data['user_id'].nunique()}, Ratings: {len(test_data)}")
 
-# Setup Surprise
+# Surprise setup
 reader = Reader(rating_scale=(1, 5))
-train_dataset = Dataset.load_from_df(surprise_train_data, reader)
+train_dataset = Dataset.load_from_df(train_data[['user_id','item_id','rating']], reader)
 trainset = train_dataset.build_full_trainset()
-testset = list(surprise_test_data.itertuples(index=False, name=None))
+testset = list(test_data[['user_id','item_id','rating']].itertuples(index=False, name=None))
 
-# Train SVD
+# Train SVD (biased MF)
 algo = SVD()
 algo.fit(trainset)
 
-# Evaluate
-predictions = algo.test(testset)
-test_rmse = accuracy.rmse(predictions)
-train_rmse = accuracy.rmse(algo.test(trainset.build_testset()))
+# Evaluate observed RMSE
+pred_test  = algo.test(testset)
+test_rmse  = accuracy.rmse(pred_test, verbose=False)
 
-print("Train RMSE", train_rmse)
-print("Test RMSE", test_rmse)
+pred_train = algo.test(trainset.build_testset())
+train_rmse = accuracy.rmse(pred_train, verbose=False)
+
+print(f"Train RMSE: {train_rmse:.4f}")
+print(f"Test  RMSE: {test_rmse:.4f}")
 EOF
 
 ```
 
-    Train users: 749, Ratings: 79991
-    Test users: 107, Ratings: 2875
-    RMSE: 0.9820
-    RMSE: 0.6756
-    Train RMSE 0.6755929602187882
-    Test RMSE 0.9820426142365316
+    Train users: 751, Ratings: 80000
+    Test  users: 105, Ratings: 2786
+    Train RMSE: 0.6786
+    Test  RMSE: 0.9774
 
 
 
 ```bash
 %%bash
-uv run --python 3.11 --no-project --with surprise --with "numpy<2" --with "pandas" - <<EOF
+uv run --python 3.11 --no-project \
+  --with surprise --with "numpy<2" --with pandas --with requests - <<'EOF'
 from surprise import SVD, Dataset, Reader
-from surprise import accuracy
 import pandas as pd
+import urllib3, requests, io
 
-# Load MovieLens 100k dataset
+# Insecure download (ignore cert)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 url = "https://files.grouplens.org/datasets/movielens/ml-100k/u.data"
-ratings = pd.read_csv(url, sep="\t", names=["user_id", "item_id", "rating", "timestamp"])
+resp = requests.get(url, verify=False, timeout=30)
+resp.raise_for_status()
+ratings = pd.read_csv(io.BytesIO(resp.content), sep="\t",
+                      names=["user_id","item_id","rating","timestamp"])
+
+# Zero-index
 ratings["user_id"] -= 1
 ratings["item_id"] -= 1
 
-# Sort by timestamp and split
+# Time split
 ratings_sorted = ratings.sort_values("timestamp").reset_index(drop=True)
 split_idx = int(len(ratings_sorted) * 0.8)
-train_data = ratings_sorted[:split_idx]
-test_data = ratings_sorted[split_idx:]
+train_data = ratings_sorted[:split_idx].copy()
+test_data  = ratings_sorted[split_idx:].copy()
 
-# Filter to only users with >=10 ratings in the training set
-user_rating_counts = train_data['user_id'].value_counts()
-valid_users = user_rating_counts[user_rating_counts >= 10].index
-train_data = train_data[train_data['user_id'].isin(valid_users)]
+# Filter test users with >=10 ratings in TRAIN (do NOT shrink train)
+user_counts = train_data['user_id'].value_counts()
+valid_users = set(user_counts[user_counts >= 10].index)
 test_data = test_data[test_data['user_id'].isin(valid_users)]
 
-# Binarize ratings
+# Ensure test items exist in train (avoid cold-start)
+train_items = set(train_data['item_id'].unique())
+test_data = test_data[test_data['item_id'].isin(train_items)]
+
+# Binarize ratings to ±1
 train_data = train_data.copy()
-test_data = test_data.copy()
-train_data["rating"] = train_data["rating"].apply(lambda x: 1 if x >= 4 else -1)
-test_data["rating"] = test_data["rating"].apply(lambda x: 1 if x >= 4 else -1)
+test_data  = test_data.copy()
+train_data["rating"] = (train_data["rating"] >= 4).astype(int).replace({0:-1, 1:1})
+test_data["rating"]  = (test_data["rating"]  >= 4).astype(int).replace({0:-1, 1:1})
 
 print(f"Train users: {train_data['user_id'].nunique()}, Ratings: {len(train_data)}")
-print(f"Test users: {test_data['user_id'].nunique()}, Ratings: {len(test_data)}")
+print(f"Test  users: {test_data['user_id'].nunique()}, Ratings: {len(test_data)}")
 
-# Setup surprise
-reader = Reader(rating_scale=(-1, 1))  # Because of binarization
-
-# Load into Surprise
-train_dataset = Dataset.load_from_df(train_data[["user_id", "item_id", "rating"]], reader)
+# Surprise setup (scale is -1..1 after binarization)
+reader = Reader(rating_scale=(-1, 1))
+train_dataset = Dataset.load_from_df(train_data[['user_id','item_id','rating']], reader)
 trainset = train_dataset.build_full_trainset()
-testset = list(test_data[["user_id", "item_id", "rating"]].itertuples(index=False, name=None))
+testset  = list(test_data[['user_id','item_id','rating']].itertuples(index=False, name=None))
 
-# Train SVD
-algo = SVD(n_factors=20, n_epochs=20)
+# Train SVD (biased MF) — regression on [-1,1]
+algo = SVD(n_factors=20, n_epochs=10, lr_all=0.005, reg_all=0.02)
 algo.fit(trainset)
 
-# Evaluate
-predictions = algo.test(testset)
+# Sign-accuracy (tie at 0 => positive)
+def sign_accuracy(preds):
+    correct = 0
+    for p in preds:
+        pred_label = 1 if p.est >= 0 else -1
+        correct += (pred_label == p.r_ui)
+    return correct / len(preds) if preds else 0.0
 
-# Accuracy: match sign of predicted vs actual
-def compute_sign_accuracy(predictions):
-    correct = sum(
-        (pred.est >= 0 and pred.r_ui == 1) or (pred.est < 0 and pred.r_ui == -1) 
-        for pred in predictions
-    )
-    return correct / len(predictions)
+pred_test  = algo.test(testset)
+test_acc   = sign_accuracy(pred_test)
 
-test_accuracy = compute_sign_accuracy(predictions)
-print(f"Test Accuracy: {test_accuracy:.4f}")
+pred_train = algo.test(trainset.build_testset())
+train_acc  = sign_accuracy(pred_train)
 
-# (Optional) Train Accuracy
-train_predictions = algo.test(trainset.build_testset())
-train_accuracy = compute_sign_accuracy(train_predictions)
-print(f"Train Accuracy: {train_accuracy:.4f}")
+print(f"Train Accuracy: {train_acc:.4f}")
+print(f"Test  Accuracy: {test_acc:.4f}")
 EOF
 
 ```
 
-    Train users: 749, Ratings: 79991
-    Test users: 107, Ratings: 2875
-    Test Accuracy: 0.6918
-    Train Accuracy: 0.7695
+    Train users: 751, Ratings: 80000
+    Test  users: 105, Ratings: 2786
+    Train Accuracy: 0.7398
+    Test  Accuracy: 0.6831
 
 
 # Real-World Conclusion
 
 In a realistic temporal split, **ALS performed well in implicit feedback**, with fast convergence and solid accuracy. On explicit feedback, **Weighted ALS (WALS)** outperformed plain ALS but still failed to beat strong baselines like item bias or Surprise’s SVD. **WALS is also much slower in Python**, due to per-user/item weighted matrix solves. Despite that, ALS remains a strong, efficient choice, especially for large-scale or implicit recommendation tasks.
+
+*Note*: after some analysis, our ALS implementations did not include user/item bias terms, which are known to capture a large portion of the signal in explicit rating data. Models like Surprise’s SVD include these biases, so part of their performance edge comes from that. Will come back with better implementation.
 
 [^1]: https://mathworld.wolfram.com/NormalEquation.html
 [^2]: Stanford CS229 Project. "Weighted Alternating Least Squares." Accessed from: [https://cs229.stanford.edu/proj2017/final-posters/5147271.pdf](https://cs229.stanford.edu/proj2017/final-posters/5147271.pdf)
