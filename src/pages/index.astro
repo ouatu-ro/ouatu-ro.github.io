@@ -80,8 +80,8 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
     <div id="tooltip"></div>
     <main>
       <section id="about" class="bg-primary">
-        <h2 class="heading-font">About Me</h2>
-        <p class="body-font">
+        <h2 class="u-heading-font">About Me</h2>
+        <p class="u-body-font">
           Currently, I'm exploring ML for audio-visual content generation,
           translation, durable execution, reactive programming, and
           collaborative products (similar to tools like Figma or Google Docs).
@@ -176,12 +176,12 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
     <div class="seo-footer">
       <div class="container">
         <h3>Explore Projects</h3>
-        <div class="project-links">
+        <div class="seo-project-links">
           {
             projects.map((project) => (
               <a
                 href={project.homepage}
-                class="project-direct-link"
+                class="seo-project-link"
                 target="_blank"
                 rel="noopener"
               >

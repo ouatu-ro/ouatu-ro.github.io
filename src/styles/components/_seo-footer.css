@@ -1,5 +1,5 @@
 .seo-footer {
-  background-color: #232323;
+  background-color: var(--color-surface);
   padding: 1rem 0 2rem;
   margin-top: -2rem;
   font-size: 0.9rem;
@@ -9,10 +9,10 @@
 .seo-footer h3 {
   font-size: 1rem;
   margin-bottom: 0.5rem;
-  color: #ffffff;
+  color: var(--color-text);
 }
 
-.project-links {
+.seo-project-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -22,12 +22,12 @@
   padding: 0 1rem;
 }
 
-.project-direct-link {
-  color: #aaa;
+.seo-project-link {
+  color: var(--color-muted);
   text-decoration: none;
 }
 
-.project-direct-link:hover {
-  color: #fff;
+.seo-project-link:hover {
+  color: var(--color-text);
   text-decoration: underline;
 }

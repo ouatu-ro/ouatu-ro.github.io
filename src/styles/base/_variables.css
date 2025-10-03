@@ -1,10 +1,27 @@
 :root {
-  --font-size-min: 17px; /* mobile */
-  --font-size-max: 19.5px; /* desktop */
-  --line: 1.7; /* body line-height */
-  --measure: 65ch; /* ideal line length */
+  /* Colors */
+  --color-bg: #121212;
+  --color-surface: #232323;
+  --color-surface-alt: #1a1a1a;
+  --color-border: #333;
+  --color-text: #fff;
+  --color-muted: #ccc;
+  --color-primary: #49c874;
+  --color-accent: #ff7b00;
+  --color-accent-strong: rgba(138, 43, 226, 1);
+
+  /* Typography */
+  --font-size-min: 17px;
+  --font-size-max: 19.5px;
+  --line: 1.65;
+  --measure: 65ch;
+
+  /* Layout */
+  --radius-base: 12px;
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-inset-glow: inset 0 0 30px rgba(138, 43, 226, 0.2);
 }
 
 html {
-  font-size: clamp(16px, 0.9rem + 0.5vw, 18px); /* base for rem */
+  font-size: clamp(16px, 0.9rem + 0.5vw, 18px);
 }

@@ -28,7 +28,7 @@
 .info-btn {
   background: none;
   border: none;
-  color: #cccccc;
+  color: var(--color-muted);
   cursor: pointer;
   padding: 0.3rem;
   font-size: 1.1em;
@@ -39,17 +39,17 @@
 }
 
 .info-btn:hover {
-  color: #ffffff;
+  color: var(--color-text);
 }
 
 .project-description {
   display: none;
   font-size: 0.9em;
-  color: #cccccc;
+  color: var(--color-muted);
   margin: 0.5rem 0;
   padding: 0.8rem;
-  background: #232323;
-  border-radius: 4px;
+  background: var(--color-surface);
+  border-radius: var(--radius-base);
   transition: all 0.3s ease;
 }
 

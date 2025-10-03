@@ -4,10 +4,10 @@
   margin-left: 0.5rem;
   font-size: 0.8rem;
   vertical-align: middle;
-  color: #ff7b00;
+  color: var(--color-accent);
   transition: color 0.2s ease;
 }
 
 .rss-link:hover {
-  color: #ff9d40;
+  color: color-mix(in srgb, var(--color-accent) 70%, #fff 30%);
 }

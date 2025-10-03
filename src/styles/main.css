@@ -1,15 +1,20 @@
 /* Root stylesheet composed from partials */
-@import "./base/_variables.css";
-@import "./base/_typography.css";
-@import "./base/_fonts.css";
+@layer reset, tokens, base, layout, components, utilities;
 
-@import "./components/_header.css";
-@import "./components/_footer.css";
-@import "./components/_tooltip.css";
-@import "./components/_code.css";
-@import "./components/_projects.css";
-@import "./components/_rss.css";
-@import "./components/_seo-footer.css";
-@import "./components/_inline-links.css";
+@import url("./base/_reset.css") layer(reset);
+@import url("./base/_variables.css") layer(tokens);
+@import url("./base/_typography.css") layer(base);
+@import url("./base/_fonts.css") layer(base);
 
-@import "./layout/_sections.css";
+@import url("./layout/_sections.css") layer(layout);
+
+@import url("./components/_header.css") layer(components);
+@import url("./components/_footer.css") layer(components);
+@import url("./components/_tooltip.css") layer(components);
+@import url("./components/_code.css") layer(components);
+@import url("./components/_projects.css") layer(components);
+@import url("./components/_rss.css") layer(components);
+@import url("./components/_seo-footer.css") layer(components);
+@import url("./components/_inline-links.css") layer(components);
+
+/* Utilities layer left available for future helpers */

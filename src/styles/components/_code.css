@@ -2,7 +2,7 @@ pre {
   margin: 2rem 0;
   padding: 1rem;
   border-radius: 8px;
-  background-color: #232323;
+  background-color: var(--color-surface);
   position: relative;
   overflow: hidden;
 }
@@ -12,8 +12,8 @@ pre[data-language]:not([data-language="plaintext"])::before {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #333;
-  color: #aaa;
+  background-color: var(--color-border);
+  color: var(--color-muted);
   font-size: 0.8em;
   font-family: "Fira Code", "Courier New", monospace;
   padding: 0.2em 0.7em;
@@ -28,8 +28,8 @@ pre[data-language]:not([data-language="plaintext"]) .copy-button {
   position: absolute;
   top: 0;
   right: 0;
-  background-color: #333;
-  color: #aaa;
+  background-color: var(--color-border);
+  color: var(--color-muted);
   border: none;
   font-size: 0.8em;
   font-family: "Fira Code", "Courier New", monospace;
@@ -44,13 +44,13 @@ pre[data-language]:not([data-language="plaintext"]) .copy-button {
 }
 
 pre[data-language]:not([data-language="plaintext"]) .copy-button:hover {
-  background-color: #444;
-  color: #fff;
+  background-color: color-mix(in srgb, var(--color-border) 70%, black 30%);
+  color: var(--color-text);
 }
 
 pre[data-language]:not([data-language="plaintext"]) .copy-button.copied {
-  background-color: #285e28;
-  color: #fff;
+  background-color: color-mix(in srgb, var(--color-primary) 60%, black 40%);
+  color: var(--color-text);
 }
 
 pre[data-language]:not([data-language="plaintext"]) {
@@ -112,7 +112,7 @@ pre[data-language] .line::before {
   position: absolute;
   left: -2.8rem;
   top: 0;
-  color: #666;
+  color: color-mix(in srgb, var(--color-muted) 60%, black 40%);
   user-select: none;
   text-align: right;
   line-height: 1.1;
@@ -133,8 +133,8 @@ code {
 }
 
 :not(pre) > code {
-  background-color: #333333;
+  background-color: var(--color-border);
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  color: #cccccc;
+  color: var(--color-muted);
 }

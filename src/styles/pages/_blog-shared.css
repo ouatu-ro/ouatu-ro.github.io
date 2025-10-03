@@ -27,7 +27,7 @@
 
 .blog-list li img {
   margin-bottom: 0.5rem;
-  border-radius: 12px;
+  border-radius: var(--radius-base);
   width: 100%;
 }
 
@@ -39,37 +39,31 @@
 
 .blog-title {
   margin: 0;
-  color: rgb(var(--black));
+  color: var(--color-text);
   line-height: 1;
   font-size: 1.8em;
 }
 
 .blog-date {
   margin: 0;
-  color: rgb(var(--gray));
+  color: var(--color-muted);
 }
 
 .blog-list li a:hover h4,
 .blog-list li a:hover .blog-date {
-  color: rgb(var(--accent));
+  color: var(--color-accent);
 }
 
 .blog-list a:hover img {
-  box-shadow: var(--box-shadow);
-}
-
-/* Blog Post Layout */
-.hero-image {
-  width: 100%;
-  margin-bottom: 2rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .hero-image img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 12px;
-  box-shadow: var(--box-shadow);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-soft);
 }
 
 /* Blog Content */
@@ -102,12 +96,12 @@
 
 .prose a {
   font-size: inherit !important;
-  color: #49c874;
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
 .prose a:hover {
-  color: #ffffff;
+  color: var(--color-text);
 }
 
 /* Responsive Adjustments */
@@ -144,6 +138,7 @@
   }
 }
 
+
 /* Additional Blog Post Styles from BlogPost.astro */
 /* Math styling for KaTeX */
 .katex-display {
@@ -162,10 +157,10 @@ main {
   overflow-x: hidden; /* Prevents content from exceeding screen width */
 }
 
-/* Full-width hero image - additional styling */
+/* Full-width hero image - shared styling */
 .hero-image {
-  max-width: 1000px; /* Match the content width */
   width: 100%;
+  max-width: 1000px; /* Match the content width */
   margin: 0 auto 2rem auto; /* Center the container */
   padding: 0 5vw; /* Match content padding */
 }

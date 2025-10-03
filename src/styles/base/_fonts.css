@@ -1,7 +1,5 @@
-/* Font imports */
-/* Replace Google Fonts imports with self-hosted font-face declarations */
 @font-face {
-  font-family: "Inter";
+  font-family: Inter;
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -9,7 +7,7 @@
 }
 
 @font-face {
-  font-family: "Inter";
+  font-family: Inter;
   font-style: normal;
   font-weight: 500;
   font-display: swap;
@@ -17,7 +15,7 @@
 }
 
 @font-face {
-  font-family: "Inter";
+  font-family: Inter;
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -40,18 +38,16 @@
   src: url("/fonts/source-sans-pro-600.woff2") format("woff2");
 }
 
-/* Font classes - can be applied selectively without changing existing styles */
-.heading-font {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+.u-heading-font {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
 }
 
-.body-font {
+.u-body-font {
   font-family: "Source Sans Pro", system-ui, -apple-system, sans-serif;
 }
 
-/* Site title specific style */
-.site-title {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+.u-site-title {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
   font-weight: 700;
   letter-spacing: -0.025em;
 }
