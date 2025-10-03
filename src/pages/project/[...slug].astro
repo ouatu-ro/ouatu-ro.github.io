@@ -1,14 +1,17 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import { SITE_TITLE, AUTHOR, AUTHOR_TITLE } from '../../consts';
-import fs from 'node:fs';
-import path from 'node:path';
-import { slugify } from '../../utils/slugify';
-import ClientScripts from '../../components/ClientScripts.astro';
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE, AUTHOR, AUTHOR_TITLE } from "../../consts";
+import fs from "node:fs";
+import path from "node:path";
+import { slugify } from "../../utils/slugify";
+import ClientScripts from "../../components/ClientScripts.astro";
+import { getCollection } from "astro:content";
+import MarkdownIt from "markdown-it";
+import sanitizeHtml from "sanitize-html";
+import Icon from "../../components/Icons.astro";
 
-// Define Project interface
 interface Project {
   name: string;
   homepage: string;
@@ -19,91 +22,106 @@ interface Project {
   updatedDate?: string;
 }
 
-// Required for static site generation with dynamic routes
 export async function getStaticPaths() {
   let projects: Project[] = [];
-  
+
   // Try to read projects-data.json at build time
   try {
-    const projectsFilePath = path.join(process.cwd(), 'public', 'projects-data.json');
+    const projectsFilePath = path.join(
+      process.cwd(),
+      "public",
+      "projects-data.json",
+    );
     if (fs.existsSync(projectsFilePath)) {
-      const projectsData = JSON.parse(fs.readFileSync(projectsFilePath, 'utf8'));
+      const projectsData = JSON.parse(
+        fs.readFileSync(projectsFilePath, "utf8"),
+      );
       projects = projectsData.projects || [];
     } else {
-      console.warn('projects-data.json does not exist, trying manual projects');
-      
-      // Try to read manual projects as fallback
-      try {
-        const manualProjectsPath = path.join(process.cwd(), 'public', 'manual-projects-data.json');
-        if (fs.existsSync(manualProjectsPath)) {
-          const data = JSON.parse(fs.readFileSync(manualProjectsPath, 'utf8'));
-          projects = data.manualProjects || [];
-        } else {
-          console.warn('manual-projects-data.json does not exist');
-        }
-      } catch (manualError) {
-        console.warn('Error reading manual-projects-data.json:', manualError);
-      }
+      console.warn("projects-data.json does not exist, trying manual projects");
     }
   } catch (error) {
-    console.warn('Error reading projects-data.json:', error);
+    console.warn("Error reading projects-data.json:", error);
   }
-  
+
   if (projects.length === 0) {
-    console.error('No projects found! Please ensure the GitHub Action has generated the projects-data.json file.');
+    console.error(
+      "No projects found! Please ensure the GitHub Action has generated the projects-data.json file.",
+    );
   }
-  
+
   console.log(`Generating static paths for ${projects.length} projects`);
-  
-  // Generate paths for each project
-  return projects.map(project => {
+
+  return projects.map((project) => {
     const slug = project.slug || slugify(project.name);
-    return {
-      params: { slug },
-      props: { project: { ...project, slug } }
-    };
+    return { params: { slug }, props: { project: { ...project, slug } } };
   });
 }
 
-// Get the project data from props
+// ---- now it's safe to access props
 const { project } = Astro.props;
 
+// Load matching extra snippet (optional)
+const extras = await getCollection("projectsExtra");
+const extra = extras.find((e) => e.data.slug === project.slug);
+
+// Render MD/MDX body safely
+let extraHtml: string | null = null;
+if (extra?.body) {
+  const md = new MarkdownIt({ html: true, linkify: true });
+  const rawHtml = md.render(extra.body);
+  extraHtml = sanitizeHtml(rawHtml, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+      "img",
+      "h2",
+      "h3",
+      "code",
+      "pre",
+    ]),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      img: ["src", "alt", "title", "width", "height", "loading"],
+      a: ["href", "name", "target", "rel", "title"],
+    },
+  });
+}
+
 const pageTitle = `${project.name} - ${SITE_TITLE}`;
-// Rich description for SEO
 const richDescription = `${project.description} - A project by ${AUTHOR}, ${AUTHOR_TITLE}.`;
 
-// Format dates for structured data if available
-const pubDate = project.pubDate ? new Date(project.pubDate).toISOString() : new Date().toISOString();
-const updatedDate = project.updatedDate ? new Date(project.updatedDate).toISOString() : pubDate;
+const pubDate = project.pubDate
+  ? new Date(project.pubDate).toISOString()
+  : new Date().toISOString();
+const updatedDate = project.updatedDate
+  ? new Date(project.updatedDate).toISOString()
+  : pubDate;
+
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: project.name,
   description: project.description,
-  author: {
-    "@type": "Person",
-    name: AUTHOR,
-    jobTitle: AUTHOR_TITLE,
-  },
+  author: { "@type": "Person", name: AUTHOR, jobTitle: AUTHOR_TITLE },
   url: project.homepage,
   datePublished: pubDate,
   dateModified: updatedDate,
   ...(project.githubUrl && { codeRepository: project.githubUrl }),
-  "applicationCategory": "Application",
-  "operatingSystem": "Web"
+  applicationCategory: "WebApplication",
+  operatingSystem: "Any",
 };
-
 ---
 
 <html lang="en">
   <head>
     <BaseHead title={pageTitle} description={richDescription} />
     <ClientScripts />
-    
-    <!-- Structured data for better SEO -->
-    <script type="application/ld+json" set:html={JSON.stringify({structuredData})} />
 
-    
+    <!-- Structured data for better SEO -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+    />
+
     <style>
       .project-container {
         max-width: 1200px;
@@ -152,11 +170,21 @@ const structuredData = {
         border-radius: 4px;
         transition: background-color 0.3s;
       }
+      .external-link:hover {
+        background-color: #444;
+      }
       .github-link {
         background-color: #24292e;
       }
-      .external-link:hover {
-        background-color: #444;
+      .github-link {
+        background: transparent;
+        border: 1px solid #555;
+        color: #ccc;
+      }
+
+      .github-link:hover {
+        background: #2a2a2a;
+        border-color: #777;
       }
       .github-link:hover {
         background-color: #3a3f44;
@@ -179,6 +207,91 @@ const structuredData = {
         margin-top: 0;
         font-size: 1.2rem;
       }
+
+      /* Button primitives */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 9999px; /* pill */
+        font-weight: 600;
+        text-decoration: none;
+        line-height: 1;
+        border: 1px solid transparent;
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease,
+          background-color 0.2s ease,
+          border-color 0.2s ease;
+        will-change: transform;
+      }
+
+      /* Primary: Visit Website */
+      .btn-primary {
+        color: #fff;
+        background: linear-gradient(135deg, #4cb6ff, #0078d4);
+        box-shadow: 0 2px 12px rgba(0, 120, 212, 0.25);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(0, 120, 212, 0.35);
+      }
+      .btn-primary:active {
+        transform: translateY(-1px);
+      }
+      .btn-primary:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.55);
+      }
+
+      /* Secondary: GitHub */
+      .btn-secondary {
+        color: #ddd;
+        background: transparent;
+        border-color: #555;
+      }
+      .btn-secondary:hover {
+        background: #2a2a2a;
+        border-color: #777;
+        color: #fff;
+      }
+      .btn-secondary:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+      }
+      /* Optional: subtle shine on hover for primary */
+      .btn-primary::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+          120deg,
+          transparent,
+          rgba(255, 255, 255, 0.25),
+          transparent
+        );
+        transform: translateX(-120%) skewX(-20deg);
+      }
+      .btn-primary:hover::after {
+        transform: translateX(120%) skewX(-20deg);
+        transition: transform 0.7s ease;
+      }
+
+      /* Icon sizing inside buttons */
+      .btn svg {
+        width: 1.1em;
+        height: 1.1em;
+      }
+
+      /* Respect reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        .btn,
+        .btn-primary::after {
+          transition: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -191,14 +304,48 @@ const structuredData = {
             <p>{project.description}</p>
           </div>
           <div class="project-links">
-            <a href={project.homepage} target="_blank" rel="noopener noreferrer" class="external-link">
+            <a
+              href={project.homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-primary"
+              aria-label={`Visit ${project.name} website (opens in a new tab)`}
+            >
               Visit Website
+              <!-- External arrow icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                ></path>
+                <path d="M15 3h6v6"></path>
+                <path d="M10 14 21 3"></path>
+              </svg>
             </a>
-            {project.githubUrl && (
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" class="external-link github-link">
-                View on GitHub
-              </a>
-            )}
+
+            {
+              project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-secondary"
+                  aria-label={`View ${project.name} on GitHub (opens in a new tab)`}
+                >
+                  {/* If you prefer your Icon component */}
+                  <Icon name="github" />
+                  View on GitHub
+                </a>
+              )
+            }
           </div>
         </div>
         <!-- <div class="iframe-container">
@@ -213,19 +360,31 @@ const structuredData = {
         <!-- <div class="warning">
           <p>Note: Some websites may block embedding in iframes for security reasons. If the content above doesn't load, please use the "Visit Website" button.</p>
         </div> -->
-        
+
         <div class="project-metadata">
           <h2>About this project</h2>
           <p>{project.description}</p>
-          {project.githubUrl && (
-            <p>
-              This is an open-source project. Feel free to explore the source code on 
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">GitHub</a>.
-            </p>
-          )}
+          {extraHtml && <div set:html={extraHtml} />}
+
+          {
+            project.githubUrl && (
+              <p>
+                This is an open-source project. Feel free to explore the source
+                code on
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub
+                </a>
+                .
+              </p>
+            )
+          }
         </div>
       </div>
     </main>
     <Footer />
   </body>
-</html> 
+</html>
