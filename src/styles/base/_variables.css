@@ -1,0 +1,10 @@
+:root {
+  --font-size-min: 17px; /* mobile */
+  --font-size-max: 19.5px; /* desktop */
+  --line: 1.7; /* body line-height */
+  --measure: 65ch; /* ideal line length */
+}
+
+html {
+  font-size: clamp(16px, 0.9rem + 0.5vw, 18px); /* base for rem */
+}

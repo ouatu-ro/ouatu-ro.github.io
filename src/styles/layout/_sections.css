@@ -1,0 +1,27 @@
+/* Main Content Layout */
+main {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Sections */
+section {
+  width: 100%;
+  padding: 4rem 5vw;
+  transition: background-color 0.5s ease;
+  box-sizing: border-box;
+}
+
+section h2,
+section p,
+section ul {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 3rem 4vw;
+  }
+}
