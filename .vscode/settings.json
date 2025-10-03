@@ -1,1 +1,6 @@
-{}
+{
+  "editor.formatOnSave": true,
+  "[astro]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "files.associations": { "*.astro": "astro" },
+  "prettier.enableDebugLogs": true
+}
