@@ -3,14 +3,18 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [master]
+    # Avoid redeploying on docs-only edits; tweak as you like
+    paths:
+      - "**.astro"
+      - "src/**"
+      - "public/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/deploy.yml"
+      - ".github/workflows/update-projects-script.cjs"
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *" # 00:00 UTC (03:00 Europe/Bucharest)
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -19,13 +23,19 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: # least-privilege
+      contents: read
+      pages: write
+      id-token: write
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
-        with: { version: 9 }
+        with:
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,6 +45,42 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # --- Projects data: generate + verify + debug ---
+      - name: Generate projects data
+        run: node .github/workflows/update-projects-script.cjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify projects-data.json exists
+        run: |
+          test -f public/projects-data.json || { echo "❌ public/projects-data.json missing"; exit 1; }
+
+      - name: Show projects count (debug)
+        run: |
+          node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('public/projects-data.json','utf8'));console.log('✅ projects:', (j.projects||[]).length);"
+          head -n 50 public/projects-data.json || true
+
+      # Optional: fail the build if zero projects (protect prod)
+      - name: Fail if no projects (optional)
+        run: |
+          node -e "const fs=require('fs');const n=(JSON.parse(fs.readFileSync('public/projects-data.json','utf8')).projects||[]).length; if(n===0){console.error('❌ No projects generated'); process.exit(1);} else {console.log('Projects:', n)}"
+
+      # Optional: quick link check to avoid publishing broken URLs
+      # - name: Check project URLs (optional)
+      #   run: |
+      #     node -e "
+      #     const fs=require('fs');
+      #     const data=JSON.parse(fs.readFileSync('public/project-urls.json','utf8'));
+      #     const urls=data.urls||[];
+      #     (async()=>{
+      #       for (const u of urls){
+      #         const r=await fetch(u, {redirect:'follow'});
+      #         if (!r.ok && (r.status<300 || r.status>=400)) throw new Error(\`Bad status \${r.status} for \${u}\`);
+      #       }
+      #       console.log('✅ project URLs ok');
+      #     })().catch(e=>{ console.error(e); process.exit(1); });
+      #     "
 
       - name: Build
         run: pnpm build
@@ -49,10 +95,13 @@ jobs:
 
   deploy:
     needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
