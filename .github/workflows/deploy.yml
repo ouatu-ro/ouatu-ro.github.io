@@ -55,6 +55,7 @@ jobs:
       - name: Verify projects-data.json exists
         run: |
           test -f public/projects-data.json || { echo "❌ public/projects-data.json missing"; exit 1; }
+          node -e "const j=require('fs').readFileSync('public/projects-data.json','utf8'); console.log('projects:', (JSON.parse(j).projects||[]).length);"
 
       - name: Show projects count (debug)
         run: |
