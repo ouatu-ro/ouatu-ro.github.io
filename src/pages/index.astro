@@ -24,7 +24,7 @@ function readProjectsData(): Project[] {
     const projectsFilePath = path.join(
       process.cwd(),
       "public",
-      "projects-data.json"
+      "projects-data.json",
     );
     if (fs.existsSync(projectsFilePath)) {
       const data = JSON.parse(fs.readFileSync(projectsFilePath, "utf8"));
@@ -40,7 +40,7 @@ function readProjectsData(): Project[] {
     const manualProjectsPath = path.join(
       process.cwd(),
       "public",
-      "manual-projects-data.json"
+      "manual-projects-data.json",
     );
     if (fs.existsSync(manualProjectsPath)) {
       const data = JSON.parse(fs.readFileSync(manualProjectsPath, "utf8"));
@@ -53,7 +53,7 @@ function readProjectsData(): Project[] {
 
   // If nothing found, return empty array
   console.error(
-    "No projects found! Please ensure the GitHub Action has generated the projects-data.json file."
+    "No projects found! Please ensure the GitHub Action has generated the projects-data.json file.",
   );
   return [];
 }
@@ -81,7 +81,7 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
     <main>
       <section id="about" class="bg-primary">
         <h2 class="u-heading-font">About Me</h2>
-        <p class="u-body-font">
+        <p>
           Currently, I'm exploring ML for audio-visual content generation,
           translation, durable execution, reactive programming, and
           collaborative products (similar to tools like Figma or Google Docs).
@@ -154,11 +154,7 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
       <section id="blog">
         <h2>
           <a href="/blog" class="blog-title-link">Blog</a>
-          <a
-            href="/blog-rss.xml"
-            class="rss-link"
-            title="Blog RSS Feed"
-          >
+          <a href="/blog-rss.xml" class="rss-link" title="Blog RSS Feed">
             <Icon name="rss" />
           </a>
         </h2>
@@ -167,7 +163,6 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
           <a href="/blog" class="blog-link">Visit the blog</a>
         </p>
       </section>
-
     </main>
 
     <Footer />
@@ -192,6 +187,5 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
         </div>
       </div>
     </div>
-
   </body>
 </html>

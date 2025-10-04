@@ -12,6 +12,8 @@
 @import url("./components/_footer.css") layer(components);
 @import url("./components/_tooltip.css") layer(components);
 @import url("./components/_code.css") layer(components);
+@import url("./components/_buttons.css") layer(components);
+@import url("./components/_project-links.css") layer(components);
 @import url("./components/_projects.css") layer(components);
 @import url("./components/_rss.css") layer(components);
 @import url("./components/_seo-footer.css") layer(components);

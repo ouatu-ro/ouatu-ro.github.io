@@ -1,0 +1,278 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Icon from "../components/Icons.astro";
+import ClientScripts from "../components/ClientScripts.astro";
+import { Code } from "astro/components";
+import { ICONS } from "../components/icons.data";
+import katex from "katex";
+import "katex/dist/katex.min.css";
+import "../styles/pages/style-guide.css";
+
+const colorSwatches = [
+  {
+    name: "--color-bg",
+    label: "Background",
+    modifier: "p-style-guide-swatch--bg",
+  },
+  {
+    name: "--color-surface",
+    label: "Surface panels",
+    modifier: "p-style-guide-swatch--surface",
+  },
+  {
+    name: "--color-text",
+    label: "Body text",
+    modifier: "p-style-guide-swatch--text",
+  },
+  {
+    name: "--color-muted",
+    label: "Secondary text",
+    modifier: "p-style-guide-swatch--muted",
+  },
+  {
+    name: "--color-primary",
+    label: "Links & accents",
+    modifier: "p-style-guide-swatch--primary",
+  },
+  {
+    name: "--color-accent",
+    label: "Callouts",
+    modifier: "p-style-guide-swatch--accent",
+  },
+];
+
+const iconEntries = Object.keys(ICONS).sort();
+
+const plainCodeSample = `const tokens = {
+  surface: 'var(--color-surface)',
+  accent: 'var(--color-accent)',
+};`;
+
+const pipelineCodeSample = `const fetchData = async () => {
+  const response = await fetch('/api/data');
+  return response.json();
+};`;
+
+const katexFormula = String.raw`\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}`;
+const katexInline = String.raw`$$\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}$$`;
+const katexExample = katex.renderToString(katexFormula, { displayMode: true });
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title="Style Guide"
+      description="Reference for the site's design system."
+    />
+    <ClientScripts />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <div class="p-style-guide-wrapper">
+        <header class="p-style-guide-heading">
+          <h1 class="u-heading-font">Design System</h1>
+          <p class="p-style-guide-intro">
+            A living catalog of the tokens, components, and utilities that power
+            this site. Copy, paste, and remix freely.
+          </p>
+        </header>
+
+        <article class="p-style-guide-card">
+          <h3>Color Tokens</h3>
+          <p class="p-style-guide-code">
+            Defined in <code>src/styles/base/_variables.css</code>
+          </p>
+          <div class="p-style-guide-swatches">
+            {
+              colorSwatches.map(({ name, label, modifier }) => (
+                <div class={`p-style-guide-swatch ${modifier}`}>
+                  <div class="p-style-guide-swatch-sample" />
+                  <div class="p-style-guide-swatch-meta">
+                    <strong>{name}</strong>
+                    <span>{label}</span>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Typography Scale</h3>
+          <div class="p-style-guide-type-scale">
+            <div class="p-style-guide-type-item">
+              <h1 class="u-heading-font">Heading 1</h1>
+              <span class="p-style-guide-code"
+                ><strong>Element</strong> <code>&lt;h1&gt;</code></span
+              >
+            </div>
+            <div class="p-style-guide-type-item">
+              <h2 class="u-heading-font">Heading 2</h2>
+              <span class="p-style-guide-code"
+                ><strong>Element</strong> <code>&lt;h2&gt;</code></span
+              >
+            </div>
+            <div class="p-style-guide-type-item">
+              <h3 class="u-heading-font">Heading 3</h3>
+              <span class="p-style-guide-code"
+                ><strong>Element</strong> <code>&lt;h3&gt;</code></span
+              >
+            </div>
+            <div class="p-style-guide-type-item">
+              <p class="u-body-font">
+                Body copy uses <code>u-body-font</code> on paragraphs for Source
+                Sans Pro.
+              </p>
+              <span class="p-style-guide-code"
+                ><strong>Class</strong> <code>u-body-font</code></span
+              >
+            </div>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Buttons</h3>
+          <p class="p-style-guide-code">
+            Components <code>.btn</code>, variants <code>.btn-primary</code>,
+            <code>.btn-secondary</code>
+          </p>
+          <div class="p-style-guide-code-demo">
+            <div class="project-links p-style-guide-button-row">
+              <a href="#" class="btn btn-primary">
+                <span>Primary Action</span>
+                <Icon name="external-link" />
+              </a>
+              <a href="#" class="btn btn-secondary">
+                <Icon name="github" />
+                Secondary Action
+              </a>
+              <button class="btn btn-secondary" type="button">
+                <Icon name="github" />
+                Button Element
+              </button>
+            </div>
+            <p class="p-style-guide-code">
+              <code>&lt;a class="btn btn-primary"&gt;...&lt;/a&gt;</code>
+            </p>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Icon Library</h3>
+          <div class="p-style-guide-icon-grid">
+            {
+              iconEntries.map((iconName) => (
+                <div class="p-style-guide-icon">
+                  <div class="p-style-guide-icon-sample">
+                    <Icon name={iconName} />
+                  </div>
+                  <span class="p-style-guide-icon-name">{iconName}</span>
+                </div>
+              ))
+            }
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Utilities</h3>
+          <div class="p-style-guide-utility">
+            <div>
+              <h4 class="u-heading-font">Cluster</h4>
+              <div class="cluster" style="--gap: 0.5rem">
+                <button type="button" class="btn btn-secondary">One</button>
+                <button type="button" class="btn btn-secondary">Two</button>
+                <button type="button" class="btn btn-secondary">Three</button>
+              </div>
+              <p class="p-style-guide-code">
+                <code
+                  >&lt;div class="cluster" style="--gap:
+                  0.5rem"&gt;...&lt;/div&gt;</code
+                >
+              </p>
+            </div>
+            <div class="p-style-guide-tooltip-demo">
+              <h4 class="u-heading-font">Tooltip</h4>
+              <div class="project-link-wrapper">
+                <button class="info-btn" aria-label="Show tooltip example">
+                  <Icon name="info-circle" />
+                </button>
+              </div>
+              <div class="project-description">
+                Hover to view the tooltip in action.
+              </div>
+              <p class="p-style-guide-code">
+                Tooltip container is managed as a singleton <code>#tooltip</code
+                > element appended by
+                <code>ClientScripts.astro</code>.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Code Block</h3>
+          <div class="p-style-guide-preview">
+            <Code code={pipelineCodeSample} lang="ts" data-language="ts" />
+            <p class="p-style-guide-code">
+              Blog posts pass fenced code through Astro's Markdown pipeline,
+              which adds language theming, line numbers, and our
+              <code>.copy-button</code> via <code>ClientScripts.astro</code>.
+            </p>
+            <p class="p-style-guide-note">
+              In posts the block is wrapped by the narrower <code>.prose</code>
+              container, so the rendered width is smaller than this preview.
+            </p>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>KaTeX Math</h3>
+          <div class="p-style-guide-preview">
+            <div class="p-style-guide-katex" set:html={katexExample} />
+            <p class="p-style-guide-code">
+              Render maths with KaTeX:
+              <code>{katexInline}</code>
+            </p>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Project Links</h3>
+          <div class="p-style-guide-project-demo">
+            <div class="project-link-wrapper">
+              <a href="#">Telemetry Dashboard</a>
+              <button class="info-btn" aria-label="Toggle project description">
+                <Icon name="info-circle" />
+              </button>
+            </div>
+            <div class="project-description">
+              Comprehensive monitoring for edge devices with real-time alerts.
+            </div>
+            <div class="project-links">
+              <a class="btn btn-primary" href="#">
+                <span>Visit Website</span>
+                <Icon name="external-link" />
+              </a>
+              <a class="btn btn-secondary" href="#">
+                <Icon name="github" />
+                GitHub
+              </a>
+            </div>
+            <p class="p-style-guide-note">
+              Wrap the anchor and info trigger with <code
+                >.project-link-wrapper</code
+              >, followed by
+              <code>.project-description</code>. Tooltip behaviour is provided
+              globally by <code>ClientScripts.astro</code>.
+            </p>
+          </div>
+        </article>
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>

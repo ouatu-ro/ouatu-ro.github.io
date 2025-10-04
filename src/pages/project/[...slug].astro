@@ -87,6 +87,15 @@ if (extra?.body) {
   });
 }
 
+// Utility to linkify URLs in text
+function linkify(text: string): string {
+  return text.replace(
+    /(https?:\/\/[^\s]+)/g,
+    (url) =>
+      `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`,
+  );
+}
+
 const pageTitle = `${project.name} - ${SITE_TITLE}`;
 const richDescription = `${project.description} - A project by ${AUTHOR}, ${AUTHOR_TITLE}.`;
 
@@ -130,7 +139,7 @@ const structuredData = {
         <div class="project-header">
           <h1>{project.name}</h1>
           <div class="project-description">
-            <p>{project.description}</p>
+            <p set:html={linkify(project.description)} />
           </div>
           <div class="project-links">
             <a
@@ -141,23 +150,7 @@ const structuredData = {
               aria-label={`Visit ${project.name} website (opens in a new tab)`}
             >
               Visit Website
-              <!-- External arrow icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path
-                  d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                ></path>
-                <path d="M15 3h6v6"></path>
-                <path d="M10 14 21 3"></path>
-              </svg>
+              <Icon name="external-link" />
             </a>
 
             {
@@ -192,7 +185,7 @@ const structuredData = {
 
         <div class="project-metadata">
           <h2>About this project</h2>
-          <p>{project.description}</p>
+          <p set:html={linkify(project.description)} />
           {extraHtml && <div set:html={extraHtml} />}
 
           {
