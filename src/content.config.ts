@@ -22,6 +22,8 @@ const projectsExtra = defineCollection({
     slug: z.string(), // must match project.slug from projects-data.json
     title: z.string().optional(), // optional override
     order: z.number().optional(),
+    projectPreview: z.string().optional(),
+    shouldShowPreview: z.boolean().optional(),
   }),
 });
 

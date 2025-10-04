@@ -66,6 +66,9 @@ const { project } = Astro.props;
 const extras = await getCollection("projectsExtra");
 const extra = extras.find((e) => e.data.slug === project.slug);
 
+const previewAsset = extra?.data.projectPreview;
+const shouldShowPreview = Boolean(extra?.data.shouldShowPreview ?? false);
+
 // Render MD/MDX body safely
 let extraHtml: string | null = null;
 if (extra?.body) {
@@ -147,9 +150,9 @@ const structuredData = {
               target="_blank"
               rel="noopener noreferrer"
               class="btn btn-primary"
-              aria-label={`Visit ${project.name} website (opens in a new tab)`}
+              aria-label={`Open ${project.name} in a new tab`}
             >
-              Visit Website
+              Open in New Tab
               <Icon name="external-link" />
             </a>
 
@@ -162,7 +165,6 @@ const structuredData = {
                   class="btn btn-secondary"
                   aria-label={`View ${project.name} on GitHub (opens in a new tab)`}
                 >
-                  {/* If you prefer your Icon component */}
                   <Icon name="github" />
                   View on GitHub
                 </a>
@@ -170,18 +172,47 @@ const structuredData = {
             }
           </div>
         </div>
-        <!-- <div class="iframe-container">
-          <iframe 
-            src={project.homepage}
-            title={project.name}
-            loading="lazy"
-            sandbox="allow-scripts allow-same-origin allow-forms"
-            referrerpolicy="no-referrer"
-          ></iframe>
-        </div> -->
-        <!-- <div class="warning">
-          <p>Note: Some websites may block embedding in iframes for security reasons. If the content above doesn't load, please use the "Visit Website" button.</p>
-        </div> -->
+        {
+          shouldShowPreview && previewAsset && (
+             <div class="computer-frame desktop-only" role="presentation">
+          <div class="computer-frame__bezel">
+            <div class="iframe-container">
+              <iframe
+                src={project.homepage}
+                title={`${project.name} live preview`}
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-forms"
+                referrerpolicy="no-referrer"></iframe>
+            </div>
+          </div>
+          <div class="computer-frame__stand"></div>
+          <div class="computer-frame__base"></div>
+        </div>
+
+        <div class="phone-frame mobile-only">
+          <div class="phone-frame__bezel">
+            <a
+              href={project.homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mobile-preview"
+              aria-label={`Launch a fullscreen demo of ${project.name} (opens in a new tab)`}
+            >
+              <img
+                src={previewAsset}
+                alt={`Animated preview of ${project.name}`}
+                loading="lazy"
+              />
+              <span class="play-icon-overlay">
+                <Icon name="external-link" />
+                <span>Launch App</span>
+              </span>
+            </a>
+          </div>
+        </div>
+          )
+        }
+       
 
         <div class="project-metadata">
           <h2>About this project</h2>

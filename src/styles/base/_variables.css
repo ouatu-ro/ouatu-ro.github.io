@@ -20,6 +20,7 @@
   --radius-base: 12px;
   --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-inset-glow: inset 0 0 30px rgba(138, 43, 226, 0.2);
+  --bp-tablet: 48rem; /* 768px */
 }
 
 html {

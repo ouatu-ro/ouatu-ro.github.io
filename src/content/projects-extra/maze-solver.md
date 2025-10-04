@@ -1,19 +1,19 @@
 ---
 slug: "maze-solver"
+projectPreview: "/blog-placeholder-1.jpg"
+shouldShowPreview: false
 ---
 
 ## Behind the scenes
 
-- Converts to binary grid (white=open, black=wall).
-- Runs BFS to compute the shortest path.
-- Draws the solution on `<canvas>`.
+- Converts the maze image into a binary grid (white = open, black = wall)
+- Runs Breadth-First Search (BFS) to find the shortest path
+- Draws the resulting route directly on `<canvas>`
 
 ## From demo to real work
 
-This demo uses breadth-first search (BFS) to find the shortest path in a grid. The same principle applies to:
+This toy demo uses BFS to explore a grid - the same principle behind routing delivery trucks, optimizing task scheduling in compute pipelines, and building recommendation graph traversals at scale.
 
-- Routing delivery trucks through constrained road networks
-- Optimizing task scheduling in compute pipelines
-- Building recommendation graph traversals at scale
+Curious how this toy demo connects to real-world problems?
 
-_Work with me → [bogdan@ouatu.ro](mailto:bogdan@ouatu.ro)_
+_Drop a note at [maze@ouatu.ro](mailto:maze@ouatu.ro)_
