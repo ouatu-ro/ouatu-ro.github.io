@@ -174,45 +174,49 @@ const structuredData = {
         </div>
         {
           shouldShowPreview && previewAsset && (
-             <div class="computer-frame desktop-only" role="presentation">
-          <div class="computer-frame__bezel">
-            <div class="iframe-container">
-              <iframe
-                src={project.homepage}
-                title={`${project.name} live preview`}
-                loading="lazy"
-                sandbox="allow-scripts allow-same-origin allow-forms"
-                referrerpolicy="no-referrer"></iframe>
-            </div>
-          </div>
-          <div class="computer-frame__stand"></div>
-          <div class="computer-frame__base"></div>
-        </div>
+            //      <div class="computer-frame desktop-only" role="presentation">
+            //   <div class="computer-frame__bezel">
+            //     <div class="iframe-container">
+            //       <iframe
+            //         src={project.homepage}
+            //         title={`${project.name} live preview`}
+            //         loading="lazy"
+            //         sandbox="allow-scripts allow-same-origin allow-forms"
+            //         referrerpolicy="no-referrer"></iframe>
+            //     </div>
+            //   </div>
+            //   <div class="computer-frame__stand"></div>
+            //   <div class="computer-frame__base"></div>
+            // </div>
 
-        <div class="phone-frame mobile-only">
-          <div class="phone-frame__bezel">
-            <a
-              href={project.homepage}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="mobile-preview"
-              aria-label={`Launch a fullscreen demo of ${project.name} (opens in a new tab)`}
-            >
-              <img
-                src={previewAsset}
-                alt={`Animated preview of ${project.name}`}
-                loading="lazy"
-              />
-              <span class="play-icon-overlay">
-                <Icon name="external-link" />
-                <span>Launch App</span>
-              </span>
-            </a>
-          </div>
-        </div>
+            <div class="phone-frame">
+              <div class="phone-frame__bezel">
+                <a
+                  href={project.homepage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mobile-preview"
+                  aria-label={`Launch a fullscreen demo of ${project.name} (opens in a new tab)`}
+                >
+                  <video
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    src={previewAsset}
+                    aria-label={`Animated preview of ${project.name}`}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                  <span class="play-icon-overlay">
+                    <Icon name="external-link" />
+                    <span>Launch App</span>
+                  </span>
+                </a>
+              </div>
+            </div>
           )
         }
-       
 
         <div class="project-metadata">
           <h2>About this project</h2>
