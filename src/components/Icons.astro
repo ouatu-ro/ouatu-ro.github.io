@@ -12,34 +12,36 @@ const { name, class: className = "" } = Astro.props;
 const icon: IconDefinition | undefined = ICONS[name as keyof typeof ICONS];
 ---
 
-{icon ? (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox={icon.viewBox}
-    class={className}
-    width="1em"
-    height="1em"
-    aria-hidden="true"
-    fill={icon.stroke ? "none" : "currentColor"}
-    stroke={icon.stroke ? "currentColor" : undefined}
-    stroke-width={icon.stroke ? icon.strokeWidth ?? 2 : undefined}
-    stroke-linecap={icon.stroke ? "round" : undefined}
-    stroke-linejoin={icon.stroke ? "round" : undefined}
-  >
-    {icon.paths.map((d) => (
-      <path d={d} fill={icon.stroke ? "none" : undefined}></path>
-    ))}
-  </svg>
-) : (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 16 16"
-    width="1em"
-    height="1em"
-    aria-hidden="true"
-    class={className}
-    fill="currentColor"
-  >
-    <rect width="16" height="16" rx="2" ry="2"></rect>
-  </svg>
-)}
+{
+  icon ? (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox={icon.viewBox}
+      class={className}
+      width="1em"
+      height="1em"
+      aria-hidden="true"
+      fill={icon.stroke ? "none" : "currentColor"}
+      stroke={icon.stroke ? "currentColor" : undefined}
+      stroke-width={icon.stroke ? (icon.strokeWidth ?? 2) : undefined}
+      stroke-linecap={icon.stroke ? "round" : undefined}
+      stroke-linejoin={icon.stroke ? "round" : undefined}
+    >
+      {icon.paths.map((d) => (
+        <path d={d} fill={icon.stroke ? "none" : undefined} />
+      ))}
+    </svg>
+  ) : (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      aria-hidden="true"
+      class={className}
+      fill="currentColor"
+    >
+      <rect width="16" height="16" rx="2" ry="2" />
+    </svg>
+  )
+}

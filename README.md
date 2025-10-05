@@ -30,7 +30,6 @@ The deployment configuration is located in:
 The RSS feeds use project publication dates to organize and sort projects. The system handles dates in the following ways:
 
 1. **GitHub Projects**: For projects from GitHub repositories, the system automatically uses:
-
    - `pubDate`: The repository creation date from GitHub
    - `updatedDate`: The repository's last update date from GitHub
 

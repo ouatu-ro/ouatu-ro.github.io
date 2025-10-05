@@ -45,7 +45,7 @@
   // Add copy buttons to code blocks with data-language attribute
   function addCopyButtonsToCodeBlocks() {
     const codeBlocks = document.querySelectorAll(
-      'pre[data-language]:not([data-language="plaintext"])'
+      'pre[data-language]:not([data-language="plaintext"])',
     );
 
     codeBlocks.forEach((block) => {
@@ -114,7 +114,7 @@
     infoButtons.forEach((button) => {
       // Get description element
       const description = button.closest(
-        ".project-link-wrapper"
+        ".project-link-wrapper",
       ).nextElementSibling;
       if (
         description &&
@@ -216,4 +216,3 @@
     });
   }
 </script>
-

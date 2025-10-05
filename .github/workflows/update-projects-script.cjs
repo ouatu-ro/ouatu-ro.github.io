@@ -128,7 +128,7 @@ async function fetchAllRepos(user) {
   // filter to repos with a homepage, not forks/archived
   const githubProjects = repos
     .filter(
-      (r) => r && !r.fork && !r.archived && r.homepage && r.homepage.trim()
+      (r) => r && !r.fork && !r.archived && r.homepage && r.homepage.trim(),
     )
     .map((r) => {
       const homepage = r.homepage.replace(/^http:\/\//i, "https://");
@@ -172,7 +172,7 @@ async function fetchAllRepos(user) {
     if (!p.slug) continue;
     // canonical project page
     urls.push(
-      ensureTrailingSlash(new URL(`/project/${p.slug}/`, site).toString())
+      ensureTrailingSlash(new URL(`/project/${p.slug}/`, site).toString()),
     );
     // if homepage is on same host and not root, include it too
     if (p.homepage && isSameHost(p.homepage, site.host)) {
@@ -185,7 +185,7 @@ async function fetchAllRepos(user) {
   const projectUrlsPath = path.join(publicDir, "project-urls.json");
   fs.writeFileSync(
     projectUrlsPath,
-    JSON.stringify({ urls: dedupedUrls }, null, 2)
+    JSON.stringify({ urls: dedupedUrls }, null, 2),
   );
 
   // post-write assertions
@@ -198,7 +198,7 @@ async function fetchAllRepos(user) {
   ).length;
   console.log(`🎯 Wrote ${count} projects to public/projects-data.json`);
   console.log(
-    `🔗 Wrote ${dedupedUrls.length} URLs to public/project-urls.json`
+    `🔗 Wrote ${dedupedUrls.length} URLs to public/project-urls.json`,
   );
 
   // preview list

@@ -9,7 +9,7 @@ import "../../styles/pages/blog.css";
 import ClientScripts from "../../components/ClientScripts.astro";
 import "../../styles/pages/blog-index.css";
 const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
