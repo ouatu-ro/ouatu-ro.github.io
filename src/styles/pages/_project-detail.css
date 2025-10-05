@@ -35,7 +35,6 @@
   justify-content: center;
 }
 
-/* AFTER */
 .computer-frame {
   margin: 0 auto;
   width: 80%;
@@ -190,13 +189,15 @@
 }
 
 .project-metadata {
-  margin-top: 1rem;
   padding: clamp(1.5rem, 3vw, 2.25rem);
   background-color: var(--color-surface-alt);
   border-radius: var(--radius-base);
   border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
   display: grid;
   gap: 1.25rem;
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
 }
 
 .project-metadata h2 {
@@ -223,26 +224,40 @@
   display: block;
 }
 
-/* @media (min-width: var(--bp-tablet, 48rem)) {
-  .desktop-only {
-    display: block;
-  }
+/* --- ANIMATION & LAYOUT LOGIC --- */
 
-  .mobile-only {
-    display: none;
-  }
-} */
+.project-container.no-preview {
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.js-ready .fade-in-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.js-ready .fade-in-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- MEDIA QUERIES --- */
+
 @media (min-width: 48rem) {
   .desktop-only {
     display: block;
   }
-
   .mobile-only {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* .fade-in-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   .mobile-preview img,
   .play-icon-overlay {
     transition: none;
@@ -255,5 +270,5 @@
   .play-icon-overlay {
     opacity: 1;
     background: rgba(0, 0, 0, 0.45);
-  }
+  } */
 }

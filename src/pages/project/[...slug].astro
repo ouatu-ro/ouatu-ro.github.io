@@ -67,7 +67,7 @@ const extras = await getCollection("projectsExtra");
 const extra = extras.find((e) => e.data.slug === project.slug);
 
 const previewAsset = extra?.data.projectPreview;
-const shouldShowPreview = Boolean(extra?.data.shouldShowPreview ?? false);
+const hasPreview = Boolean((extra?.data.shouldShowPreview ?? false) && previewAsset);
 
 // Render MD/MDX body safely
 let extraHtml: string | null = null;
@@ -137,58 +137,43 @@ const structuredData = {
   </head>
   <body>
     <Header />
-    <main>
-      <div class="project-container">
-        <div class="project-header">
-          <h1>{project.name}</h1>
-          <div class="project-description">
-            <p set:html={linkify(project.description)} />
-          </div>
-          <div class="project-links">
-            <a
-              href={project.homepage}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-primary"
-              aria-label={`Open ${project.name} in a new tab`}
-            >
-              Open in New Tab
-              <Icon name="external-link" />
-            </a>
-
-            {
-              project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="btn btn-secondary"
-                  aria-label={`View ${project.name} on GitHub (opens in a new tab)`}
-                >
-                  <Icon name="github" />
-                  View on GitHub
-                </a>
-              )
-            }
-          </div>
+    <main class:list={["project-container", { "no-preview": !hasPreview }]}>
+      <div class="project-header">
+        <h1>{project.name}</h1>
+        <div class="project-description">
+          <p set:html={linkify(project.description)} />
         </div>
-        {
-          shouldShowPreview && previewAsset && (
-            //      <div class="computer-frame desktop-only" role="presentation">
-            //   <div class="computer-frame__bezel">
-            //     <div class="iframe-container">
-            //       <iframe
-            //         src={project.homepage}
-            //         title={`${project.name} live preview`}
-            //         loading="lazy"
-            //         sandbox="allow-scripts allow-same-origin allow-forms"
-            //         referrerpolicy="no-referrer"></iframe>
-            //     </div>
-            //   </div>
-            //   <div class="computer-frame__stand"></div>
-            //   <div class="computer-frame__base"></div>
-            // </div>
+        <div class="project-links">
+          <a
+            href={project.homepage}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary"
+            aria-label={`Open ${project.name} in a new tab`}
+          >
+            Open in New Tab
+            <Icon name="external-link" />
+          </a>
+          {
+            project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-secondary"
+                aria-label={`View ${project.name} on GitHub (opens in a new tab)`}
+              >
+                <Icon name="github" />
+                View on GitHub
+              </a>
+            )
+          }
+        </div>
+      </div>
 
+      {
+        hasPreview && (
+          <div class="preview-wrapper">
             <div class="phone-frame">
               <div class="phone-frame__bezel">
                 <a
@@ -215,33 +200,74 @@ const structuredData = {
                 </a>
               </div>
             </div>
+          </div>
+        )
+      }
+
+      <div
+        class:list={["project-metadata", { "fade-in-on-scroll": hasPreview }]}
+        data-has-preview={hasPreview}
+      >
+        <h2>About this project</h2>
+        <p set:html={linkify(project.description)} />
+
+        {extraHtml && <div set:html={extraHtml} />}
+        {
+          project.githubUrl && (
+            <p>
+              This is an open-source project. Feel free to explore the source
+              code on
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {" "}
+                GitHub
+              </a>
+              .
+            </p>
           )
         }
-
-        <div class="project-metadata">
-          <h2>About this project</h2>
-          <p set:html={linkify(project.description)} />
-          {extraHtml && <div set:html={extraHtml} />}
-
-          {
-            project.githubUrl && (
-              <p>
-                This is an open-source project. Feel free to explore the source
-                code on
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub
-                </a>
-                .
-              </p>
-            )
-          }
-        </div>
       </div>
     </main>
     <Footer />
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add("js-ready");
+
+        const target = document.querySelector(".project-metadata");
+        if (!target) return;
+
+        const hasPreview = target.dataset.hasPreview === "true";
+        if (!hasPreview) return;
+
+        const reveal = () => {
+          requestAnimationFrame(() => {
+            target.classList.add("is-visible");
+          });
+        };
+
+        if (!("IntersectionObserver" in window)) {
+          reveal();
+          return;
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                reveal();
+                observer.disconnect();
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+
+        observer.observe(target);
+      })();
+    </script>
   </body>
 </html>
