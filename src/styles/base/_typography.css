@@ -43,10 +43,21 @@ h3 {
 }
 
 a {
-  color: var(--color-muted);
-  text-decoration: none;
+  color: var(--color-primary); /* Use the main interactive color */
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--color-primary) 50%,
+    transparent
+  );
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: var(--color-primary);
+  text-decoration-color: var(--color-primary);
 }
