@@ -14,7 +14,7 @@
       }
     ]
   },
-  "summary": "I help teams make Python and ML systems 3-10x faster and up to 30% more cost-efficient. Typical results include lower p99 latency, reduced cloud spend, and more reliable ML deployments. I co-founded and scaled a video platform to 60k+ users on a low-latency GCP/Kubernetes stack; I have deep expertise in performance profiling, model serving optimization, and system reliability engineering.",
+  "summary": "I help teams make Python and ML code run faster and more efficiently. Typical results include shorter processing times, higher throughput, and smoother ML deployments. I co-founded and scaled a video translation platform to 60 k+ users on GCP/Kubernetes, focusing on runtime performance, async parallelism, and model-serving optimization. My expertise lies in profiling, GPU/CPU efficiency, and designing pipelines that stay responsive under load.",
   "selectedResults": {
     "name": "Selected Results",
     "items": [

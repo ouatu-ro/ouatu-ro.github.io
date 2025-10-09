@@ -24,3 +24,6 @@ pnpm-debug.log*
 .idea/
 public/projects-data.json
 public/project-urls.json
+src/content/resume/resume.tex
+src/content/resume/resume-target.tex
+src/content/resume/resume-target.pdf
