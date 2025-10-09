@@ -1,0 +1,182 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import resume from "../../content/resume/resume.json";
+
+const { basics, summary, selectedResults, experience, consultingServices, education, awards } =
+  resume;
+
+const pageTitle = `${basics.name} — Resume`;
+const summarySnippet =
+  summary.length > 220 ? `${summary.slice(0, summary.lastIndexOf(" ", 200))}…` : summary;
+const pageDescription = summarySnippet;
+const pdfUrl = "/resume.pdf";
+const contactEntries = buildContactEntries(basics);
+const ctaMail = basics.email
+  ? `mailto:${basics.email}?subject=${encodeURIComponent("Performance & ML Systems Consulting")}`
+  : undefined;
+
+function profileLabel(profile) {
+  if (!profile) return "";
+  if (profile.network?.toLowerCase() === "github") {
+    try {
+      const url = new URL(profile.url);
+      return `${url.hostname.replace(/^www\./, "")}${url.pathname.replace(/\/$/, "")}`;
+    } catch {
+      return profile.url;
+    }
+  }
+  if (profile.network?.toLowerCase() === "website") {
+    try {
+      return new URL(profile.url).hostname.replace(/^www\./, "");
+    } catch {
+      return profile.url;
+    }
+  }
+  return profile.network ?? profile.url;
+}
+
+function buildContactEntries(basics) {
+  const profiles = basics.profiles ?? [];
+  const website = profiles.find((p) => (p.network ?? "").toLowerCase() === "website");
+  const github = profiles.find((p) => (p.network ?? "").toLowerCase() === "github");
+  const rest = profiles.filter((p) => p !== website && p !== github);
+
+  const ordered = [];
+  if (website) ordered.push({ type: "link", label: profileLabel(website), url: website.url });
+  if (basics.email)
+    ordered.push({
+      type: "link",
+      label: basics.email,
+      url: `mailto:${basics.email}`,
+    });
+  for (const profile of rest) {
+    ordered.push({ type: "link", label: profileLabel(profile), url: profile.url });
+  }
+  if (github)
+    ordered.push({ type: "link", label: profileLabel(github), url: github.url });
+  return ordered;
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+  </head>
+  <body class="resume-body">
+    <Header />
+    <main class="resume-page">
+      <header class="resume-header">
+        <p class="resume-eyebrow">Resume</p>
+        <h1>{basics.name}</h1>
+        <p class="resume-tagline">{basics.headline}</p>
+        <div class="resume-actions">
+          {ctaMail && (
+            <a class="btn btn-primary resume-cta" href={ctaMail}>Book an intro call</a>
+          )}
+          <a class="btn resume-download" href={pdfUrl} download>Download PDF</a>
+        </div>
+      </header>
+      <ul class="resume-contact">
+        {contactEntries.map((entry) => (
+          <li>
+            {entry.type === "text" ? (
+              entry.label
+            ) : (
+              <a href={entry.url} target="_blank" rel="noopener">
+                {entry.label}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+      <section class="resume-section">
+        <h2>Summary</h2>
+        <p class="resume-summary">{summary}</p>
+      </section>
+      {selectedResults?.items?.length && (
+        <section class="resume-section">
+          <h2>{selectedResults.name}</h2>
+          <ul class="resume-list">
+            {selectedResults.items.map((item) => (
+              <li>
+                <strong>{item.title}:</strong> {item.description}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <section class="resume-section">
+        <h2>{experience.name}</h2>
+        {experience.items.map((job) => (
+          <article class="resume-role">
+            <header class="resume-role__header">
+              <div>
+                <h3>{job.position}</h3>
+                <p class="resume-role__company">
+                  {job.url ? (
+                    <a href={job.url} target="_blank" rel="noopener">
+                      {job.company}
+                    </a>
+                  ) : (
+                    job.company
+                  )}
+                </p>
+              </div>
+              <p class="resume-role__date">{job.date}</p>
+            </header>
+            <ul class="resume-role__bullets">
+              {job.highlights?.map((highlight) => (
+                <li>{highlight}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </section>
+      {consultingServices?.items?.length && (
+        <section class="resume-section">
+          <h2>{consultingServices.name}</h2>
+          <ul class="resume-item-list">
+            {consultingServices.items.map((service) => (
+              <li>
+                <p class="resume-item__title">{service.category}</p>
+                <p class="resume-item__body">{service.keywords?.join(", ")}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {education?.items?.length && (
+        <section class="resume-section">
+          <h2>{education.name}</h2>
+          <ul class="resume-meta-list">
+            {education.items.map((item) => (
+              <li>
+                <p class="resume-meta__title">{item.institution}</p>
+                <p class="resume-meta__subtitle">{item.degree}</p>
+                {item.year && <span class="resume-meta__date">{item.year}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {awards?.items?.length && (
+        <section class="resume-section">
+          <h2>{awards.name}</h2>
+          <ul class="resume-meta-list">
+            {awards.items.map((item) => (
+              <li>
+                <p class="resume-meta__title">{item.title}</p>
+                <p class="resume-meta__subtitle">{item.awarder}</p>
+                {item.year && <span class="resume-meta__date">{item.year}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </main>
+    <Footer />
+  </body>
+</html>

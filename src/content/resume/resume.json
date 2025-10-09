@@ -1,0 +1,140 @@
+{
+  "basics": {
+    "name": "Bogdan Ouatu",
+    "headline": "Python Performance & ML Systems Consultant",
+    "email": "bogdan@ouatu.ro",
+    "profiles": [
+      {
+        "network": "Website",
+        "url": "https://ouatu.ro"
+      },
+      {
+        "network": "GitHub",
+        "url": "https://github.com/ouatu-ro"
+      }
+    ]
+  },
+  "summary": "I help teams make Python and ML systems 3-10x faster and up to 30% more cost-efficient. Typical results include lower p99 latency, reduced cloud spend, and more reliable ML deployments. I co-founded and scaled a video platform to 60k+ users on a low-latency GCP/Kubernetes stack; I have deep expertise in performance profiling, model serving optimization, and system reliability engineering.",
+  "selectedResults": {
+    "name": "Selected Results",
+    "items": [
+      {
+        "title": "Scaled Platform to 60k+ Users",
+        "description": "Architected and led the engineering for Verbalate's low-latency cloud infrastructure on GCP/Kubernetes."
+      },
+      {
+        "title": "~$120M/yr Revenue Line Impact",
+        "description": "Deployed Adore Me's first ML recommender, now driving 15-20% of recommendations."
+      },
+      {
+        "title": "+$9M/yr Marketing Spend Enabled",
+        "description": "Co-built an influencer marketing platform that scaled marketing efforts with zero increase in customer acquisition cost (CAC)."
+      }
+    ]
+  },
+  "experience": {
+    "name": "Experience",
+    "items": [
+      {
+        "company": "Verbalate",
+        "position": "Co-founder & CTO",
+        "date": "Jul 2023 - Present",
+        "url": "https://verbalate.ai",
+        "highlights": [
+          "Scaled the platform to 60k+ users by leading product and engineering, focusing on a highly available and cost-effective GCP/Kubernetes architecture.",
+          "Delivered production-grade ML systems (diarization, lip-sync, TTS) used in thousands of daily media processing jobs.",
+          "Shipped a collaborative dubbing editor (React) and a retry-safe billing and metering pipeline (Stripe)."
+        ]
+      },
+      {
+        "company": "Independent Consultant",
+        "position": "ML & Systems Engineer",
+        "date": "Jan 2019 - Jul 2023",
+        "url": "https://ouatu.ro",
+        "highlights": [
+          "Turnaround Project: Delivered a real-time production speech system on NVIDIA Jetson in under three weeks for a project that had been stalled for six months.",
+          "Award-Winning Innovation: Won a special prize from Google for a real-time money transfer PoC at the Central Europe Open Banking competition.",
+          "Finance Systems: Built a backtesting and options pricing platform that enabled the client to validate and commit to their core investment strategy."
+        ]
+      },
+      {
+        "company": "Adore Me",
+        "position": "Machine Learning Engineer & Full-stack Developer",
+        "date": "2020 - Aug 2022",
+        "url": "https://www.adoreme.com/",
+        "highlights": [
+          "Optimized and deployed the company's first ML recommender, successfully serving a ~$120M/year business line.",
+          "Built an aspect-based sentiment analysis pipeline and BI app that directly reshaped the product roadmaps of three teams.",
+          "Automated the sourcing of 100,000 marketing prospects in one year by building an integration with Instagram before official API support."
+        ]
+      }
+    ]
+  },
+  "consultingServices": {
+    "name": "Consulting Services",
+    "items": [
+      {
+        "category": "Python Performance & Cost Optimization",
+        "keywords": [
+          "System Profiling (py-spy, Scalene)",
+          "Latency Reduction (p95/p99)",
+          "Cloud Cost Analysis (GCP/AWS)",
+          "Database Query Tuning"
+        ]
+      },
+      {
+        "category": "ML Systems Engineering",
+        "keywords": [
+          "Production Model Serving (FastAPI, PyTorch)",
+          "RAG & Recommender Systems",
+          "GPU Pipeline Optimization"
+        ]
+      },
+      {
+        "category": "Systems Architecture & Reliability",
+        "keywords": [
+          "Cloud-Native Design (GCP, AWS)",
+          "Observability (OpenTelemetry, MLops)",
+          "Incident Forensics"
+        ]
+      },
+      {
+        "category": "Python & Rust Integration",
+        "keywords": [
+          "Accelerating critical code with Rust (PyO3)",
+          "10-100x speed improvements"
+        ]
+      }
+    ]
+  },
+  "education": {
+    "name": "Education",
+    "items": [
+      {
+        "institution": "University of Bucharest",
+        "degree": "MSc, Artificial Intelligence",
+        "year": "2022"
+      },
+      {
+        "institution": "Alexandru Ioan Cuza University",
+        "degree": "BSc, Computer Science",
+        "year": "2019"
+      }
+    ]
+  },
+  "awards": {
+    "name": "Awards & Recognition",
+    "items": [
+      {
+        "title": "1st place at Quant Challenge",
+        "awarder": "London Stock Exchange Group",
+        "year": "2021"
+      },
+      {
+        "title": "Winner at Open Banking Hackathon",
+        "awarder": "Google Cloud",
+        "year": "2020"
+      }
+    ]
+  }
+}
