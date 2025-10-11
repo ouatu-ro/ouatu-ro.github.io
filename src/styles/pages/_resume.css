@@ -25,7 +25,8 @@ body.resume-body {
   gap: 0.45rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1.6rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
 .resume-header h1 {
@@ -83,7 +84,11 @@ body.resume-body {
 
 .resume-download:hover {
   color: var(--color-text);
-  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border) 45%);
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary) 55%,
+    var(--color-border) 45%
+  );
   background: color-mix(in srgb, var(--color-surface) 88%, black 12%);
 }
 
@@ -123,7 +128,11 @@ body.resume-body {
 
 .resume-contact a:hover {
   color: var(--color-primary);
-  border-bottom-color: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--color-primary) 70%,
+    transparent
+  );
 }
 
 .resume-section {
@@ -196,7 +205,8 @@ body.resume-body {
 
 .resume-role {
   padding: 1.4rem 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 75%, transparent);
 }
 
 .resume-role:first-of-type {

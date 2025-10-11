@@ -6,9 +6,12 @@ import Icon from "../components/Icons.astro";
 import ClientScripts from "../components/ClientScripts.astro";
 import { Code } from "astro/components";
 import { ICONS } from "../components/icons.data";
+import resumeData from "../content/resume/resume.json";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import "../styles/pages/style-guide.css";
+import "../styles/pages/blog-index.css";
+import "../styles/pages/resume.css";
 
 const colorSwatches = [
   {
@@ -45,11 +48,6 @@ const colorSwatches = [
 
 const iconEntries = Object.keys(ICONS).sort();
 
-const plainCodeSample = `const tokens = {
-  surface: 'var(--color-surface)',
-  accent: 'var(--color-accent)',
-};`;
-
 const pipelineCodeSample = `const fetchData = async () => {
   const response = await fetch('/api/data');
   return response.json();
@@ -58,6 +56,9 @@ const pipelineCodeSample = `const fetchData = async () => {
 const katexFormula = String.raw`\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}`;
 const katexInline = String.raw`$$\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}$$`;
 const katexExample = katex.renderToString(katexFormula, { displayMode: true });
+
+const { selectedResults, experience } = resumeData;
+const firstResult = selectedResults.items[0];
 ---
 
 <!doctype html>
@@ -214,33 +215,6 @@ const katexExample = katex.renderToString(katexFormula, { displayMode: true });
         </article>
 
         <article class="p-style-guide-card">
-          <h3>Code Block</h3>
-          <div class="p-style-guide-preview">
-            <Code code={pipelineCodeSample} lang="ts" data-language="ts" />
-            <p class="p-style-guide-code">
-              Blog posts pass fenced code through Astro's Markdown pipeline,
-              which adds language theming, line numbers, and our
-              <code>.copy-button</code> via <code>ClientScripts.astro</code>.
-            </p>
-            <p class="p-style-guide-note">
-              In posts the block is wrapped by the narrower <code>.prose</code>
-              container, so the rendered width is smaller than this preview.
-            </p>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>KaTeX Math</h3>
-          <div class="p-style-guide-preview">
-            <div class="p-style-guide-katex" set:html={katexExample} />
-            <p class="p-style-guide-code">
-              Render maths with KaTeX:
-              <code>{katexInline}</code>
-            </p>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
           <h3>Project Links</h3>
           <div class="p-style-guide-project-demo">
             <div class="project-link-wrapper">
@@ -262,13 +236,156 @@ const katexExample = katex.renderToString(katexFormula, { displayMode: true });
                 GitHub
               </a>
             </div>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Code Block</h3>
+          <div class="p-style-guide-preview">
+            <Code code={pipelineCodeSample} lang="ts" />
             <p class="p-style-guide-note">
-              Wrap the anchor and info trigger with <code
-                >.project-link-wrapper</code
-              >, followed by
-              <code>.project-description</code>. Tooltip behaviour is provided
-              globally by <code>ClientScripts.astro</code>.
+              Code blocks are themed and include line numbers and a copy button.
             </p>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>KaTeX Math</h3>
+          <div class="p-style-guide-preview">
+            <div class="p-style-guide-katex" set:html={katexExample} />
+            <p class="p-style-guide-code">
+              Render math with KaTeX: <code>{katexInline}</code>
+            </p>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Article Previews</h3>
+          <div class="p-style-guide-grid">
+            <div class="p-style-guide-card">
+              <h4>Featured Article</h4>
+              <p>The main card from the blog index.</p>
+              <div class="p-style-guide-preview">
+                <ul class="blog-index-list">
+                  <li>
+                    <a href="#">
+                      <div class="blog-title-fallback" style="height: 150px;">
+                        <h3 style="font-size: 1.5rem;">
+                          Effective Analytics Tools
+                        </h3>
+                      </div>
+                      <h4 class="blog-index-title">
+                        Tips for Building Effective Analytics Tools
+                      </h4>
+                      <p class="blog-index-date">March 28, 2022</p>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="p-style-guide-grid p-style-guide-grid--two">
+              {
+                Array.from({ length: 2 }).map((_, i) => (
+                  <div class="p-style-guide-card" key={i}>
+                    <h4>Standard Article</h4>
+                    <p>The standard card from the blog feed.</p>
+                    <div class="p-style-guide-preview">
+                      <ul class="blog-index-list">
+                        <li>
+                          <a href="#">
+                            <div
+                              class="blog-title-fallback"
+                              style="height: 150px;"
+                            >
+                              <h3 style="font-size: 1.5rem;">
+                                Effective Analytics Tools
+                              </h3>
+                            </div>
+                            <h4 class="blog-index-title">
+                              Tips for Building Effective Analytics Tools
+                            </h4>
+                            <p class="blog-index-date">March 28, 2022</p>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </article>
+
+        <article class="p-style-guide-card">
+          <h3>Resume Components</h3>
+          <div class="p-style-guide-grid">
+            <div class="p-style-guide-card">
+              <h4>Selected Result</h4>
+              <p>Highlights a key achievement.</p>
+              <div class="p-style-guide-preview">
+                <ul class="resume-item-list">
+                  <li>
+                    <h3 class="resume-item__title">{firstResult.title}</h3>
+                    <p class="resume-item__body">{firstResult.description}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="p-style-guide-card">
+              <h4>Experience Section</h4>
+              <p>A full preview of the experience list.</p>
+              <div class="p-style-guide-preview">
+                <section class="resume-section">
+                  <div class="resume-role">
+                    <div class="resume-role__header">
+                      <div>
+                        <h3>{experience.items[0].position}</h3>
+                        <p class="resume-role__company">
+                          <a
+                            href={experience.items[0].url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{experience.items[0].company}</a
+                          >
+                        </p>
+                      </div>
+                      <p class="resume-role__date">
+                        {experience.items[0].date}
+                      </p>
+                    </div>
+                    <ul class="resume-role__bullets">
+                      {
+                        experience.items[0].highlights.map((highlight) => (
+                          <li>{highlight}</li>
+                        ))
+                      }
+                    </ul>
+                  </div>
+                  <div class="resume-role">
+                    <div class="resume-role__header">
+                      <div>
+                        <h3>{experience.items[2].position}</h3>
+                        <p class="resume-role__company">
+                          <a
+                            href={experience.items[2].url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{experience.items[2].company}</a
+                          >
+                        </p>
+                      </div>
+                      <p class="resume-role__date">
+                        {experience.items[2].date}
+                      </p>
+                    </div>
+                    <ul class="resume-role__bullets">
+                      <li>{experience.items[2].highlights[0]}</li>
+                      <li>{experience.items[2].highlights[1]}</li>
+                    </ul>
+                  </div>
+                </section>
+              </div>
+            </div>
           </div>
         </article>
       </div>

@@ -253,3 +253,16 @@
     padding: 2.5rem 1.5rem 4rem;
   }
 }
+
+.p-style-guide-card .p-style-guide-preview .resume-section {
+  padding: 0;
+  margin: 0;
+}
+
+.p-style-guide-card
+  h4:has(+ .p-style-guide-preview .resume-section)
+  + .p-style-guide-preview {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
