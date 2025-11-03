@@ -46,28 +46,40 @@ function readProjectsData() {
 }
 
 export async function GET(context) {
-  // Get blog posts
-  const posts = (await getCollection("blog")).sort((a, b) => {
-    return (
-      new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
-    );
+  const siteOrigin = context.site ?? context.url;
+
+  const labsPosts = (await getCollection("labs")).sort(
+    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+  );
+
+  const essays = (await getCollection("essays")).sort((a, b) => {
+    const dateA =
+      a.data.pubDate ??
+      a.data.updatedDate ??
+      new Date(0);
+    const dateB =
+      b.data.pubDate ??
+      b.data.updatedDate ??
+      new Date(0);
+    return dateB.getTime() - dateA.getTime();
   });
 
-  // Get projects
   const projects = readProjectsData().map((project) => ({
     ...project,
     slug: project.slug || slugify(project.name),
   }));
 
-  // Create RSS feed items from blog posts
-  const blogItems = posts.map((post) => {
+  const renderMarkdownItem = (post, category, linkRoot) => {
     const description =
       post.data.description || post.data.summary || post.data.excerpt || "";
 
     return {
       title: post.data.title,
-      pubDate: post.data.pubDate,
-      description: description,
+      pubDate:
+        post.data.pubDate ??
+        post.data.updatedDate ??
+        new Date(),
+      description,
       content: sanitizeHtml(parser.render(post.body || ""), {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat([
           "img",
@@ -90,13 +102,13 @@ export async function GET(context) {
         transformTags: {
           img: (tagName, attribs) => {
             if (attribs.src && attribs.src.startsWith("/")) {
-              attribs.src = new URL(attribs.src, context.site).toString();
+              attribs.src = new URL(attribs.src, siteOrigin).toString();
             }
             return { tagName, attribs };
           },
           a: (tagName, attribs) => {
             if (attribs.href && attribs.href.startsWith("/")) {
-              attribs.href = new URL(attribs.href, context.site).toString();
+              attribs.href = new URL(attribs.href, siteOrigin).toString();
             }
             return { tagName, attribs };
           },
@@ -105,18 +117,24 @@ export async function GET(context) {
       customData: post.data.heroImage
         ? `<enclosure url="${new URL(
             post.data.heroImage,
-            context.site
+            siteOrigin
           )}" type="image/jpeg" />`
         : "",
-      link: `/blog/${post.id}/`,
-      categories: ["blog"],
+      link: `/${linkRoot}/${post.id}/`,
+      categories: [category],
     };
-  });
+  };
 
-  // Create RSS feed items from projects
+  const labsItems = labsPosts.map((post) =>
+    renderMarkdownItem(post, "labs", "labs")
+  );
+
+  const essayItems = essays.map((post) =>
+    renderMarkdownItem(post, "essays", "essays")
+  );
+
   const projectItems = projects.map((project) => ({
     title: `Project: ${project.name}`,
-    // Use the real creation date from GitHub if available, otherwise use a fallback date
     pubDate: project.pubDate
       ? new Date(project.pubDate)
       : new Date(Date.now() - 24 * 60 * 60 * 1000),
@@ -141,18 +159,16 @@ export async function GET(context) {
     categories: ["project"],
   }));
 
-  // Combine and sort all items by date (newest first)
-  const allItems = [...blogItems, ...projectItems].sort(
+  const allItems = [...labsItems, ...essayItems, ...projectItems].sort(
     (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
   );
 
-  // Create the RSS feed URL for self-reference
-  const rssURL = new URL("rss.xml", context.site).toString();
+  const rssURL = new URL("rss.xml", siteOrigin).toString();
 
   return rss({
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    site: context.site,
+    site: siteOrigin,
     items: allItems,
     customData: `<language>en-us</language>
     <atom:link href="${rssURL}" rel="self" type="application/rss+xml" />`,

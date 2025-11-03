@@ -8,7 +8,7 @@ import FormattedDate from "../../components/FormattedDate.astro";
 import "../../styles/pages/blog.css";
 import ClientScripts from "../../components/ClientScripts.astro";
 import "../../styles/pages/blog-index.css";
-const posts = (await getCollection("blog")).sort(
+const posts = (await getCollection("labs")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
@@ -27,7 +27,7 @@ const posts = (await getCollection("blog")).sort(
           {
             posts.map((post) => (
               <li>
-                <a href={`/blog/${post.id}/`}>
+                <a href={`/labs/${post.id}/`}>
                   {post.data.heroImage ? (
                     <img
                       width={720}

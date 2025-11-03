@@ -6,8 +6,14 @@ import process from "process";
 
 // Configuration
 const NOTEBOOK_DIR = "src/content/notebooks";
-const BLOG_DIR = "src/content/blog";
+const LABS_DIR = "src/content/labs";
 const JUPYTER_PATH = ".venv/bin/jupyter";
+
+async function ensureLabsDir() {
+  if (!existsSync(LABS_DIR)) {
+    await fs.mkdir(LABS_DIR, { recursive: true });
+  }
+}
 
 // Check if jupyter exists
 if (!existsSync(JUPYTER_PATH)) {
@@ -27,14 +33,16 @@ async function convertNotebook(notebookPath) {
     const basename = path.basename(notebookPath, ".ipynb");
     console.log(`🔄 Converting ${basename}...`);
 
+    await ensureLabsDir();
+
     // Run jupyter nbconvert synchronously with additional options for math
     execSync(
-      `"${JUPYTER_PATH}" nbconvert --to markdown "${notebookPath}" --output-dir "${BLOG_DIR}" --output "${basename}.md"`,
+      `"${JUPYTER_PATH}" nbconvert --to markdown "${notebookPath}" --output-dir "${LABS_DIR}" --output "${basename}.md"`,
       { stdio: "inherit" }
     );
 
     // Add frontmatter and fix math expressions if needed
-    const mdPath = path.join(BLOG_DIR, `${basename}.md`);
+    const mdPath = path.join(LABS_DIR, `${basename}.md`);
     let content = await fs.readFile(mdPath, "utf8");
 
     // Fix potentially broken math delimiters
@@ -72,6 +80,7 @@ math: true
 // Initial conversion of all notebooks
 async function initialConversion() {
   try {
+    await ensureLabsDir();
     console.log("🔍 Finding existing notebooks...");
     const files = await fs.readdir(NOTEBOOK_DIR);
     const notebooks = files.filter((file) => file.endsWith(".ipynb"));

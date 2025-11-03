@@ -11,7 +11,7 @@
     {
       "name": "This website",
       "homepage": "https://ouatu.ro/",
-      "description": "Open-source blog built with Astro.js. Features nightly builds via GitHub Actions that fetch live data from the GitHub API, generate static project listings, and deploy to GitHub Pages using PNPM for fast, deterministic builds. Includes SEO-optimized metadata and a complete RSS feed implementation. Style guide at https://ouatu.ro/style-guide .",
+      "description": "Open-source labs hub built with Astro.js. Features nightly builds via GitHub Actions that fetch live data from the GitHub API, generate static project listings, and deploy to GitHub Pages using PNPM for fast, deterministic builds. Includes SEO-optimized metadata and a complete RSS feed implementation. Style guide at https://ouatu.ro/style-guide .",
       "githubUrl": "https://github.com/ouatu-ro/ouatu-ro.github.io",
       "pubDate": "2025-03-17",
       "slug": "this-website"
