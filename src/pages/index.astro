@@ -3,68 +3,67 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import Icon from "../components/Icons.astro";
-import { SITE_TITLE, SITE_DESCRIPTION, CONTACT_EMAIL } from "../consts";
-import fs from "node:fs";
-import path from "node:path";
-import { slugify } from "../utils/slugify";
+import ProjectPreview from "../components/ProjectPreview.astro";
+import FormattedDate from "../components/FormattedDate.astro";
 import ClientScripts from "../components/ClientScripts.astro";
+import { SITE_TITLE, SITE_DESCRIPTION, CONTACT_EMAIL } from "../consts";
+import { getProjects, getHighlightConfig } from "../utils/projects";
+import { getCollection } from "astro:content";
+import "../styles/pages/blog.css";
+import "../styles/pages/blog-index.css";
 
-// Define Project interface
-interface Project {
-  name: string;
-  homepage: string;
-  description: string;
-  githubUrl: string | null;
-  slug?: string;
-}
+const [projects, highlights, labsCollection, essaysCollection] = await Promise.all(
+  [getProjects(), getHighlightConfig(), getCollection("labs"), getCollection("essays")]
+);
 
-// Helper function to read projects data
-function readProjectsData(): Project[] {
-  try {
-    const projectsFilePath = path.join(
-      process.cwd(),
-      "public",
-      "projects-data.json",
-    );
-    if (fs.existsSync(projectsFilePath)) {
-      const data = JSON.parse(fs.readFileSync(projectsFilePath, "utf8"));
-      return data.projects || [];
-    }
-    console.warn("projects-data.json does not exist, trying manual projects");
-  } catch (error) {
-    console.warn("Could not read projects-data.json:", error);
-  }
+const entrySlug = (id: string) =>
+  id.replace(/\\/g, "/").replace(/\.mdx?$/, "");
 
-  // Try reading manual projects as fallback
-  try {
-    const manualProjectsPath = path.join(
-      process.cwd(),
-      "public",
-      "manual-projects-data.json",
-    );
-    if (fs.existsSync(manualProjectsPath)) {
-      const data = JSON.parse(fs.readFileSync(manualProjectsPath, "utf8"));
-      return data.manualProjects || [];
-    }
-    console.warn("manual-projects-data.json does not exist");
-  } catch (error) {
-    console.warn("Could not read manual-projects-data.json:", error);
-  }
+const projectMap = new Map(projects.map((project) => [project.slug, project]));
 
-  // If nothing found, return empty array
-  console.error(
-    "No projects found! Please ensure the GitHub Action has generated the projects-data.json file.",
-  );
-  return [];
-}
+const highlightedProjectSlugs = new Set(highlights.projects.map((ref) => ref.slug));
 
-// Get projects at build time
-const projects = readProjectsData().map((project) => ({
-  ...project,
-  slug: project.slug || slugify(project.name),
-}));
+const highlightedProjects = highlights.projects
+  .map((ref) => projectMap.get(ref.slug))
+  .filter(Boolean);
 
-console.log(`Loaded ${projects.length} projects for the homepage`);
+const fallbackProjects = [...projects].sort((a, b) => {
+  const aDate = a.updatedDate ?? a.pubDate ?? "";
+  const bDate = b.updatedDate ?? b.pubDate ?? "";
+  if (!aDate && !bDate) return a.name.localeCompare(b.name);
+  return new Date(bDate).getTime() - new Date(aDate).getTime();
+});
+
+const projectsToShow =
+  highlightedProjects.length > 0
+    ? highlightedProjects.slice(0, 3)
+    : fallbackProjects.slice(0, 3);
+
+const labsBySlug = new Map(labsCollection.map((entry) => [entrySlug(entry.id), entry]));
+const essaysBySlug = new Map(essaysCollection.map((entry) => [entrySlug(entry.id), entry]));
+
+const labsSorted = [...labsCollection].sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const essaysSorted = [...essaysCollection].sort((a, b) => {
+  const dateA = a.data.pubDate ?? a.data.updatedDate ?? new Date(0);
+  const dateB = b.data.pubDate ?? b.data.updatedDate ?? new Date(0);
+  return dateB.valueOf() - dateA.valueOf();
+});
+
+const labsToShow =
+  highlights.labs.length > 0
+    ? highlights.labs
+        .map((ref) => labsBySlug.get(ref.slug))
+        .filter(Boolean)
+    : labsSorted.slice(0, 3);
+
+const essaysToShow =
+  highlights.essays.length > 0
+    ? highlights.essays
+        .map((ref) => essaysBySlug.get(ref.slug))
+        .filter(Boolean)
+    : essaysSorted.slice(0, 3);
 ---
 
 <!doctype html>
@@ -107,49 +106,51 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
           </a>
         </p>
       </section>
-      <section id="projects">
+      <section id="essays">
         <h2>
-          Projects <a
-            href="/projects-rss.xml"
-            class="rss-link"
-            title="Projects RSS Feed"><Icon name="rss" /></a
-          >
+          <a href="/essays" class="blog-title-link">Essays</a>
+          <a href="/essays-rss.xml" class="rss-link" title="Essays RSS Feed">
+            <Icon name="rss" />
+          </a>
         </h2>
         <p>
-          Here are some fully fledged products and proofs-of-concept I built.
-          This list is dynamically generated from my GitHub repositories
-          directly into this website.
+          Longer reflections and opinion pieces
+          <a href="/essays" class="blog-link">Read the essays</a>
         </p>
-        <ul id="projects-list">
-          {
-            projects.length > 0 ? (
-              projects.map((project) => (
+        {
+          essaysToShow.length > 0 ? (
+            <ul class="blog-index-list blog-index-list--compact">
+              {essaysToShow.map((essay) => (
                 <li>
-                  <div class="project-link-wrapper">
-                    <a href={`/project/${project.slug}`}>{project.name}</a>
-                    {project.description && (
-                      <button
-                        class="info-btn"
-                        aria-label="Show project description"
-                      >
-                        <Icon name="info-circle" />
-                      </button>
+                  <a href={`/essays/${entrySlug(essay.id)}/`}>
+                    {essay.data.heroImage ? (
+                      <img
+                        width={720}
+                        height={360}
+                        src={essay.data.heroImage}
+                        alt=""
+                      />
+                    ) : (
+                      <div class="blog-title-fallback">
+                        <h3>{essay.data.title}</h3>
+                      </div>
                     )}
-                  </div>
-                  {project.description && (
-                    <div class="project-description">{project.description}</div>
-                  )}
+                    <h4 class="title blog-index-title">{essay.data.title}</h4>
+                    {(essay.data.pubDate || essay.data.updatedDate) && (
+                      <p class="date blog-index-date">
+                        <FormattedDate
+                          date={essay.data.pubDate ?? essay.data.updatedDate!}
+                        />
+                      </p>
+                    )}
+                  </a>
                 </li>
-              ))
-            ) : (
-              <li class="no-projects-message">
-                <p>
-                  Projects are currently being updated. Please check back soon!
-                </p>
-              </li>
-            )
-          }
-        </ul>
+              ))}
+            </ul>
+          ) : (
+            <p>No essays published yet. Check back soon!</p>
+          )
+        }
       </section>
       <section id="labs">
         <h2>
@@ -162,18 +163,55 @@ console.log(`Loaded ${projects.length} projects for the homepage`);
           Explore my latest experiments and write-ups
           <a href="/labs" class="blog-link">Visit the labs</a>
         </p>
+        <ul class="blog-index-list blog-index-list--compact blog-index-list--labs-home">
+          {
+            labsToShow.map((lab) => (
+              <li>
+                <a href={`/labs/${entrySlug(lab.id)}/`}>
+                  {lab.data.heroImage ? (
+                    <img
+                      width={720}
+                      height={360}
+                      src={lab.data.heroImage}
+                      alt=""
+                    />
+                  ) : (
+                    <div class="blog-title-fallback">
+                      <h3>{lab.data.title}</h3>
+                    </div>
+                  )}
+                  <h4 class="title blog-index-title">{lab.data.title}</h4>
+                  <p class="date blog-index-date">
+                    <FormattedDate date={lab.data.pubDate} />
+                  </p>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
       </section>
-      <section id="essays">
+      <section id="projects">
         <h2>
-          <a href="/essays" class="blog-title-link">Essays</a>
-          <a href="/essays-rss.xml" class="rss-link" title="Essays RSS Feed">
+          <a href="/projects" class="blog-title-link">Projects</a>
+          <a href="/projects-rss.xml" class="rss-link" title="Projects RSS Feed">
             <Icon name="rss" />
           </a>
         </h2>
         <p>
-          Longer reflections and opinion pieces
-          <a href="/essays" class="blog-link">Read the essays</a>
+          Snapshot of current favourites. Browse the{" "}
+          <a href="/projects" class="blog-link">full projects archive</a> for
+          every launch and experiment.
         </p>
+        <ul class="projects-highlight-grid projects-highlight-grid--home">
+          {
+            projectsToShow.map((project) => (
+              <ProjectPreview
+                project={project}
+                highlighted={highlightedProjectSlugs.has(project.slug)}
+              />
+            ))
+          }
+        </ul>
       </section>
     </main>
 

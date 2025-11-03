@@ -1,0 +1,31 @@
+.projects-page {
+  padding: 3rem 1.5rem 4rem;
+  max-width: 1150px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.projects-page header {
+  display: grid;
+  gap: 1rem;
+}
+
+.projects-page header p {
+  max-width: 680px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.projects-featured-grid,
+.projects-grid {
+  display: grid;
+  gap: 1.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  grid-auto-rows: 1fr;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  max-width: 1180px;
+}

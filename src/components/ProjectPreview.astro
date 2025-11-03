@@ -1,0 +1,284 @@
+---
+import type { ProjectRecord } from "../utils/projects";
+import "../styles/components/project-preview.css";
+
+interface Props {
+  project: ProjectRecord;
+  highlighted?: boolean;
+}
+
+const { project, highlighted = false } = Astro.props;
+
+const previewAsset = project.shouldShowPreview && project.previewAsset ? project.previewAsset : null;
+const assetIsVideo = previewAsset ? /\.(mp4|webm|mov|m4v)$/i.test(previewAsset) : false;
+const assetIsImage = previewAsset ? /\.(png|jpe?g|gif|webp|avif)$/i.test(previewAsset) : false;
+const hasMedia = Boolean(previewAsset && (assetIsVideo || assetIsImage));
+const previewType = project.previewType ?? "glyph";
+
+const normalizedSlug = project.slug.replace(/[^a-z0-9]+/gi, "-");
+const promptName = normalizedSlug.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+const pascalName = promptName
+  .replace(/(?:^|-)([a-z0-9])/g, (_, char) => char.toUpperCase())
+  .replace(/-/g, "");
+
+const terminalLines = [
+  `> launch ${promptName}`,
+  "# compiling modules… ok",
+  "# running simulation…",
+  "# solved in 0.13s",
+];
+
+const codeLines = [
+  `export function ${pascalName}() {`,
+  `  const app = initTool({ name: "${project.name}" });`,
+  "  return app.run();",
+  "}",
+];
+
+const rawDescription = project.description ?? "";
+const firstLine = rawDescription.split(/\r?\n/)[0] ?? "";
+const maxLength = 150;
+const trimmedDescription =
+  firstLine.length > maxLength
+    ? `${firstLine.slice(0, maxLength - 1).trimEnd()}…`
+    : firstLine;
+
+let projectDomain = "";
+try {
+  projectDomain = new URL(project.homepage).hostname.replace(/^www\./, "");
+} catch {}
+
+let githubLabel = "";
+if (project.githubUrl) {
+  try {
+    githubLabel = new URL(project.githubUrl).pathname.replace(/\//g, "").slice(0, 24) || "GitHub";
+  } catch {
+    githubLabel = "GitHub";
+  }
+}
+
+const blueprintNodes = [
+  { top: "12%", left: "18%" },
+  { top: "25%", left: "68%" },
+  { top: "58%", left: "32%" },
+  { top: "70%", left: "74%" },
+  { top: "40%", left: "48%" },
+];
+
+const blueprintConnectors = [
+  { top: "20%", left: "20%", width: "52%", rotate: "12deg" },
+  { top: "42%", left: "30%", width: "44%", rotate: "-6deg" },
+  { top: "62%", left: "18%", width: "62%", rotate: "10deg" },
+];
+
+const graphNodes = [
+  { top: "18%", left: "30%" },
+  { top: "42%", left: "58%" },
+  { top: "65%", left: "24%" },
+  { top: "30%", left: "76%" },
+  { top: "68%", left: "68%" },
+];
+
+const graphLinks = [
+  { top: "26%", left: "32%", width: "30%", rotate: "18deg" },
+  { top: "50%", left: "44%", width: "26%", rotate: "-12deg" },
+  { top: "60%", left: "26%", width: "48%", rotate: "8deg" },
+];
+---
+
+<li class="project-card">
+  <a class="project-card-link" href={`/project/${project.slug}`}>
+    {highlighted && <span class="project-card-badge">Featured</span>}
+
+    {hasMedia ? (
+      <div class="project-card-media">
+        {assetIsVideo ? (
+          <video
+            data-src={previewAsset!}
+            preload="none"
+            playsinline
+            muted
+            loop
+            aria-label={`Preview recording for ${project.name}`}
+          />
+        ) : (
+          <img
+            src={previewAsset!}
+            alt={`Preview for ${project.name}`}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+      </div>
+    ) : (
+      <div
+        class:list={[
+          "project-card-media",
+          "project-card-media--fallback",
+          `project-card-media--${previewType}`,
+        ]}
+      >
+        {previewType === "terminal" && (
+          <div class="terminal-screen">
+            <div class="terminal-status-bar">
+              <span class="terminal-dot is-red" />
+              <span class="terminal-dot is-yellow" />
+              <span class="terminal-dot is-green" />
+            </div>
+            {terminalLines.map((line, index) => (
+              <div class:list={["terminal-line", { "terminal-prompt": index === 0 }]}
+                key={index}
+              >
+                {line}
+                {index === terminalLines.length - 1 && <span class="terminal-cursor" />}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {previewType === "wireframe" && (
+          <div class="wireframe-device">
+            <div class="wireframe-screen">
+              <span class="wireframe-title">{project.name}</span>
+              <span class="wireframe-subtitle">{trimmedDescription}</span>
+            </div>
+          </div>
+        )}
+
+        {previewType === "glyph" && (
+          <>
+            <span class="glyph-shape" />
+            <span class="glyph-icon">{project.name.slice(0, 2).toUpperCase()}</span>
+          </>
+        )}
+
+        {previewType === "blueprint" && (
+          <div class="blueprint-nodes">
+            {blueprintNodes.map((node, idx) => (
+              <span
+                class="blueprint-node"
+                style={{ top: node.top, left: node.left }}
+                key={`bp-node-${idx}`}
+              />
+            ))}
+            {blueprintConnectors.map((connector, idx) => (
+              <span
+                class="blueprint-connector"
+                style={{
+                  top: connector.top,
+                  left: connector.left,
+                  width: connector.width,
+                  transform: `rotate(${connector.rotate})`,
+                }}
+                key={`bp-link-${idx}`}
+              />
+            ))}
+          </div>
+        )}
+
+        {previewType === "code" && (
+          <div class="code-lines">
+            {codeLines.map((line, idx) => (
+              <span class="code-line" key={idx}>
+                {line}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {previewType === "graph" && (
+          <div class="blueprint-nodes">
+            {graphNodes.map((node, idx) => (
+              <span
+                class="graph-node"
+                style={{ top: node.top, left: node.left }}
+                key={`graph-node-${idx}`}
+              />
+            ))}
+            {graphLinks.map((link, idx) => (
+              <span
+                class="graph-link"
+                style={{
+                  top: link.top,
+                  left: link.left,
+                  width: link.width,
+                  transform: `rotate(${link.rotate})`,
+                }}
+                key={`graph-link-${idx}`}
+              />
+            ))}
+          </div>
+        )}
+
+{previewType === "mesh" && (
+  <div class="mesh-frame">
+    <div class="mesh-core">
+      <span class="mesh-label">{project.name.slice(0, 2).toUpperCase()}</span>
+    </div>
+    <div class="mesh-ring mesh-ring--one" />
+    <div class="mesh-ring mesh-ring--two" />
+  </div>
+)}
+
+{previewType === "ouroboros" && (
+  <div class="ouroboros">
+    <div class="ouroboros-track">
+      <div class="ouroboros-ring" />
+      <div class="ouroboros-head" />
+    </div>
+    <span class="ouroboros-label">{project.name.slice(0, 2).toUpperCase()}</span>
+  </div>
+)}
+
+{previewType === "screenshot" && (
+  <div class="screenshot-frame">
+    {projectDomain || project.name}
+  </div>
+)}
+      </div>
+    )}
+
+    <div class="project-card-body">
+      <h3>{project.name}</h3>
+      <p>{trimmedDescription}</p>
+      <div class="project-card-meta">
+        {projectDomain && <span>Live · {projectDomain}</span>}
+        {project.githubUrl && <span>Code · {githubLabel || "GitHub"}</span>}
+      </div>
+    </div>
+  </a>
+</li>
+
+{assetIsVideo && (
+  <script is:inline>
+    if (typeof window !== "undefined") {
+      const w = window;
+      if (!w.__projectPreviewObserver) {
+        w.__projectPreviewObserver = new IntersectionObserver(
+          function (entries, observer) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              const video = entry.target;
+              const dataSrc = video.getAttribute("data-src");
+              if (dataSrc && !video.getAttribute("src")) {
+                video.setAttribute("src", dataSrc);
+                video.load();
+                video.play().catch(function () {});
+              }
+              observer.unobserve(video);
+            });
+          },
+          { rootMargin: "200px 0px", threshold: 0.1 }
+        );
+      }
+
+      document
+        .querySelectorAll(".project-card-media video[data-src]")
+        .forEach(function (video) {
+          if (video.getAttribute("data-observed")) return;
+          video.setAttribute("data-observed", "true");
+          w.__projectPreviewObserver.observe(video);
+        });
+    }
+  </script>
+)}

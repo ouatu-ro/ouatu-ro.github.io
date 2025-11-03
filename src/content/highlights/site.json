@@ -1,0 +1,12 @@
+{
+  "projects": [
+    { "slug": "maze-solver", "previewType": "terminal" },
+    { "slug": "table-planner", "previewType": "wireframe" },
+    { "slug": "hall-of-mirrors-3", "previewType": "mesh" }
+  ],
+  "labs": [
+    { "slug": "als" },
+    { "slug": "tips-building-effective-analytics-tools" }
+  ],
+  "essays": []
+}

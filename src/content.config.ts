@@ -38,4 +38,43 @@ const projectsExtra = defineCollection({
   }),
 });
 
-export const collections = { labs, essays, projectsExtra };
+const highlights = defineCollection({
+  type: "data",
+  schema: z.object({
+    projects: z
+      .array(
+        z.object({
+          slug: z.string(),
+          previewType: z
+            .enum([
+              "terminal",
+              "wireframe",
+              "glyph",
+              "blueprint",
+              "screenshot",
+              "graph",
+              "code",
+              "mesh",
+            ])
+            .optional(),
+        }),
+      )
+      .default([]),
+    labs: z
+      .array(
+        z.object({
+          slug: z.string(),
+        }),
+      )
+      .default([]),
+    essays: z
+      .array(
+        z.object({
+          slug: z.string(),
+        }),
+      )
+      .default([]),
+  }),
+});
+
+export const collections = { labs, essays, projectsExtra, highlights };

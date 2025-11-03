@@ -1,0 +1,74 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ProjectPreview from "../../components/ProjectPreview.astro";
+import { getProjects, getHighlightConfig } from "../../utils/projects";
+import ClientScripts from "../../components/ClientScripts.astro";
+import "../../styles/pages/projects-index.css";
+
+const [projects, highlights] = await Promise.all([
+  getProjects(),
+  getHighlightConfig(),
+]);
+
+const highlightedSlugs = new Set(highlights.projects.map((item) => item.slug));
+
+const featuredProjects = highlights.projects
+  .map((item) => projects.find((project) => project.slug === item.slug))
+  .filter(Boolean);
+
+const remainingProjects = projects
+  .filter((project) => !highlightedSlugs.has(project.slug))
+  .sort((a, b) => {
+    const aDate = a.updatedDate ?? a.pubDate ?? "";
+    const bDate = b.updatedDate ?? b.pubDate ?? "";
+    if (!aDate && !bDate) return a.name.localeCompare(b.name);
+    return new Date(bDate).getTime() - new Date(aDate).getTime();
+  });
+
+const pageTitle = "Projects";
+const description = "All shipped experiments, products, and live demos.";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`${pageTitle} – Bogdan Ouatu`} description={description} />
+    <ClientScripts />
+  </head>
+  <body>
+    <Header />
+    <main class="projects-page">
+      <header>
+        <h1>{pageTitle}</h1>
+        <p>
+          A curated archive of experiments, production tools, and playful demos.
+          Each project includes a live link and often a deeper dive into how it
+          works under the hood.
+        </p>
+      </header>
+
+      {featuredProjects.length > 0 && (
+        <section>
+          <h2>Featured Launches</h2>
+          <ul class="projects-featured-grid">
+            {featuredProjects.map((project) => (
+              <ProjectPreview project={project} highlighted={true} />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section>
+        <h2>All projects</h2>
+        <ul class="projects-grid">
+          {remainingProjects.map((project) => (
+            <ProjectPreview project={project} />
+          ))}
+        </ul>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

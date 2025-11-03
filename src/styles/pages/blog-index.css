@@ -1,1 +1,57 @@
 @import url("./_blog-index.css");
+.blog-index-list.blog-index-list--compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  list-style: none;
+  margin: 1.5rem auto 0;
+  padding: 0;
+  max-width: 1200px;
+}
+
+.blog-index-list.blog-index-list--compact li,
+.blog-index-list.blog-index-list--compact li:first-child {
+  width: auto;
+  padding: 0;
+  margin: 0;
+  border: none;
+  display: block;
+}
+
+.blog-index-list.blog-index-list--compact li:first-child img {
+  width: 100%;
+}
+
+.blog-index-list.blog-index-list--compact li:first-child .blog-title-fallback {
+  height: 220px;
+}
+
+.blog-index-list.blog-index-list--compact li:first-child .blog-index-title,
+.blog-index-list.blog-index-list--compact .blog-index-title {
+  font-size: 1.15rem;
+}
+
+.blog-index-list.blog-index-list--compact .blog-title-fallback {
+  height: 220px;
+}
+
+.blog-index-list.blog-index-list--compact .blog-title-fallback h3,
+.blog-index-list.blog-index-list--compact li:first-child .blog-title-fallback h3 {
+  font-size: 1.3rem;
+}
+
+.blog-index-list.blog-index-list--compact li:first-child p {
+  font-size: 0.95rem;
+  max-width: none;
+  color: var(--color-muted);
+}
+
+.blog-index-list.blog-index-list--labs-home img,
+.blog-index-list.blog-index-list--labs-home .blog-title-fallback,
+.blog-index-list.blog-index-list--compact.blog-index-list--labs-home .blog-title-fallback {
+  height: 220px;
+}
+
+.blog-index-list.blog-index-list--labs-home img {
+  object-fit: cover;
+}
