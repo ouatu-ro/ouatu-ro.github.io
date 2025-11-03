@@ -1,0 +1,130 @@
+---
+interface Props extends Record<string, any> {
+  title: string;
+  subtitle?: string;
+}
+
+const { title, subtitle } = Astro.props;
+---
+
+<div class="title-card">
+  <span class="title-card-text">{title}</span>
+  {subtitle && <span class="title-card-subtitle">{subtitle}</span>}
+</div>
+
+<style>
+  :global(.project-card-media--titlecard) {
+    background:
+      radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.28), rgba(9, 12, 20, 0.92)),
+      linear-gradient(165deg, rgba(12, 16, 30, 0.92), rgba(9, 12, 22, 0.98));
+    position: relative;
+    display: flex;
+    padding: 1.2rem 1.4rem;
+    align-items: stretch;
+  }
+
+  .title-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    padding: 1.4rem;
+    display: grid;
+    gap: 0.85rem;
+    align-content: flex-start;
+    justify-items: start;
+    background:
+      linear-gradient(
+        140deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(108, 93, 255, 0.16),
+        rgba(102, 255, 204, 0.14)
+      );
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(14px);
+    box-shadow:
+      inset 0 0 24px rgba(0, 0, 0, 0.35),
+      0 20px 38px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+  }
+
+  .title-card::after {
+    content: "";
+    position: absolute;
+    inset: -35% -40% auto auto;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(108, 93, 255, 0.2), transparent 70%);
+    filter: blur(4px);
+    opacity: 0.75;
+  }
+
+  .title-card::before {
+    content: "";
+    position: absolute;
+    inset: auto auto -40% -35%;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(108, 255, 214, 0.2), transparent 70%);
+    filter: blur(6px);
+    opacity: 0.58;
+    animation: titleCardGlow 12s ease-in-out infinite;
+  }
+
+  .title-card::after,
+  .title-card::before {
+    pointer-events: none;
+  }
+
+  .title-card-text {
+    font-size: clamp(1.55rem, 2.5vw, 2rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    line-height: 1.28;
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(6, 8, 16, 0.28);
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 12px 32px rgba(12, 18, 32, 0.4);
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(6px);
+  }
+
+  .title-card-subtitle {
+    font-size: clamp(0.88rem, 1.6vw, 1.05rem);
+    letter-spacing: 0.03em;
+    opacity: 0.78;
+    max-width: 24ch;
+    line-height: 1.4;
+    color: rgba(222, 236, 255, 0.72);
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (max-width: 640px) {
+    .title-card {
+      padding: 1.1rem;
+    }
+
+    .title-card-text {
+      font-size: 1.45rem;
+    }
+  }
+
+  @keyframes titleCardGlow {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.58;
+    }
+    50% {
+      transform: translate3d(16px, -10px, 0) scale(1.08);
+      opacity: 0.76;
+    }
+  }
+</style>

@@ -49,7 +49,7 @@ const essays = (await getCollection("essays")).sort((a, b) => {
                   {(essay.data.pubDate || essay.data.updatedDate) && (
                     <p class="date blog-index-date">
                       <FormattedDate
-                        date={essay.data.pubDate ?? essay.data.updatedDate}
+                        date={essay.data.pubDate ?? essay.data.updatedDate!}
                       />
                     </p>
                   )}

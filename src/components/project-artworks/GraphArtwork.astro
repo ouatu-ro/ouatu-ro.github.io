@@ -1,0 +1,84 @@
+---
+interface Node {
+  top: string;
+  left: string;
+}
+
+interface Link extends Node {
+  width: string;
+  rotate: string;
+}
+
+interface Props extends Record<string, any> {
+  graphNodes: Node[];
+  graphLinks: Link[];
+}
+
+const { graphNodes, graphLinks } = Astro.props;
+---
+
+<div class="graph-map">
+  {graphNodes.map((node, idx) => (
+    <span class="graph-node" style={{ top: node.top, left: node.left }} data-node-index={idx} />
+  ))}
+  {graphLinks.map((link, idx) => (
+    <span
+      class="graph-link"
+      style={{
+        top: link.top,
+        left: link.left,
+        width: link.width,
+        transform: `rotate(${link.rotate})`,
+      }}
+      data-link-index={idx}
+    />
+  ))}
+</div>
+
+<style>
+  :global(.project-card-media--graph) {
+    background: radial-gradient(circle at center, rgba(54, 243, 255, 0.3), #050b15);
+    position: relative;
+    overflow: hidden;
+    animation: graphPulse 14s linear infinite;
+  }
+
+  .graph-map {
+    position: relative;
+    width: 82%;
+    height: 76%;
+  }
+
+  .graph-node {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: rgba(54, 243, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 0 16px rgba(54, 243, 255, 0.8);
+  }
+
+  .graph-link {
+    position: absolute;
+    background: linear-gradient(
+      90deg,
+      rgba(54, 243, 255, 0),
+      rgba(54, 243, 255, 0.6),
+      rgba(54, 243, 255, 0)
+    );
+    height: 2px;
+    filter: drop-shadow(0 0 6px rgba(54, 243, 255, 0.75));
+  }
+
+  @keyframes graphPulse {
+    0% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(4deg) scale(1.04);
+    }
+    100% {
+      transform: rotate(0deg) scale(1);
+    }
+  }
+</style>

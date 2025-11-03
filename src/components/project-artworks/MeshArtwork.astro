@@ -1,0 +1,74 @@
+---
+interface Props extends Record<string, any> {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div class="mesh-frame">
+  <div class="mesh-core">
+    <span class="mesh-label">{label}</span>
+  </div>
+  <div class="mesh-ring mesh-ring--one" />
+  <div class="mesh-ring mesh-ring--two" />
+</div>
+
+<style>
+  :global(.project-card-media--mesh) {
+    background: radial-gradient(circle at 30% 30%, rgba(255, 180, 0, 0.35), #10040f);
+    position: relative;
+  }
+
+  .mesh-frame {
+    position: relative;
+    width: 70%;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .mesh-core {
+    position: relative;
+    width: 60%;
+    aspect-ratio: 1 / 1;
+    border-radius: 30%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.22), rgba(0, 0, 0, 0.4));
+    box-shadow:
+      0 0 28px rgba(255, 180, 0, 0.36),
+      inset 0 0 16px rgba(255, 255, 255, 0.25);
+    display: grid;
+    place-items: center;
+  }
+
+  .mesh-label {
+    font-size: clamp(1.4rem, 4vw, 2.1rem);
+  }
+
+  .mesh-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 45%;
+    border: 1px solid rgba(255, 180, 0, 0.35);
+    box-shadow: 0 0 18px rgba(255, 180, 0, 0.35);
+    animation: meshSpin 14s linear infinite;
+  }
+
+  .mesh-ring--two {
+    inset: 12%;
+    animation-direction: reverse;
+    animation-duration: 18s;
+  }
+
+  @keyframes meshSpin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

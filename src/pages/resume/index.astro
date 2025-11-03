@@ -12,50 +12,79 @@ const summarySnippet =
   summary.length > 220 ? `${summary.slice(0, summary.lastIndexOf(" ", 200))}…` : summary;
 const pageDescription = summarySnippet;
 const pdfUrl = "/resume.pdf";
-const contactEntries = buildContactEntries(basics);
+const contactEntries: ContactEntry[] = buildContactEntries(basics);
 const ctaMail = basics.email
   ? `mailto:${basics.email}?subject=${encodeURIComponent("Performance & ML Systems Consulting")}`
   : undefined;
 
-function profileLabel(profile) {
+type ResumeData = typeof resume;
+type Basics = ResumeData["basics"];
+type Profile = Basics["profiles"] extends Array<infer P>
+  ? P
+  : { network?: string | null; url?: string | null };
+type ContactEntry = { type: "link" | "text"; label: string; url?: string };
+
+function profileLabel(profile: Profile | undefined): string {
   if (!profile) return "";
-  if (profile.network?.toLowerCase() === "github") {
+  const network = profile.network?.toLowerCase() ?? "";
+  const urlValue = profile.url ?? "";
+
+  if (network === "github" && urlValue) {
     try {
-      const url = new URL(profile.url);
+      const url = new URL(urlValue);
       return `${url.hostname.replace(/^www\./, "")}${url.pathname.replace(/\/$/, "")}`;
     } catch {
-      return profile.url;
+      return urlValue;
     }
   }
-  if (profile.network?.toLowerCase() === "website") {
+  if (network === "website" && urlValue) {
     try {
-      return new URL(profile.url).hostname.replace(/^www\./, "");
+      return new URL(urlValue).hostname.replace(/^www\./, "");
     } catch {
-      return profile.url;
+      return urlValue;
     }
   }
-  return profile.network ?? profile.url;
+  return profile.network ?? urlValue;
 }
 
-function buildContactEntries(basics) {
-  const profiles = basics.profiles ?? [];
+function buildContactEntries(basics: Basics): ContactEntry[] {
+  const profiles = (basics.profiles ?? []) as Profile[];
   const website = profiles.find((p) => (p.network ?? "").toLowerCase() === "website");
   const github = profiles.find((p) => (p.network ?? "").toLowerCase() === "github");
   const rest = profiles.filter((p) => p !== website && p !== github);
 
-  const ordered = [];
-  if (website) ordered.push({ type: "link", label: profileLabel(website), url: website.url });
-  if (basics.email)
+  const ordered: ContactEntry[] = [];
+  if (website) {
+    const label = profileLabel(website);
+    if (website.url) {
+      ordered.push({ type: "link", label, url: website.url });
+    } else {
+      ordered.push({ type: "text", label });
+    }
+  }
+  if (basics.email) {
     ordered.push({
       type: "link",
       label: basics.email,
       url: `mailto:${basics.email}`,
     });
-  for (const profile of rest) {
-    ordered.push({ type: "link", label: profileLabel(profile), url: profile.url });
   }
-  if (github)
-    ordered.push({ type: "link", label: profileLabel(github), url: github.url });
+  for (const profile of rest) {
+    const label = profileLabel(profile);
+    if (profile?.url) {
+      ordered.push({ type: "link", label, url: profile.url });
+    } else if (label) {
+      ordered.push({ type: "text", label });
+    }
+  }
+  if (github) {
+    const label = profileLabel(github);
+    if (github.url) {
+      ordered.push({ type: "link", label, url: github.url });
+    } else if (label) {
+      ordered.push({ type: "text", label });
+    }
+  }
   return ordered;
 }
 ---

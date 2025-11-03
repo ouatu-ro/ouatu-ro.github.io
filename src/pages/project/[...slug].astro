@@ -131,6 +131,7 @@ const structuredData = {
 
     <!-- Structured data for better SEO -->
     <script
+      is:inline
       type="application/ld+json"
       set:html={JSON.stringify(structuredData)}
     />
@@ -238,7 +239,7 @@ const structuredData = {
         root.classList.add("js-ready");
 
         const target = document.querySelector(".project-metadata");
-        if (!target) return;
+        if (!(target instanceof HTMLElement)) return;
 
         const hasPreview = target.dataset.hasPreview === "true";
         if (!hasPreview) return;

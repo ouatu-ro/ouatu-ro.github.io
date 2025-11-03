@@ -62,7 +62,7 @@ body.resume-body {
 .resume-cta {
   background: linear-gradient(
     130deg,
-    color-mix(in srgb, var(--color-primary) 88%, #ffffff 12%),
+    color-mix(in srgb, var(--color-primary) 88%, #fff 12%),
     color-mix(in srgb, var(--color-primary) 65%, #0f1b26 35%)
   );
   color: #07180d;
@@ -344,7 +344,8 @@ body.resume-body {
     --color-text: #111827;
     --color-muted: #4b5563;
     --color-border: #d1d5db;
-    background: #ffffff !important;
+
+    background: #fff !important;
     color: var(--color-text) !important;
   }
 
@@ -368,7 +369,7 @@ body.resume-body {
 
   .resume-section {
     margin-top: 1.8rem;
-    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   .resume-role {

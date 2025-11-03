@@ -11,7 +11,7 @@ const canonical = new URL(destination, site).toString();
     <title>Redirecting…</title>
     <meta http-equiv="refresh" content={`0; url=${destination}`} />
     <link rel="canonical" href={canonical} />
-    <script set:html={`window.location.replace(${JSON.stringify(destination)});`}></script>
+    <script is:inline set:html={`window.location.replace(${JSON.stringify(destination)});`}></script>
   </head>
   <body>
     <p>

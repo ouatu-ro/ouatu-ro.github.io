@@ -286,7 +286,7 @@ const firstResult = selectedResults.items[0];
             <div class="p-style-guide-grid p-style-guide-grid--two">
               {
                 Array.from({ length: 2 }).map((_, i) => (
-                  <div class="p-style-guide-card" key={i}>
+                  <div class="p-style-guide-card" data-card-index={i}>
                     <h4>Standard Article</h4>
                     <p>The standard card from the labs feed.</p>
                     <div class="p-style-guide-preview">

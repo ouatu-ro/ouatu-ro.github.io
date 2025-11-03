@@ -1,0 +1,33 @@
+---
+interface Props extends Record<string, any> {
+  codeLines: string[];
+}
+
+const { codeLines } = Astro.props;
+---
+
+<div class="code-lines">
+  {codeLines.map((line, idx) => (
+    <span class="code-line" data-line-index={idx}>
+      {line}
+    </span>
+  ))}
+</div>
+
+<style>
+  :global(.project-card-media--code) {
+    background: linear-gradient(140deg, rgba(25, 25, 60, 0.9), rgba(15, 15, 30, 0.95));
+    font-family: "Source Code Pro", "Fira Code", monospace;
+  }
+
+  .code-lines {
+    width: 86%;
+    display: grid;
+    gap: 0.42rem;
+  }
+
+  .code-line {
+    font-size: 0.86rem;
+    color: rgba(173, 215, 255, 0.9);
+  }
+</style>

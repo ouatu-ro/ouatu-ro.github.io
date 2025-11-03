@@ -12,13 +12,17 @@ const [projects, highlights] = await Promise.all([
   getHighlightConfig(),
 ]);
 
-const highlightedSlugs = new Set(highlights.projects.map((item) => item.slug));
+const highlightOrder = highlights.projects.map((item) => item.slug);
+const highlightedSlugs = new Set(highlightOrder);
 
-const featuredProjects = highlights.projects
-  .map((item) => projects.find((project) => project.slug === item.slug))
-  .filter(Boolean);
+const nonNullable = <T,>(value: T | null | undefined): value is T =>
+  value !== null && value !== undefined;
 
-const remainingProjects = projects
+const prioritizedProjects = highlightOrder
+  .map((slug) => projects.find((project) => project.slug === slug))
+  .filter(nonNullable);
+
+const sortedRemainder = projects
   .filter((project) => !highlightedSlugs.has(project.slug))
   .sort((a, b) => {
     const aDate = a.updatedDate ?? a.pubDate ?? "";
@@ -26,6 +30,8 @@ const remainingProjects = projects
     if (!aDate && !bDate) return a.name.localeCompare(b.name);
     return new Date(bDate).getTime() - new Date(aDate).getTime();
   });
+
+const orderedProjects = [...prioritizedProjects, ...sortedRemainder];
 
 const pageTitle = "Projects";
 const description = "All shipped experiments, products, and live demos.";
@@ -40,34 +46,19 @@ const description = "All shipped experiments, products, and live demos.";
   <body>
     <Header />
     <main class="projects-page">
-      <header>
+      <div class="projects-page-intro">
         <h1>{pageTitle}</h1>
-        <p>
-          A curated archive of experiments, production tools, and playful demos.
-          Each project includes a live link and often a deeper dive into how it
-          works under the hood.
-        </p>
-      </header>
+        <p>{description}</p>
+      </div>
 
-      {featuredProjects.length > 0 && (
-        <section>
-          <h2>Featured Launches</h2>
-          <ul class="projects-featured-grid">
-            {featuredProjects.map((project) => (
-              <ProjectPreview project={project} highlighted={true} />
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section>
-        <h2>All projects</h2>
-        <ul class="projects-grid">
-          {remainingProjects.map((project) => (
-            <ProjectPreview project={project} />
-          ))}
-        </ul>
-      </section>
+      <ul class="projects-highlight-grid projects-archive-grid">
+        {orderedProjects.map((project) => (
+          <ProjectPreview
+            project={project}
+            highlighted={highlightedSlugs.has(project.slug)}
+          />
+        ))}
+      </ul>
     </main>
     <Footer />
   </body>

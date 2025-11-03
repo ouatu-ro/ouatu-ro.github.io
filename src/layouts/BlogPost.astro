@@ -24,7 +24,7 @@ const { title, description, pubDate, updatedDate, heroImage, math } = Astro.prop
 		{math && (
 			<>
 				<!-- Preload KaTeX with low priority and load asynchronously -->
-				<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
 				<noscript>
 					<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
 				</noscript>

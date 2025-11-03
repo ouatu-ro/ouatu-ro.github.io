@@ -2,12 +2,6 @@
 // Import our TypeScript modules that need to run in the client
 ---
 
-<!-- Client-side scripts using Astro's built-in handling -->
-<script>
-  // Import utility functions
-  import { slugify } from "../utils/slugify";
-</script>
-
 <!-- Add direct script for copy button functionality -->
 <script is:inline>
   // Enhanced Burger Menu
@@ -127,7 +121,7 @@
 
         // Desktop hover behavior
         if (window.innerWidth > 768) {
-          button.addEventListener("mouseenter", (e) => {
+          button.addEventListener("mouseenter", () => {
             const descText = description.textContent;
             tooltip.textContent = descText;
 

@@ -1,5 +1,5 @@
 import rss from "@astrojs/rss";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { SITE_TITLE } from "../consts";
 import fs from "node:fs";
 import path from "node:path";
 import { slugify } from "../utils/slugify";

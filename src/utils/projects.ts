@@ -25,7 +25,8 @@ export type HighlightPreviewType =
   | "graph"
   | "code"
   | "mesh"
-  | "ouroboros";
+  | "ouroboros"
+  | "titlecard";
 
 export interface HighlightsConfig {
   projects: Array<{ slug: string; previewType?: HighlightPreviewType }>;
@@ -74,6 +75,10 @@ export function readProjectsData() {
 export async function getHighlightConfig(): Promise<HighlightsConfig> {
   try {
     const entry = await getEntry("highlights", "site");
+    if (!entry) {
+      console.warn("Highlights configuration entry missing, using defaults.");
+      return { projects: [], labs: [], essays: [] };
+    }
     return entry.data as HighlightsConfig;
   } catch (error) {
     console.warn("Highlights configuration missing, using defaults.", error);
@@ -116,7 +121,7 @@ export async function getProjects(): Promise<ProjectRecord[]> {
         previewTypeMap.get(slug) ??
         previewTypeMap.get(slugify(project.name)) ??
         defaultType ??
-        undefined,
+        "titlecard",
     } satisfies ProjectRecord;
   });
 }

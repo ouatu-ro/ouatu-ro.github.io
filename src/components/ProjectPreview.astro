@@ -1,6 +1,16 @@
 ---
 import type { ProjectRecord } from "../utils/projects";
 import "../styles/components/project-preview.css";
+import TerminalArtwork from "./project-artworks/TerminalArtwork.astro";
+import WireframeArtwork from "./project-artworks/WireframeArtwork.astro";
+import GlyphArtwork from "./project-artworks/GlyphArtwork.astro";
+import BlueprintArtwork from "./project-artworks/BlueprintArtwork.astro";
+import CodeArtwork from "./project-artworks/CodeArtwork.astro";
+import GraphArtwork from "./project-artworks/GraphArtwork.astro";
+import MeshArtwork from "./project-artworks/MeshArtwork.astro";
+import OuroborosArtwork from "./project-artworks/OuroborosArtwork.astro";
+import ScreenshotArtwork from "./project-artworks/ScreenshotArtwork.astro";
+import TitleCardArtwork from "./project-artworks/TitleCardArtwork.astro";
 
 interface Props {
   project: ProjectRecord;
@@ -13,7 +23,7 @@ const previewAsset = project.shouldShowPreview && project.previewAsset ? project
 const assetIsVideo = previewAsset ? /\.(mp4|webm|mov|m4v)$/i.test(previewAsset) : false;
 const assetIsImage = previewAsset ? /\.(png|jpe?g|gif|webp|avif)$/i.test(previewAsset) : false;
 const hasMedia = Boolean(previewAsset && (assetIsVideo || assetIsImage));
-const previewType = project.previewType ?? "glyph";
+const previewType = project.previewType ?? "titlecard";
 
 const normalizedSlug = project.slug.replace(/[^a-z0-9]+/gi, "-");
 const promptName = normalizedSlug.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
@@ -84,6 +94,22 @@ const graphLinks = [
   { top: "50%", left: "44%", width: "26%", rotate: "-12deg" },
   { top: "60%", left: "26%", width: "48%", rotate: "8deg" },
 ];
+
+const previewComponentMap = {
+  terminal: TerminalArtwork,
+  wireframe: WireframeArtwork,
+  glyph: GlyphArtwork,
+  blueprint: BlueprintArtwork,
+  code: CodeArtwork,
+  graph: GraphArtwork,
+  mesh: MeshArtwork,
+  ouroboros: OuroborosArtwork,
+  screenshot: ScreenshotArtwork,
+  titlecard: TitleCardArtwork,
+} as const;
+
+const ArtworkComponent =
+  previewComponentMap[previewType as keyof typeof previewComponentMap] ?? GlyphArtwork;
 ---
 
 <li class="project-card">
@@ -118,123 +144,22 @@ const graphLinks = [
           `project-card-media--${previewType}`,
         ]}
       >
-        {previewType === "terminal" && (
-          <div class="terminal-screen">
-            <div class="terminal-status-bar">
-              <span class="terminal-dot is-red" />
-              <span class="terminal-dot is-yellow" />
-              <span class="terminal-dot is-green" />
-            </div>
-            {terminalLines.map((line, index) => (
-              <div class:list={["terminal-line", { "terminal-prompt": index === 0 }]}
-                key={index}
-              >
-                {line}
-                {index === terminalLines.length - 1 && <span class="terminal-cursor" />}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {previewType === "wireframe" && (
-          <div class="wireframe-device">
-            <div class="wireframe-screen">
-              <span class="wireframe-title">{project.name}</span>
-              <span class="wireframe-subtitle">{trimmedDescription}</span>
-            </div>
-          </div>
-        )}
-
-        {previewType === "glyph" && (
-          <>
-            <span class="glyph-shape" />
-            <span class="glyph-icon">{project.name.slice(0, 2).toUpperCase()}</span>
-          </>
-        )}
-
-        {previewType === "blueprint" && (
-          <div class="blueprint-nodes">
-            {blueprintNodes.map((node, idx) => (
-              <span
-                class="blueprint-node"
-                style={{ top: node.top, left: node.left }}
-                key={`bp-node-${idx}`}
-              />
-            ))}
-            {blueprintConnectors.map((connector, idx) => (
-              <span
-                class="blueprint-connector"
-                style={{
-                  top: connector.top,
-                  left: connector.left,
-                  width: connector.width,
-                  transform: `rotate(${connector.rotate})`,
-                }}
-                key={`bp-link-${idx}`}
-              />
-            ))}
-          </div>
-        )}
-
-        {previewType === "code" && (
-          <div class="code-lines">
-            {codeLines.map((line, idx) => (
-              <span class="code-line" key={idx}>
-                {line}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {previewType === "graph" && (
-          <div class="blueprint-nodes">
-            {graphNodes.map((node, idx) => (
-              <span
-                class="graph-node"
-                style={{ top: node.top, left: node.left }}
-                key={`graph-node-${idx}`}
-              />
-            ))}
-            {graphLinks.map((link, idx) => (
-              <span
-                class="graph-link"
-                style={{
-                  top: link.top,
-                  left: link.left,
-                  width: link.width,
-                  transform: `rotate(${link.rotate})`,
-                }}
-                key={`graph-link-${idx}`}
-              />
-            ))}
-          </div>
-        )}
-
-{previewType === "mesh" && (
-  <div class="mesh-frame">
-    <div class="mesh-core">
-      <span class="mesh-label">{project.name.slice(0, 2).toUpperCase()}</span>
-    </div>
-    <div class="mesh-ring mesh-ring--one" />
-    <div class="mesh-ring mesh-ring--two" />
-  </div>
-)}
-
-{previewType === "ouroboros" && (
-  <div class="ouroboros">
-    <div class="ouroboros-track">
-      <div class="ouroboros-ring" />
-      <div class="ouroboros-head" />
-    </div>
-    <span class="ouroboros-label">{project.name.slice(0, 2).toUpperCase()}</span>
-  </div>
-)}
-
-{previewType === "screenshot" && (
-  <div class="screenshot-frame">
-    {projectDomain || project.name}
-  </div>
-)}
+        <ArtworkComponent
+          project={project}
+          trimmedDescription={trimmedDescription}
+          promptName={promptName}
+          pascalName={pascalName}
+          terminalLines={terminalLines}
+          codeLines={codeLines}
+          blueprintNodes={blueprintNodes}
+          blueprintConnectors={blueprintConnectors}
+          graphNodes={graphNodes}
+          graphLinks={graphLinks}
+          label={project.name.slice(0, 2).toUpperCase()}
+          title={project.name}
+          subtitle={trimmedDescription}
+          domain={projectDomain || project.name}
+        />
       </div>
     )}
 

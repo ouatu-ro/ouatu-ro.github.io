@@ -6,7 +6,7 @@ import Icon from "../components/Icons.astro";
 import ProjectPreview from "../components/ProjectPreview.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import ClientScripts from "../components/ClientScripts.astro";
-import { SITE_TITLE, SITE_DESCRIPTION, CONTACT_EMAIL } from "../consts";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getProjects, getHighlightConfig } from "../utils/projects";
 import { getCollection } from "astro:content";
 import "../styles/pages/blog.css";
@@ -19,13 +19,16 @@ const [projects, highlights, labsCollection, essaysCollection] = await Promise.a
 const entrySlug = (id: string) =>
   id.replace(/\\/g, "/").replace(/\.mdx?$/, "");
 
+const nonNullable = <T,>(value: T | null | undefined): value is T =>
+  value !== null && value !== undefined;
+
 const projectMap = new Map(projects.map((project) => [project.slug, project]));
 
 const highlightedProjectSlugs = new Set(highlights.projects.map((ref) => ref.slug));
 
 const highlightedProjects = highlights.projects
   .map((ref) => projectMap.get(ref.slug))
-  .filter(Boolean);
+  .filter(nonNullable);
 
 const fallbackProjects = [...projects].sort((a, b) => {
   const aDate = a.updatedDate ?? a.pubDate ?? "";
@@ -55,14 +58,14 @@ const labsToShow =
   highlights.labs.length > 0
     ? highlights.labs
         .map((ref) => labsBySlug.get(ref.slug))
-        .filter(Boolean)
+        .filter(nonNullable)
     : labsSorted.slice(0, 3);
 
 const essaysToShow =
   highlights.essays.length > 0
     ? highlights.essays
         .map((ref) => essaysBySlug.get(ref.slug))
-        .filter(Boolean)
+        .filter(nonNullable)
     : essaysSorted.slice(0, 3);
 ---
 

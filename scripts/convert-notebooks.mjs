@@ -105,7 +105,7 @@ console.log(`🚀 Watching for changes in ${NOTEBOOK_DIR}...`);
 const lastModified = new Map();
 
 // Watch the directory for changes
-watch(NOTEBOOK_DIR, { recursive: true }, async (eventType, filename) => {
+watch(NOTEBOOK_DIR, { recursive: true }, async (_eventType, filename) => {
   if (filename && filename.endsWith(".ipynb")) {
     const fullPath = path.join(NOTEBOOK_DIR, filename);
 
