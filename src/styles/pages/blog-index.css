@@ -26,6 +26,13 @@
   height: 220px;
 }
 
+.blog-index-list.blog-index-list--compact
+  li:first-child
+  a:hover
+  .blog-index-date {
+  color: var(--color-accent);
+}
+
 .blog-index-list.blog-index-list--compact li:first-child .blog-index-title,
 .blog-index-list.blog-index-list--compact .blog-index-title {
   font-size: 1.15rem;

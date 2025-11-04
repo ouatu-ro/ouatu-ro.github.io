@@ -12,16 +12,16 @@
   --color-border: #333;
   --color-border-channels: 51, 51, 51;
 
-  --color-text: #ffffff;
+  --color-text: rgb(255, 255, 255);
   --color-text-channels: 255, 255, 255;
 
-  --color-muted: #cccccc;
+  --color-muted: rgb(204, 204, 204);
   --color-muted-channels: 204, 204, 204;
 
   --color-primary: rgb(73, 200, 116);
   --color-primary-channels: 73, 200, 116;
 
-  --color-accent: #ff7b00;
+  --color-accent: rgb(255, 123, 0);
   --color-accent-channels: 255, 123, 0;
   --color-accent-soft: rgba(var(--color-accent-channels), 0.6);
 
