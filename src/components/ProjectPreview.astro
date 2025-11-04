@@ -11,6 +11,7 @@ import MeshArtwork from "./project-artworks/MeshArtwork.astro";
 import OuroborosArtwork from "./project-artworks/OuroborosArtwork.astro";
 import ScreenshotArtwork from "./project-artworks/ScreenshotArtwork.astro";
 import TitleCardArtwork from "./project-artworks/TitleCardArtwork.astro";
+import WinkArtwork from "./project-artworks/WinkArtwork.astro";
 
 interface Props {
   project: ProjectRecord;
@@ -106,6 +107,7 @@ const previewComponentMap = {
   ouroboros: OuroborosArtwork,
   screenshot: ScreenshotArtwork,
   titlecard: TitleCardArtwork,
+  wink: WinkArtwork,
 } as const;
 
 const ArtworkComponent =

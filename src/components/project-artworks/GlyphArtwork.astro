@@ -9,14 +9,19 @@ const displayText = (title ?? label).toUpperCase();
 ---
 
 <>
-  <span class="glyph-shape" />
+  <span class="glyph-shape"></span>
   <span class="glyph-icon">{displayText}</span>
 </>
 
 <style>
   :global(.project-card-media--glyph) {
-    background:
-      conic-gradient(from 130deg at 50% 50%, #3422ff, #0cc0ff, #ff4b95, #3422ff);
+    background: conic-gradient(
+      from 130deg at 50% 50%,
+      #3422ff,
+      #0cc0ff,
+      #ff4b95,
+      #3422ff
+    );
     position: relative;
   }
 

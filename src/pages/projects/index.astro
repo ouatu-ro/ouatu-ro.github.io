@@ -51,13 +51,22 @@ const description = "All shipped experiments, products, and live demos.";
         <p>{description}</p>
       </div>
 
-      <ul class="projects-highlight-grid projects-archive-grid">
-        {orderedProjects.map((project) => (
-          <ProjectPreview
-            project={project}
-            highlighted={highlightedSlugs.has(project.slug)}
-          />
-        ))}
+      <h2 class="visually-hidden" id="projects-list-heading">
+        Project listings
+      </h2>
+
+      <ul
+        class="projects-highlight-grid projects-archive-grid"
+        aria-labelledby="projects-list-heading"
+      >
+        {
+          orderedProjects.map((project) => (
+            <ProjectPreview
+              project={project}
+              highlighted={highlightedSlugs.has(project.slug)}
+            />
+          ))
+        }
       </ul>
     </main>
     <Footer />

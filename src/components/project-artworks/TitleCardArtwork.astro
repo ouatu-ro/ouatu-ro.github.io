@@ -15,7 +15,11 @@ const { title, subtitle } = Astro.props;
 <style>
   :global(.project-card-media--titlecard) {
     background:
-      radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.28), rgba(9, 12, 20, 0.92)),
+      radial-gradient(
+        circle at 15% 15%,
+        rgba(138, 43, 226, 0.28),
+        rgba(9, 12, 20, 0.92)
+      ),
       linear-gradient(165deg, rgba(12, 16, 30, 0.92), rgba(9, 12, 22, 0.98));
     position: relative;
     display: flex;
@@ -33,19 +37,22 @@ const { title, subtitle } = Astro.props;
     gap: 0.85rem;
     align-content: flex-start;
     justify-items: start;
-    background:
-      linear-gradient(
-        140deg,
-        rgba(255, 255, 255, 0.08),
-        rgba(108, 93, 255, 0.16),
-        rgba(102, 255, 204, 0.14)
-      );
+    background: linear-gradient(
+      140deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(108, 93, 255, 0.16),
+      rgba(102, 255, 204, 0.14)
+    );
     border: 1px solid rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(14px);
     box-shadow:
       inset 0 0 24px rgba(0, 0, 0, 0.35),
       0 20px 38px rgba(0, 0, 0, 0.35);
     overflow: hidden;
+    transition:
+      border-color 220ms ease,
+      box-shadow 220ms ease,
+      transform 220ms ease;
   }
 
   .title-card::after {
@@ -55,7 +62,11 @@ const { title, subtitle } = Astro.props;
     width: 220px;
     height: 220px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(108, 93, 255, 0.2), transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba(108, 93, 255, 0.2),
+      transparent 70%
+    );
     filter: blur(4px);
     opacity: 0.75;
   }
@@ -67,7 +78,11 @@ const { title, subtitle } = Astro.props;
     width: 260px;
     height: 260px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(108, 255, 214, 0.2), transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba(108, 255, 214, 0.2),
+      transparent 70%
+    );
     filter: blur(6px);
     opacity: 0.58;
     animation: titleCardGlow 12s ease-in-out infinite;
@@ -93,6 +108,9 @@ const { title, subtitle } = Astro.props;
     position: relative;
     z-index: 2;
     backdrop-filter: blur(6px);
+    transition:
+      border-color 220ms ease,
+      transform 220ms ease;
   }
 
   .title-card-subtitle {
@@ -104,6 +122,7 @@ const { title, subtitle } = Astro.props;
     color: rgba(222, 236, 255, 0.72);
     position: relative;
     z-index: 2;
+    transition: color 220ms ease;
   }
 
   @media (max-width: 640px) {
@@ -126,5 +145,39 @@ const { title, subtitle } = Astro.props;
       transform: translate3d(16px, -10px, 0) scale(1.08);
       opacity: 0.76;
     }
+  }
+
+  :global(.project-card-link:hover .project-card-media--titlecard .title-card),
+  :global(
+    .project-card-link:focus-visible .project-card-media--titlecard .title-card
+  ) {
+    border-color: rgba(138, 43, 226, 0.5);
+    box-shadow:
+      inset 0 0 28px rgba(20, 18, 28, 0.46),
+      0 4px 24px rgba(138, 43, 226, 0.4);
+    transform: translateY(-2px);
+  }
+
+  :global(
+    .project-card-link:hover .project-card-media--titlecard .title-card-text
+  ),
+  :global(
+    .project-card-link:focus-visible
+      .project-card-media--titlecard
+      .title-card-text
+  ) {
+    border-color: rgba(138, 43, 226, 0.5);
+    transform: scale(1.02);
+  }
+
+  :global(
+    .project-card-link:hover .project-card-media--titlecard .title-card-subtitle
+  ),
+  :global(
+    .project-card-link:focus-visible
+      .project-card-media--titlecard
+      .title-card-subtitle
+  ) {
+    color: rgba(235, 244, 255, 0.88);
   }
 </style>

@@ -26,7 +26,8 @@ export type HighlightPreviewType =
   | "code"
   | "mesh"
   | "ouroboros"
-  | "titlecard";
+  | "titlecard"
+  | "wink";
 
 export interface HighlightsConfig {
   projects: Array<{ slug: string; previewType?: HighlightPreviewType }>;
@@ -100,6 +101,7 @@ export async function getProjects(): Promise<ProjectRecord[]> {
     "maze-solver": "terminal",
     "table-planner": "wireframe",
     "hall-of-mirrors-3": "mesh",
+    "wink-sound-effects": "wink",
   };
 
   return baseProjects.map((project: any) => {

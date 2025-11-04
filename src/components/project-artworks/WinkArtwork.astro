@@ -1,0 +1,127 @@
+<!-- Blink art: drop directly inside your card's media slot -->
+<div class="blink-art" data-blink-art>
+  <span class="pop pop1">BLINK!</span>
+  <span class="pop pop2">BLINK!</span>
+</div>
+
+<style>
+  :root {
+    --cycle: 1.35s;
+  } /* faster loop */
+
+  /* No background or fixed sizing—use parent’s layout */
+  .blink-art {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .pop {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.72);
+    pointer-events: none;
+    font:
+      800 clamp(16px, 2.4vw, 22px) / 1.05 system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      Arial,
+      sans-serif;
+    color: #eafffb;
+    text-shadow:
+      0 0 10px rgba(108, 255, 179, 0.55),
+      0 0 2px rgba(12, 16, 28, 0.8);
+    opacity: 0;
+
+    /* Immediate pop early in the cycle; paused until hover */
+    animation: blink-pop var(--cycle) cubic-bezier(0.2, 0.8, 0.2, 1) infinite
+      both;
+    animation-play-state: paused;
+    /* fast start kick; JS will set --kick to a small negative value on hover */
+    animation-delay: var(--kick, 0s);
+  }
+
+  /* Two slightly different positions/angles */
+  .pop1 {
+    left: 34%;
+    top: 36%;
+    transform: translate(-50%, -50%) rotate(-9deg) scale(0.72);
+  }
+  .pop2 {
+    left: 60%;
+    top: 64%;
+    transform: translate(-50%, -50%) rotate(7deg) scale(0.72);
+    /* second pop offset PLUS kick */
+    animation-delay: calc(var(--cycle) * 0.18 + var(--kick, 0s));
+  }
+
+  @keyframes blink-pop {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--r, 0)) scale(0.72);
+    }
+    6% {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(var(--r, 0)) scale(1.08);
+    } /* pop fast */
+    16% {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(var(--r, 0)) scale(0.96);
+    }
+    28% {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(var(--r, 0)) scale(1);
+    }
+    38% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--r, 0)) scale(1.04);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--r, 0)) scale(1.04);
+    }
+  }
+
+  /* Pure-CSS fallback: if JS doesn’t run, hovering the whole card still plays */
+  :global(.project-card-link:hover) .blink-art .pop {
+    animation-play-state: running;
+  }
+</style>
+
+<script is:inline>
+  // Bind per instance; trigger from the nearest .project-card-link like ouroboros
+  document.querySelectorAll("[data-blink-art]").forEach((art) => {
+    const pops = art.querySelectorAll(".pop");
+    const card = art.closest(".project-card-link") || art;
+
+    const start = () => {
+      // quick-start nudge so first BLINK appears almost instantly
+      art.style.setProperty("--kick", "-0.10s");
+      pops.forEach((p) => {
+        // hard reset so each hover starts from the top of the cycle
+        p.style.animation = "none";
+        void p.offsetWidth; // reflow
+        p.style.animation = "";
+        p.style.animationPlayState = "running";
+      });
+    };
+
+    const stop = () => {
+      art.style.removeProperty("--kick");
+      pops.forEach((p) => {
+        p.style.animation = "none";
+        void p.offsetWidth;
+        p.style.animation = "";
+        p.style.animationPlayState = "paused";
+      });
+    };
+
+    card.addEventListener("mouseenter", start);
+    card.addEventListener("mouseleave", stop);
+
+    // Optional for touch: tap to start
+    card.addEventListener("touchstart", start, { passive: true });
+  });
+</script>

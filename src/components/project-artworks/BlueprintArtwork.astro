@@ -18,26 +18,38 @@ const { blueprintNodes, blueprintConnectors } = Astro.props;
 ---
 
 <div class="blueprint-nodes">
-  {blueprintNodes.map((node, idx) => (
-    <span class="blueprint-node" style={{ top: node.top, left: node.left }} data-node-index={idx} />
-  ))}
-  {blueprintConnectors.map((connector, idx) => (
-    <span
-      class="blueprint-connector"
-      style={{
-        top: connector.top,
-        left: connector.left,
-        width: connector.width,
-        transform: `rotate(${connector.rotate})`,
-      }}
-      data-connector-index={idx}
-    />
-  ))}
+  {
+    blueprintNodes.map((node, idx) => (
+      <span
+        class="blueprint-node"
+        style={{ top: node.top, left: node.left }}
+        data-node-index={idx}
+      />
+    ))
+  }
+  {
+    blueprintConnectors.map((connector, idx) => (
+      <span
+        class="blueprint-connector"
+        style={{
+          top: connector.top,
+          left: connector.left,
+          width: connector.width,
+          transform: `rotate(${connector.rotate})`,
+        }}
+        data-connector-index={idx}
+      />
+    ))
+  }
 </div>
 
 <style>
   :global(.project-card-media--blueprint) {
-    background: radial-gradient(circle at top, rgba(64, 174, 255, 0.45), #061221);
+    background: radial-gradient(
+      circle at top,
+      rgba(64, 174, 255, 0.45),
+      #061221
+    );
     position: relative;
     overflow: hidden;
   }
@@ -46,10 +58,8 @@ const { blueprintNodes, blueprintConnectors } = Astro.props;
     content: "";
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(
-        rgba(73, 167, 255, 0.08) 1px,
-        transparent 1px
-      ),
+    background-image:
+      linear-gradient(rgba(73, 167, 255, 0.08) 1px, transparent 1px),
       linear-gradient(90deg, rgba(73, 167, 255, 0.08) 1px, transparent 1px);
     background-size: 24px 24px;
     opacity: 0.7;
@@ -73,7 +83,12 @@ const { blueprintNodes, blueprintConnectors } = Astro.props;
   .blueprint-connector {
     position: absolute;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(74, 194, 255, 0.75), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(74, 194, 255, 0.75),
+      transparent
+    );
     filter: drop-shadow(0 0 6px rgba(74, 194, 255, 0.6));
   }
 </style>

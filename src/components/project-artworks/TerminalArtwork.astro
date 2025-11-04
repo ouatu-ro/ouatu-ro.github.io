@@ -8,22 +8,31 @@ const { terminalLines } = Astro.props;
 
 <div class="terminal-screen">
   <div class="terminal-status-bar">
-    <span class="terminal-dot is-red" />
-    <span class="terminal-dot is-yellow" />
-    <span class="terminal-dot is-green" />
+    <span class="terminal-dot is-red"></span>
+    <span class="terminal-dot is-yellow"></span>
+    <span class="terminal-dot is-green"></span>
   </div>
-  {terminalLines.map((line, index) => (
-    <div class:list={["terminal-line", { "terminal-prompt": index === 0 }]} data-line-index={index}>
-      {line}
-      {index === terminalLines.length - 1 && <span class="terminal-cursor" />}
-    </div>
-  ))}
+  {
+    terminalLines.map((line, index) => (
+      <div
+        class:list={["terminal-line", { "terminal-prompt": index === 0 }]}
+        data-line-index={index}
+      >
+        {line}
+        {index === terminalLines.length - 1 && <span class="terminal-cursor" />}
+      </div>
+    ))
+  }
 </div>
 
 <style>
   :global(.project-card-media--terminal) {
     background:
-      radial-gradient(circle at top left, rgba(55, 158, 255, 0.45), rgba(10, 15, 28, 0.9)),
+      radial-gradient(
+        circle at top left,
+        rgba(55, 158, 255, 0.45),
+        rgba(10, 15, 28, 0.9)
+      ),
       linear-gradient(160deg, rgba(9, 24, 45, 0.9), rgba(4, 12, 26, 0.95));
     font-family: "Source Code Pro", "Fira Code", monospace;
   }

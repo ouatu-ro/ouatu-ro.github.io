@@ -142,12 +142,14 @@
 .blog-index-list a:hover .blog-index-title,
 .blog-index-list a:hover .blog-index-date {
   color: var(--color-accent);
-  transition: color 0.1s ease-in-out;
 }
 
 .blog-index-list a:hover img,
 .blog-index-list a:hover .blog-title-fallback {
-  box-shadow: 0 4px 20px rgba(138, 43, 226, 0.4);
+  box-shadow:
+    0 4px 20px rgba(138, 43, 226, 0.38),
+    0 18px 42px rgba(0, 0, 0, 0.38);
+  /* transform: scale(1.04); */
 }
 
 .blog-index-list a:hover .title-fallback {
@@ -155,9 +157,25 @@
 }
 
 .blog-index-list a:hover .blog-title-fallback h3 {
-  transform: scale(1.02);
-  transition: transform 0.3s ease;
-  border: 1px solid rgba(138, 43, 226, 0.5);
+  transform: scale(1.04);
+  border-color: rgba(138, 43, 226, 0.5);
+}
+
+.blog-index-title,
+.blog-index-date {
+  transition: color 220ms ease;
+}
+
+.blog-title-fallback {
+  transition:
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.blog-title-fallback h3 {
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease;
 }
 
 .blog-title-fallback h3::before,

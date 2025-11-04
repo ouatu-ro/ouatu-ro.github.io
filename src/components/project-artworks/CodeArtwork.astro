@@ -7,16 +7,22 @@ const { codeLines } = Astro.props;
 ---
 
 <div class="code-lines">
-  {codeLines.map((line, idx) => (
-    <span class="code-line" data-line-index={idx}>
-      {line}
-    </span>
-  ))}
+  {
+    codeLines.map((line, idx) => (
+      <span class="code-line" data-line-index={idx}>
+        {line}
+      </span>
+    ))
+  }
 </div>
 
 <style>
   :global(.project-card-media--code) {
-    background: linear-gradient(140deg, rgba(25, 25, 60, 0.9), rgba(15, 15, 30, 0.95));
+    background: linear-gradient(
+      140deg,
+      rgba(25, 25, 60, 0.9),
+      rgba(15, 15, 30, 0.95)
+    );
     font-family: "Source Code Pro", "Fira Code", monospace;
   }
 

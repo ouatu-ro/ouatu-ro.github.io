@@ -12,7 +12,11 @@ const { domain } = Astro.props;
 
 <style>
   :global(.project-card-media--screenshot) {
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0.55));
+    background: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.18),
+      rgba(0, 0, 0, 0.55)
+    );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +27,11 @@ const { domain } = Astro.props;
     aspect-ratio: 16 / 9;
     border-radius: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    background: linear-gradient(140deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.12));
+    background: linear-gradient(
+      140deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.12)
+    );
     display: grid;
     place-items: center;
     color: rgba(255, 255, 255, 0.85);

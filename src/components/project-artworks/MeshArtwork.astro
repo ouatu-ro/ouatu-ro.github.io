@@ -10,13 +10,17 @@ const { label } = Astro.props;
   <div class="mesh-core">
     <span class="mesh-label">{label}</span>
   </div>
-  <div class="mesh-ring mesh-ring--one" />
-  <div class="mesh-ring mesh-ring--two" />
+  <div class="mesh-ring mesh-ring--one"></div>
+  <div class="mesh-ring mesh-ring--two"></div>
 </div>
 
 <style>
   :global(.project-card-media--mesh) {
-    background: radial-gradient(circle at 30% 30%, rgba(255, 180, 0, 0.35), #10040f);
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 180, 0, 0.35),
+      #10040f
+    );
     position: relative;
   }
 
@@ -36,7 +40,11 @@ const { label } = Astro.props;
     width: 60%;
     aspect-ratio: 1 / 1;
     border-radius: 30%;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.22), rgba(0, 0, 0, 0.4));
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.22),
+      rgba(0, 0, 0, 0.4)
+    );
     box-shadow:
       0 0 28px rgba(255, 180, 0, 0.36),
       inset 0 0 16px rgba(255, 255, 255, 0.25);

@@ -26,38 +26,40 @@ const essays = (await getCollection("essays")).sort((a, b) => {
     <Header />
     <main class="blog-index-main">
       <section>
-        {essays.length === 0 ? (
-          <p>No essays published yet. Check back soon!</p>
-        ) : (
-          <ul class="blog-index-list">
-            {essays.map((essay) => (
-              <li>
-                <a href={`/essays/${essay.id}/`}>
-                  {essay.data.heroImage ? (
-                    <img
-                      width={720}
-                      height={360}
-                      src={essay.data.heroImage}
-                      alt=""
-                    />
-                  ) : (
-                    <div class="blog-title-fallback">
-                      <h3>{essay.data.title}</h3>
-                    </div>
-                  )}
-                  <h4 class="title blog-index-title">{essay.data.title}</h4>
-                  {(essay.data.pubDate || essay.data.updatedDate) && (
-                    <p class="date blog-index-date">
-                      <FormattedDate
-                        date={essay.data.pubDate ?? essay.data.updatedDate!}
+        {
+          essays.length === 0 ? (
+            <p>No essays published yet. Check back soon!</p>
+          ) : (
+            <ul class="blog-index-list">
+              {essays.map((essay) => (
+                <li>
+                  <a href={`/essays/${essay.id}/`}>
+                    {essay.data.heroImage ? (
+                      <img
+                        width={720}
+                        height={360}
+                        src={essay.data.heroImage}
+                        alt=""
                       />
-                    </p>
-                  )}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
+                    ) : (
+                      <div class="blog-title-fallback">
+                        <h3>{essay.data.title}</h3>
+                      </div>
+                    )}
+                    <h4 class="title blog-index-title">{essay.data.title}</h4>
+                    {(essay.data.pubDate || essay.data.updatedDate) && (
+                      <p class="date blog-index-date">
+                        <FormattedDate
+                          date={essay.data.pubDate ?? essay.data.updatedDate!}
+                        />
+                      </p>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
       </section>
     </main>
     <Footer />

@@ -36,7 +36,10 @@
 }
 
 .blog-index-list.blog-index-list--compact .blog-title-fallback h3,
-.blog-index-list.blog-index-list--compact li:first-child .blog-title-fallback h3 {
+.blog-index-list.blog-index-list--compact
+  li:first-child
+  .blog-title-fallback
+  h3 {
   font-size: 1.3rem;
 }
 
@@ -48,7 +51,8 @@
 
 .blog-index-list.blog-index-list--labs-home img,
 .blog-index-list.blog-index-list--labs-home .blog-title-fallback,
-.blog-index-list.blog-index-list--compact.blog-index-list--labs-home .blog-title-fallback {
+.blog-index-list.blog-index-list--compact.blog-index-list--labs-home
+  .blog-title-fallback {
   height: 220px;
 }
 

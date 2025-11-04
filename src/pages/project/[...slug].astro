@@ -67,7 +67,9 @@ const extras = await getCollection("projectsExtra");
 const extra = extras.find((e) => e.data.slug === project.slug);
 
 const previewAsset = extra?.data.projectPreview;
-const hasPreview = Boolean((extra?.data.shouldShowPreview ?? false) && previewAsset);
+const hasPreview = Boolean(
+  (extra?.data.shouldShowPreview ?? false) && previewAsset,
+);
 
 // Render MD/MDX body safely
 let extraHtml: string | null = null;

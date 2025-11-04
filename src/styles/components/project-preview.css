@@ -3,6 +3,9 @@
   height: 100%;
 }
 
+/* ====================
+   CARD CONTAINER
+   ==================== */
 .project-card-link {
   display: flex;
   flex-direction: column;
@@ -12,10 +15,13 @@
   text-decoration: none;
   color: inherit;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(150deg, rgba(24, 30, 46, 0.78), rgba(12, 16, 26, 0.68));
+  border: 1px solid rgba(var(--color-text-channels), 0.1);
+  background: linear-gradient(
+    150deg,
+    rgba(var(--color-surface-channels), 0.78),
+    rgba(var(--color-surface-alt-channels), 0.68)
+  );
   backdrop-filter: blur(18px) saturate(140%);
-  /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   transition:
     border-color 220ms ease,
@@ -32,9 +38,23 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 58%);
+  background:
+    radial-gradient(
+      circle at 16% 12%,
+      rgba(var(--color-accent-strong-channels), 0.28),
+      rgba(var(--color-accent-strong-channels), 0)
+    ),
+    radial-gradient(
+      circle at 82% 85%,
+      rgba(var(--color-primary-channels), 0.18),
+      rgba(var(--color-primary-channels), 0)
+    );
   z-index: 0;
   pointer-events: none;
+  opacity: 0.4;
+  transition:
+    opacity 240ms ease,
+    transform 240ms ease;
 }
 
 .project-card-link::after {
@@ -42,7 +62,11 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(140deg, rgba(0, 255, 204, 0.18), rgba(108, 93, 255, 0.16));
+  background: linear-gradient(
+    140deg,
+    rgba(var(--color-primary-channels), 0.18),
+    rgba(var(--color-accent-strong-channels), 0.16)
+  );
   opacity: 0;
   pointer-events: none;
   transition: opacity 220ms ease;
@@ -54,18 +78,35 @@
   z-index: 2;
 }
 
+/* ====================
+   HOVER STATES
+   ==================== */
 .project-card-link:hover::after,
 .project-card-link:focus-visible::after {
   opacity: 1;
 }
 
-.project-card-link:hover,
-.project-card-link:focus-visible {
-  border-color: rgba(255, 255, 255, 0.26);
-  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.32);
-  background: linear-gradient(150deg, rgba(30, 36, 52, 0.88), rgba(12, 16, 26, 0.75));
+.project-card-link:hover::before,
+.project-card-link:focus-visible::before {
+  opacity: 0.82;
+  transform: scale(1.05);
 }
 
+.project-card-link:hover,
+.project-card-link:focus-visible {
+  border-color: rgba(var(--color-text-channels), 0.26);
+  box-shadow: 0 0 60px 10px rgba(var(--color-accent-strong-channels), 0.35);
+  background: linear-gradient(
+    150deg,
+    rgba(var(--color-surface-channels), 0.9),
+    rgba(var(--color-surface-alt-channels), 0.82)
+  );
+  filter: brightness(1.02);
+}
+
+/* ====================
+   MEDIA BLOCK
+   ==================== */
 .project-card-media {
   position: relative;
   width: 100%;
@@ -75,19 +116,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(var(--color-text-channels), 0.08);
   box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.45);
-  background: linear-gradient(145deg, rgba(12, 15, 26, 0.9), rgba(18, 24, 36, 0.9));
+  background: linear-gradient(
+    145deg,
+    rgba(var(--color-surface-alt-channels), 0.9),
+    rgba(var(--color-surface-channels), 0.9)
+  );
   z-index: 1;
   transition:
     border-color 220ms ease,
-    box-shadow 220ms ease;
+    box-shadow 220ms ease,
+    transform 220ms ease;
 }
 
 .project-card-link:hover .project-card-media,
 .project-card-link:focus-visible .project-card-media {
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.45);
+  border-color: rgba(var(--color-text-channels), 0.2);
+  box-shadow:
+    inset 0 0 50px rgba(0, 0, 0, 0.5),
+    0 0 45px rgba(var(--color-primary-channels), 0.18);
+  filter: brightness(1.08);
+  transform: scale(1.04);
 }
 
 .project-card-media img,
@@ -102,20 +152,13 @@
 }
 
 .project-card-media--fallback {
-  color: rgba(240, 248, 255, 0.92);
+  color: rgba(var(--color-text-channels), 0.92);
   text-align: left;
 }
 
-.project-card-link:hover h3,
-.project-card-link:focus-visible h3 {
-  color: #7ff7dd;
-}
-
-.project-card-link:hover .project-card-meta span,
-.project-card-link:focus-visible .project-card-meta span {
-  color: rgba(200, 255, 245, 0.8);
-}
-
+/* ====================
+   TEXT
+   ==================== */
 .project-card-body {
   display: flex;
   flex-direction: column;
@@ -133,7 +176,7 @@
 
 .project-card-body p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.74);
+  color: rgba(var(--color-text-channels), 0.74);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -145,7 +188,7 @@
   display: flex;
   gap: 1.25rem;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(var(--color-text-channels), 0.58);
   margin-top: auto;
 }
 
@@ -153,13 +196,39 @@
   transition: color 220ms ease;
 }
 
+/* ====================
+   HOVER TEXT COLORS
+   ==================== */
+.project-card-link:hover h3,
+.project-card-link:focus-visible h3 {
+  color: rgb(var(--color-primary-channels));
+}
+
+.project-card-link:hover .project-card-meta span,
+.project-card-link:focus-visible .project-card-meta span {
+  color: rgba(var(--color-primary-channels), 0.8);
+}
+
+.project-card-link:hover .project-card-meta,
+.project-card-link:focus-visible .project-card-meta {
+  color: rgba(var(--color-primary-channels), 0.7);
+}
+
+.project-card-link:hover .project-card-body p,
+.project-card-link:focus-visible .project-card-body p {
+  color: rgba(var(--color-text-channels), 0.82);
+}
+
+/* ====================
+   BADGE
+   ==================== */
 .project-card-badge {
   position: absolute;
   top: 1.1rem;
   right: 1.1rem;
-  background: rgba(54, 243, 255, 0.12);
-  border: 1px solid rgba(54, 243, 255, 0.65);
-  color: rgba(54, 243, 255, 0.9);
+  background: rgba(var(--color-primary-channels), 0.12);
+  border: 1px solid rgba(var(--color-primary-channels), 0.65);
+  color: rgba(var(--color-primary-channels), 0.9);
   padding: 0.3rem 0.85rem;
   border-radius: 999px;
   font-size: 0.68rem;
@@ -170,9 +239,12 @@
 
 .project-card-link:hover .project-card-badge,
 .project-card-link:focus-visible .project-card-badge {
-  background: rgba(54, 243, 255, 0.24);
+  background: rgba(var(--color-primary-channels), 0.24);
 }
 
+/* ====================
+   LAYOUT
+   ==================== */
 @media (min-width: 900px) {
   .project-card-link {
     padding: 1.75rem;
