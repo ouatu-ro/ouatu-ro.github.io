@@ -5,9 +5,9 @@ description: "Alternating Least Squares is a matrix factorization algorithm comm
 math: true
 ---
 
-Recommendation systems are algorithms designed to suggest relevant items to users. They're behind many familiar features like Netflix movie recommendations or Amazon product suggestions.
+This lab will teach you the math and engineering behind Alternating Least Squares: how to **derive the least-squares formula**, why alternation is needed, and **how to implement it efficiently**. Includes **ready-to-use code snippets** for your projects and a **real-world example** that shows the method's limits.
 
-One common approach is _collaborative filtering_, which uses the past behavior of many users to make recommendations. Matrix factorization methods like ALS are powerful techniques for collaborative filtering.
+We'll apply it to recommendation systems - the algorithms behind familiar features like Netflix movie suggestions or Amazon product recommendations. These systems rely on _collaborative filtering_, which uses the past behavior of many users to infer preferences. Matrix factorization methods such as ALS are among the most effective techniques for this task.
 
 ## The Matrix Factorization Problem
 
