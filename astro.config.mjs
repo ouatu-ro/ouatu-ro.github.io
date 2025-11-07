@@ -55,9 +55,9 @@ function slugify(text) {
 
 const projectsMeta = readProjectsMeta();
 
-// --- labs slug -> date
-function buildLabsDateMap() {
-  const dir = path.join(process.cwd(), "src", "content", "labs");
+// --- blog slug -> date
+function buildBlogDateMap() {
+  const dir = path.join(process.cwd(), "src", "content", "blog");
   const map = new Map();
   if (!fs.existsSync(dir)) return map;
   const walk = (d) => {
@@ -71,7 +71,8 @@ function buildLabsDateMap() {
           const fm = matter(src).data || {};
           const updated = fm.updatedDate ? new Date(fm.updatedDate) : undefined;
           const pub = fm.pubDate ? new Date(fm.pubDate) : undefined;
-          map.set(slug, updated || pub);
+          const entrySlug = fm.slug || slug;
+          map.set(entrySlug, updated || pub);
         } catch {}
       }
     }
@@ -79,32 +80,7 @@ function buildLabsDateMap() {
   walk(dir);
   return map;
 }
-const labsDates = buildLabsDateMap();
-
-function buildEssaysDateMap() {
-  const dir = path.join(process.cwd(), "src", "content", "essays");
-  const map = new Map();
-  if (!fs.existsSync(dir)) return map;
-  const walk = (d) => {
-    for (const f of fs.readdirSync(d, { withFileTypes: true })) {
-      const p = path.join(d, f.name);
-      if (f.isDirectory()) walk(p);
-      else if (/\.(md|mdx)$/.test(f.name)) {
-        const slug = f.name.replace(/\.(md|mdx)$/, "");
-        try {
-          const src = fs.readFileSync(p, "utf8");
-          const fm = matter(src).data || {};
-          const updated = fm.updatedDate ? new Date(fm.updatedDate) : undefined;
-          const pub = fm.pubDate ? new Date(fm.pubDate) : undefined;
-          map.set(slug, updated || pub);
-        } catch {}
-      }
-    }
-  };
-  walk(dir);
-  return map;
-}
-const essaysDates = buildEssaysDateMap();
+const blogDates = buildBlogDateMap();
 
 // --- file mtime fallback
 function mtimeForRoute(urlPath) {
@@ -112,7 +88,7 @@ function mtimeForRoute(urlPath) {
     urlPath.endsWith("/") ? urlPath.slice(0, -1) : urlPath,
     urlPath.endsWith("/") ? urlPath + "index" : urlPath + "/index",
   ];
-  const roots = ["src/pages", "src/content/labs", "src/content/essays"];
+  const roots = ["src/pages", "src/content/blog"];
   const exts = [".astro", ".mdx", ".md"];
   for (const root of roots) {
     for (const c of candidates) {
@@ -148,11 +124,7 @@ function maxDate(...ds) {
   const ts = ds.filter(Boolean).map((d) => d.getTime());
   return ts.length ? new Date(Math.max(...ts)) : undefined;
 }
-const latestLabsDate = [...labsDates.values()].reduce(
-  (a, b) => (a && a > b ? a : b),
-  undefined
-);
-const latestEssaysDate = [...essaysDates.values()].reduce(
+const latestBlogDate = [...blogDates.values()].reduce(
   (a, b) => (a && a > b ? a : b),
   undefined
 );
@@ -163,11 +135,6 @@ const latestProjectDate = projectsMeta
 export default defineConfig({
   site: "https://ouatu.ro/",
   base: "/",
-  redirects: {
-    "/blog": "/labs",
-    "/blog/[...slug]": "/labs/[...slug]",
-    "/blog-rss.xml": "/labs-rss.xml",
-  },
   // trailingSlash: "always", // optional but consistent with sitemap normalization
   integrations: [
     mdx(),
@@ -182,13 +149,12 @@ export default defineConfig({
           ? url.pathname
           : url.pathname + "/";
 
-        // Homepage -> max(home mtime, latest labs, latest essays, latest project)
+        // Homepage -> max(home mtime, latest blog, latest project)
         if (pathname === "/") {
           const homeMtime = mtimeForRoute("/");
           const d = maxDate(
             homeMtime,
-            latestLabsDate,
-            latestEssaysDate,
+            latestBlogDate,
             latestProjectDate
           );
           if (d) return { ...item, lastmod: d };
@@ -202,17 +168,10 @@ export default defineConfig({
           if (d) return { ...item, lastmod: d };
         }
 
-        // labs/<slug>/
-        const labsMatch = pathname.match(/^\/labs\/([^/]+)\/$/);
-        if (labsMatch) {
-          const d = labsDates.get(labsMatch[1]);
-          if (d) return { ...item, lastmod: d };
-        }
-
-        // essays/<slug>/
-        const essaysMatch = pathname.match(/^\/essays\/([^/]+)\/$/);
-        if (essaysMatch) {
-          const d = essaysDates.get(essaysMatch[1]);
+        // blog/<slug>/
+        const blogMatch = pathname.match(/^\/blog\/([^/]+)\/$/);
+        if (blogMatch) {
+          const d = blogDates.get(blogMatch[1]);
           if (d) return { ...item, lastmod: d };
         }
 
@@ -243,6 +202,11 @@ export default defineConfig({
     shikiConfig: { theme: "github-dark" },
   },
   vite: {
+    resolve: {
+      alias: {
+        "@": path.join(process.cwd(), "src"),
+      },
+    },
     build: { assetsInlineLimit: 65536 },
     plugins: [],
   },

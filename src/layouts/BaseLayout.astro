@@ -1,0 +1,49 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ClientScripts from "../components/ClientScripts.astro";
+import { SITE_TITLE } from "../consts";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  mainClass?: string;
+}
+
+const {
+  title = SITE_TITLE,
+  description = "",
+  image,
+  mainClass = "",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} image={image} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Blog RSS"
+      href="/blog/rss.xml"
+    />
+    <link
+      rel="alternate"
+      type="application/feed+json"
+      title="Blog JSON Feed"
+      href="/blog/feed.json"
+    />
+    <ClientScripts />
+    <slot name="head" />
+  </head>
+  <body>
+    <Header />
+    <main class={mainClass}>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

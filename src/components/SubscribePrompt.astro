@@ -1,0 +1,64 @@
+---
+import type { CategoryId } from "../config/categories";
+import { CATEGORIES } from "../config/categories";
+import { normalizeTag } from "../lib/posts";
+
+interface Props {
+  categoryId?: CategoryId;
+  tagSlug?: string;
+  tagLabel?: string;
+}
+
+const { categoryId, tagSlug, tagLabel } = Astro.props as Props;
+
+const scopedCategory = categoryId ? CATEGORIES[categoryId] : undefined;
+const normalizedTag = tagSlug ? normalizeTag(tagSlug) : undefined;
+const scopedTagLabel = tagLabel ?? tagSlug;
+
+const scopedRss = categoryId
+  ? `/blog/category/${categoryId}/rss.xml`
+  : normalizedTag
+    ? `/blog/tag/${normalizedTag}/rss.xml`
+    : undefined;
+const scopedJson = categoryId
+  ? `/blog/category/${categoryId}/feed.json`
+  : normalizedTag
+    ? `/blog/tag/${normalizedTag}/feed.json`
+    : undefined;
+---
+<section class="subscribe-prompt">
+  <h3>Stay in the Loop</h3>
+  <p>
+    Get notified when I publish new writing.
+    {scopedCategory && ` This block follows the ${scopedCategory.name} stream.`}
+    {normalizedTag && ` This block covers posts tagged "${scopedTagLabel}".`}
+  </p>
+  <div class="subscribe-prompt__links">
+    <a href="/blog/rss.xml" class="btn btn-primary" rel="nofollow">
+      Subscribe to All Posts
+    </a>
+    <a href="/blog/feed.json" class="btn btn-secondary" rel="nofollow">
+      JSON Feed
+    </a>
+    {scopedRss && scopedCategory && (
+      <a href={scopedRss} class="btn" rel="nofollow">
+        {`Only ${scopedCategory.name}`}
+      </a>
+    )}
+    {scopedJson && scopedCategory && (
+      <a href={scopedJson} class="btn btn-secondary" rel="nofollow">
+        {`${scopedCategory.name} JSON`}
+      </a>
+    )}
+    {scopedRss && normalizedTag && (
+      <a href={scopedRss} class="btn" rel="nofollow">
+        {`Only #${normalizedTag}`}
+      </a>
+    )}
+    {scopedJson && normalizedTag && (
+      <a href={scopedJson} class="btn btn-secondary" rel="nofollow">
+        {`#${normalizedTag} JSON`}
+      </a>
+    )}
+  </div>
+</section>

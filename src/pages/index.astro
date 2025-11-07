@@ -8,19 +8,17 @@ import FormattedDate from "../components/FormattedDate.astro";
 import ClientScripts from "../components/ClientScripts.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getProjects, getHighlightConfig } from "../utils/projects";
-import { getCollection } from "astro:content";
+import { getAllPosts, type BlogPost } from "../lib/posts";
+import { CATEGORIES } from "../config/categories";
 import "../styles/pages/blog.css";
 import "../styles/pages/blog-index.css";
 
-const [projects, highlights, labsCollection, essaysCollection] =
-  await Promise.all([
-    getProjects(),
-    getHighlightConfig(),
-    getCollection("labs"),
-    getCollection("essays"),
-  ]);
+const [projects, highlights, blogPosts] = await Promise.all([
+  getProjects(),
+  getHighlightConfig(),
+  getAllPosts(),
+]);
 
-const entrySlug = (id: string) => id.replace(/\\/g, "/").replace(/\.mdx?$/, "");
 const nonNullable = <T,>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
 const projectMap = new Map(projects.map((project) => [project.slug, project]));
@@ -40,30 +38,17 @@ const projectsToShow =
   highlightedProjects.length > 0
     ? highlightedProjects.slice(0, 3)
     : fallbackProjects.slice(0, 3);
-const labsBySlug = new Map(
-  labsCollection.map((entry) => [entrySlug(entry.id), entry]),
-);
-const essaysBySlug = new Map(
-  essaysCollection.map((entry) => [entrySlug(entry.id), entry]),
-);
-const labsSorted = [...labsCollection].sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
-const essaysSorted = [...essaysCollection].sort((a, b) => {
-  const dateA = a.data.pubDate ?? a.data.updatedDate ?? new Date(0);
-  const dateB = b.data.pubDate ?? b.data.updatedDate ?? new Date(0);
-  return dateB.valueOf() - dateA.valueOf();
-});
-const labsToShow =
-  highlights.labs.length > 0
-    ? highlights.labs.map((ref) => labsBySlug.get(ref.slug)).filter(nonNullable)
-    : labsSorted.slice(0, 3);
-const essaysToShow =
-  highlights.essays.length > 0
-    ? highlights.essays
-        .map((ref) => essaysBySlug.get(ref.slug))
+const postsBySlug = new Map(blogPosts.map((post) => [post.slug, post]));
+const highlightedPosts =
+  highlights.posts.length > 0
+    ? highlights.posts
+        .map((ref) => postsBySlug.get(ref.slug))
         .filter(nonNullable)
-    : essaysSorted.slice(0, 3);
+    : [];
+const postsToShow =
+  highlightedPosts.length > 0
+    ? highlightedPosts.slice(0, 3)
+    : (blogPosts.slice(0, 3) as BlogPost[]);
 ---
 
 <!doctype html>
@@ -85,86 +70,46 @@ const essaysToShow =
         </p>
       </section>
 
-      <section id="essays">
+      <section id="blog">
         <h2>
-          <a href="/essays" class="blog-title-link">Essays</a>
-          <a href="/essays-rss.xml" class="rss-link" title="Essays RSS Feed">
+          <a href="/blog" class="blog-title-link">Blog</a>
+          <a href="/blog/rss.xml" class="rss-link" title="Blog RSS Feed">
             <Icon name="rss" />
           </a>
-        </h2>
-        <p>
-          Longer reflections and opinion pieces
-          <a href="/essays" class="blog-link">Read the essays</a>
-        </p>
-        {
-          essaysToShow.length > 0 ? (
-            <ul class="blog-index-list blog-index-list--compact">
-              {essaysToShow.map((essay) => (
-                <li>
-                  <a href={`/essays/${entrySlug(essay.id)}/`}>
-                    {essay.data.heroImage ? (
-                      <img
-                        width={720}
-                        height={360}
-                        src={essay.data.heroImage}
-                        alt=""
-                      />
-                    ) : (
-                      <div class="blog-title-fallback">
-                        <h3>{essay.data.title}</h3>
-                      </div>
-                    )}
-                    <h4 class="title blog-index-title">{essay.data.title}</h4>
-                    {(essay.data.pubDate || essay.data.updatedDate) && (
-                      <p class="date blog-index-date">
-                        <FormattedDate
-                          date={essay.data.pubDate ?? essay.data.updatedDate!}
-                        />
-                      </p>
-                    )}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No essays published yet. Check back soon!</p>
-          )
-        }
-      </section>
-
-      <section id="labs">
-        <h2>
-          <a href="/labs" class="blog-title-link">Labs</a>
-          <a href="/labs-rss.xml" class="rss-link" title="Labs RSS Feed">
+          <!-- <a href="/blog/feed.json" class="rss-link" title="Blog JSON Feed">
             <Icon name="rss" />
-          </a>
+          </a> -->
         </h2>
         <p>
-          Explore my latest experiments and write-ups
-          <a href="/labs" class="blog-link">Visit the labs</a>
+          Every lab, essay, and catalogue entry now lives together.
+          <a href="/blog" class="blog-link">Browse the full archive</a>
         </p>
         <ul
-          class="blog-index-list blog-index-list--compact blog-index-list--labs-home"
+          class="blog-index-list blog-index-list--compact blog-index-list--home"
         >
           {
-            labsToShow.map((lab) => (
+            postsToShow.map((post) => (
               <li>
-                <a href={`/labs/${entrySlug(lab.id)}/`}>
-                  {lab.data.heroImage ? (
+                <a href={`/blog/${post.slug}/`}>
+                  {post.data.heroImage ? (
                     <img
                       width={720}
                       height={360}
-                      src={lab.data.heroImage}
+                      src={post.data.heroImage}
                       alt=""
                     />
                   ) : (
                     <div class="blog-title-fallback">
-                      <h3>{lab.data.title}</h3>
+                      <h3>{post.data.title}</h3>
                     </div>
                   )}
-                  <h4 class="title blog-index-title">{lab.data.title}</h4>
+                  <h4 class="title blog-index-title">{post.data.title}</h4>
                   <p class="date blog-index-date">
-                    <FormattedDate date={lab.data.pubDate} />
+                    <FormattedDate date={post.data.pubDate} />
+                    {" · "}
+                    {CATEGORIES[post.data.category].name}
+                    {" · "}
+                    {post.readingTime} min read
                   </p>
                 </a>
               </li>

@@ -1,26 +1,28 @@
 import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
+import { CATEGORIES, type CategoryId } from "./config/categories";
 
-const labs = defineCollection({
-  loader: glob({ base: "./src/content/labs", pattern: "**/*.{md,mdx}" }),
+const categoryKeys = Object.keys(CATEGORIES) as [
+  CategoryId,
+  ...CategoryId[],
+];
+
+const blog = defineCollection({
+  loader: glob({ base: "./src/content/blog", pattern: "**/*.{md,mdx}" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
+    slug: z.string().optional(),
+    category: z.enum(categoryKeys),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
     heroImage: z.string().optional(),
+    ogImage: z.string().url().optional(),
     math: z.boolean().optional(),
-  }),
-});
-
-const essays = defineCollection({
-  loader: glob({ base: "./src/content/essays", pattern: "**/*.{md,mdx}" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    pubDate: z.coerce.date().optional(),
-    updatedDate: z.coerce.date().optional(),
-    heroImage: z.string().optional(),
+    readingTime: z.number().optional(),
+    canonicalUrl: z.string().url().optional(),
   }),
 });
 
@@ -60,14 +62,7 @@ const highlights = defineCollection({
         }),
       )
       .default([]),
-    labs: z
-      .array(
-        z.object({
-          slug: z.string(),
-        }),
-      )
-      .default([]),
-    essays: z
+    posts: z
       .array(
         z.object({
           slug: z.string(),
@@ -77,4 +72,4 @@ const highlights = defineCollection({
   }),
 });
 
-export const collections = { labs, essays, projectsExtra, highlights };
+export const collections = { blog, projectsExtra, highlights };

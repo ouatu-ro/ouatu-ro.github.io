@@ -1,0 +1,102 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import SubscribePrompt from "@/components/SubscribePrompt.astro";
+import Icon from "@/components/Icons.astro";
+import TagTabs from "@/components/TagTabs.astro";
+import { POSTS_PER_PAGE } from "@/config/constants";
+import { getPostsByTag, getAllTags, type BlogPost } from "@/lib/posts";
+import "@/styles/pages/blog.css";
+import "@/styles/pages/blog-index.css";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const tags = await getAllTags();
+  const paths = [];
+  for (const tag of tags) {
+    const posts = await getPostsByTag(tag.slug);
+    if (posts.length === 0) continue;
+    paths.push(
+      ...paginate(posts, {
+        pageSize: POSTS_PER_PAGE,
+        params: { tag: tag.slug },
+        props: { tagSlug: tag.slug, tagLabel: tag.label },
+      }),
+    );
+  }
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { page, tagSlug, tagLabel } = Astro.props as {
+  page: {
+    data: BlogPost[];
+    currentPage: number;
+    lastPage: number;
+    url: { prev?: string; next?: string };
+  };
+  tagSlug: string;
+  tagLabel: string;
+};
+
+const posts = page.data;
+const feedBase = `/blog/tag/${tagSlug}`;
+const prettyTag = tagLabel ?? tagSlug;
+const title = `Posts tagged ${prettyTag}${page.currentPage === 1 ? "" : ` – Page ${page.currentPage}`}`;
+const description = `Articles grouped under ${prettyTag}`;
+---
+
+<BaseLayout title={title} description={description} mainClass="blog-index-main">
+  <section class="blog-index-header">
+    <div>
+      <h1 class="u-heading-font">#{prettyTag}</h1>
+      <p class="lede">Articles related to {prettyTag}.</p>
+    </div>
+    <div class="blog-index-subscribe">
+      <a href={`${feedBase}/rss.xml`} class="rss-link" title="Tag RSS">
+        <Icon name="rss" /> RSS
+      </a>
+      <a href={`${feedBase}/feed.json`} class="rss-link" title="Tag JSON feed">
+        <Icon name="rss" /> JSON
+      </a>
+    </div>
+  </section>
+  <TagTabs activeTag={tagSlug} showAllLink />
+  <section>
+    <ul class="blog-index-list">
+      {
+        posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.slug}/`}>
+              {post.data.heroImage ? (
+                <img
+                  width={720}
+                  height={360}
+                  src={post.data.heroImage}
+                  alt=""
+                  loading="lazy"
+                />
+              ) : (
+                <div class="blog-title-fallback">
+                  <h3>{post.data.title}</h3>
+                </div>
+              )}
+              <h4 class="title blog-index-title">{post.data.title}</h4>
+              <p class="date blog-index-date">
+                <FormattedDate date={post.data.pubDate} /> · {post.readingTime}{" "}
+                min read
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <nav class="pagination" aria-label={`#${prettyTag} pagination`}>
+    {page.url.prev && <a href={page.url.prev}>Previous</a>}
+    <span>
+      Page {page.currentPage} of {page.lastPage}
+    </span>
+    {page.url.next && <a href={page.url.next}>Next</a>}
+  </nav>
+  <SubscribePrompt tagSlug={tagSlug} tagLabel={prettyTag} />
+</BaseLayout>

@@ -1,0 +1,18 @@
+---
+import { getEntry } from "astro:content";
+import { deriveSlugFromId } from "../lib/posts";
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props as Props;
+const post = await getEntry("blog", slug);
+
+if (!post) {
+  throw new Error(`CrossLink Error: No post for slug '${slug}'`);
+}
+
+const postSlug = post.data.slug ?? deriveSlugFromId(post.id);
+--- 
+<a href={`/blog/${postSlug}`}>{post.data.title}</a>

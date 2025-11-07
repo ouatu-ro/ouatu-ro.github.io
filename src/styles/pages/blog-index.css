@@ -56,13 +56,13 @@
   color: var(--color-muted);
 }
 
-.blog-index-list.blog-index-list--labs-home img,
-.blog-index-list.blog-index-list--labs-home .blog-title-fallback,
-.blog-index-list.blog-index-list--compact.blog-index-list--labs-home
+.blog-index-list.blog-index-list--home img,
+.blog-index-list.blog-index-list--home .blog-title-fallback,
+.blog-index-list.blog-index-list--compact.blog-index-list--home
   .blog-title-fallback {
   height: 220px;
 }
 
-.blog-index-list.blog-index-list--labs-home img {
+.blog-index-list.blog-index-list--home img {
   object-fit: cover;
 }

@@ -2,6 +2,11 @@
 title: Tips for Building Effective Analytics Tools
 pubDate: 2022-03-28T00:29:54+03:00
 description: "Learn practical insights from developing interactive visualization tools for analyzing customer feedback with aspect-based sentiment analysis (ABSA)."
+category: "note"
+tags:
+  - analytics
+  - tooling
+  - user-experience
 ---
 
 Building interactive visualization tools for text-based customer feedback, like aspect-based sentiment analysis (ABSA), can feel daunting at first. In this post, I want to share some lessons from my time as a Machine Learning Engineer at an e-commerce company, where I built a visualization app for ABSA.

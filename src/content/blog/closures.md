@@ -2,6 +2,7 @@
 title: "Closures and Partial Function Application in Python: A NLP Use Case"
 pubDate: 2021-11-06T02:53:16+02:00
 description: "This article explores closures and partial function application in Python, demonstrating how these powerful concepts can simplify state management and encapsulation. Through practical examples from NLP pipelines, including SpaCy and skweak, you'll learn common pitfalls, effective solutions, and best practices to write cleaner, more maintainable Python code."
+category: "lab"
 math: true
 ---
 

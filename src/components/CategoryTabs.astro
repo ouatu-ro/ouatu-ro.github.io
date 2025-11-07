@@ -1,0 +1,32 @@
+---
+import type { CategoryId } from "../config/categories";
+import { CATEGORY_IDS, CATEGORIES } from "../config/categories";
+
+interface Props {
+  activeCategory?: CategoryId | "all";
+  showAllLink?: boolean;
+}
+
+const { activeCategory, showAllLink = true } = Astro.props as Props;
+---
+
+<nav class="taxonomy-tabs" aria-label="Blog categories">
+  {showAllLink && (
+    <a
+      class={`taxonomy-tab${
+        !activeCategory || activeCategory === "all" ? " active" : ""
+      }`}
+      href="/blog/"
+    >
+      All
+    </a>
+  )}
+  {CATEGORY_IDS.map((category) => (
+    <a
+      class={`taxonomy-tab${activeCategory === category ? " active" : ""}`}
+      href={`/blog/category/${category}/`}
+    >
+      {CATEGORIES[category].name}
+    </a>
+  ))}
+</nav>

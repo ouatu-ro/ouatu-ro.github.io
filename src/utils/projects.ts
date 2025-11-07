@@ -31,8 +31,7 @@ export type HighlightPreviewType =
 
 export interface HighlightsConfig {
   projects: Array<{ slug: string; previewType?: HighlightPreviewType }>;
-  labs: Array<{ slug: string }>;
-  essays: Array<{ slug: string }>;
+  posts: Array<{ slug: string }>;
 }
 
 const PROJECTS_FILE = path.join(
@@ -78,12 +77,12 @@ export async function getHighlightConfig(): Promise<HighlightsConfig> {
     const entry = await getEntry("highlights", "site");
     if (!entry) {
       console.warn("Highlights configuration entry missing, using defaults.");
-      return { projects: [], labs: [], essays: [] };
+      return { projects: [], posts: [] };
     }
     return entry.data as HighlightsConfig;
   } catch (error) {
     console.warn("Highlights configuration missing, using defaults.", error);
-    return { projects: [], labs: [], essays: [] };
+    return { projects: [], posts: [] };
   }
 }
 

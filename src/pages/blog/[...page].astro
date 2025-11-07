@@ -1,0 +1,91 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import Icon from "../../components/Icons.astro";
+import SubscribePrompt from "../../components/SubscribePrompt.astro";
+import CategoryTabs from "../../components/CategoryTabs.astro";
+import TagTabs from "../../components/TagTabs.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+import { POSTS_PER_PAGE } from "../../config/constants";
+import { getAllPosts, type BlogPost } from "../../lib/posts";
+import "../../styles/pages/blog.css";
+import "../../styles/pages/blog-index.css";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getAllPosts();
+  return paginate(posts, { pageSize: POSTS_PER_PAGE });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as {
+  page: {
+    data: BlogPost[];
+    currentPage: number;
+    lastPage: number;
+    url: { prev?: string; next?: string };
+  };
+};
+const posts = page.data;
+const pageSuffix = page.currentPage === 1 ? "" : ` – Page ${page.currentPage}`;
+const pageTitle = `${SITE_TITLE} Blog${pageSuffix}`;
+const pageDescription =
+  page.currentPage === 1
+    ? SITE_DESCRIPTION
+    : `${SITE_TITLE} blog archive page ${page.currentPage}`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} mainClass="blog-index-main">
+  <section class="blog-index-header">
+    <div>
+      <h1 class="u-heading-font">Blog</h1>
+      <p class="lede">
+        Deep dives, essays, and catalogues in one feed.
+      </p>
+    </div>
+    <div class="blog-index-subscribe">
+      <a href="/blog/rss.xml" class="rss-link" title="Blog RSS">
+        <Icon name="rss" /> RSS
+      </a>
+      <a href="/blog/feed.json" class="rss-link" title="Blog JSON Feed">
+        <Icon name="rss" /> JSON
+      </a>
+    </div>
+  </section>
+  <CategoryTabs activeCategory="all" />
+  <TagTabs />
+  <section>
+    <ul class="blog-index-list">
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.slug}/`}>
+            {post.data.heroImage ? (
+              <img
+                width={720}
+                height={360}
+                src={post.data.heroImage}
+                alt=""
+                loading="lazy"
+              />
+            ) : (
+              <div class="blog-title-fallback">
+                <h3>{post.data.title}</h3>
+              </div>
+            )}
+            <h4 class="title blog-index-title">{post.data.title}</h4>
+            <p class="date blog-index-date">
+              <FormattedDate date={post.data.pubDate} /> · {post.readingTime} min read
+            </p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <nav class="pagination" aria-label="Blog pagination">
+    {page.url.prev && <a href={page.url.prev}>Previous</a>}
+    <span>
+      Page {page.currentPage} of {page.lastPage}
+    </span>
+    {page.url.next && <a href={page.url.next}>Next</a>}
+  </nav>
+  <SubscribePrompt />
+</BaseLayout>

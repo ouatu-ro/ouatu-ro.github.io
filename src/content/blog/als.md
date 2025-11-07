@@ -1,13 +1,19 @@
 ---
 title: "Terse Alternating Least Squares Implementation"
 pubDate: 2022-08-07T02:53:16+02:00
-description: "Alternating Least Squares is a matrix factorization algorithm commonly used in recommendation systems. This notebook provides a practical explanation with code examples."
+description: "This lab teaches the math and engineering behind Alternating Least Squares: how to derive the least-squares formula, why alternation is needed, and how to implement it efficiently. Includes ready-to-use code snippets and a real-world example showing the method's limits."
+category: "lab"
 math: true
+tags:
+    - python
+    - machine-learning
+    - recommendation-systems
+    - matrix-factorization
+    - alternating-least-squares
+    - linear-algebra
 ---
 
-This lab will teach you the math and engineering behind Alternating Least Squares: how to **derive the least-squares formula**, why alternation is needed, and **how to implement it efficiently**. Includes **ready-to-use code snippets** for your projects and a **real-world example** that shows the method's limits.
-
-We'll apply it to recommendation systems - the algorithms behind familiar features like Netflix movie suggestions or Amazon product recommendations. These systems rely on _collaborative filtering_, which uses the past behavior of many users to infer preferences. Matrix factorization methods such as ALS are among the most effective techniques for this task.
+Recommendation systems algorithms behind familiar features like Netflix movie suggestions or Amazon product recommendations. These systems rely on _collaborative filtering_, which uses the past behavior of many users to infer preferences. Matrix factorization methods such as ALS are among the most effective techniques for this task.
 
 ## The Matrix Factorization Problem
 

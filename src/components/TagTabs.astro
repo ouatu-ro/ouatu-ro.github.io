@@ -1,0 +1,34 @@
+---
+import { getAllTags } from "../lib/posts";
+
+interface Props {
+  activeTag?: string;
+  showAllLink?: boolean;
+}
+
+const { activeTag, showAllLink = true } = Astro.props as Props;
+const tags = await getAllTags();
+const normalizedActive = activeTag?.toLowerCase();
+---
+
+{tags.length > 0 && (
+  <nav class="taxonomy-tabs" aria-label="Blog tags">
+    {showAllLink && (
+      <a
+        class={`taxonomy-tab${normalizedActive ? "" : " active"}`}
+        href="/blog/"
+      >
+        All
+      </a>
+    )}
+    {tags.map((tag) => (
+      <a
+        class={`taxonomy-tab${normalizedActive === tag.slug ? " active" : ""}`}
+        href={`/blog/tag/${tag.slug}/`}
+      >
+        #{tag.label}
+        {tag.count ? <span class="taxonomy-count">{tag.count}</span> : null}
+      </a>
+    ))}
+  </nav>
+)}

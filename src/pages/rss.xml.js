@@ -1,11 +1,11 @@
 import rss from "@astrojs/rss";
-import { getCollection } from "astro:content";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import sanitizeHtml from "sanitize-html";
 import MarkdownIt from "markdown-it";
 import fs from "node:fs";
 import path from "node:path";
 import { slugify } from "../utils/slugify";
+import { getAllPosts } from "../lib/posts";
 
 const parser = new MarkdownIt();
 
@@ -48,28 +48,14 @@ function readProjectsData() {
 export async function GET(context) {
   const siteOrigin = context.site ?? context.url;
 
-  const labsPosts = (await getCollection("labs")).sort(
-    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
-  );
-
-  const essays = (await getCollection("essays")).sort((a, b) => {
-    const dateA =
-      a.data.pubDate ??
-      a.data.updatedDate ??
-      new Date(0);
-    const dateB =
-      b.data.pubDate ??
-      b.data.updatedDate ??
-      new Date(0);
-    return dateB.getTime() - dateA.getTime();
-  });
+  const blogPosts = await getAllPosts();
 
   const projects = readProjectsData().map((project) => ({
     ...project,
     slug: project.slug || slugify(project.name),
   }));
 
-  const renderMarkdownItem = (post, category, linkRoot) => {
+  const renderMarkdownItem = (post) => {
     const description =
       post.data.description || post.data.summary || post.data.excerpt || "";
 
@@ -114,24 +100,21 @@ export async function GET(context) {
           },
         },
       }),
-      customData: post.data.heroImage
+      customData: (post.data.ogImage || post.data.heroImage)
         ? `<enclosure url="${new URL(
-            post.data.heroImage,
+            post.data.ogImage || post.data.heroImage,
             siteOrigin
           )}" type="image/jpeg" />`
         : "",
-      link: `/${linkRoot}/${post.id}/`,
-      categories: [category],
+      link: `/blog/${post.slug}/`,
+      categories: [
+        post.data.category,
+        ...(post.normalizedTags ?? []).map((tag) => tag.label),
+      ],
     };
   };
 
-  const labsItems = labsPosts.map((post) =>
-    renderMarkdownItem(post, "labs", "labs")
-  );
-
-  const essayItems = essays.map((post) =>
-    renderMarkdownItem(post, "essays", "essays")
-  );
+  const blogItems = blogPosts.map((post) => renderMarkdownItem(post));
 
   const projectItems = projects.map((project) => ({
     title: `Project: ${project.name}`,
@@ -159,7 +142,7 @@ export async function GET(context) {
     categories: ["project"],
   }));
 
-  const allItems = [...labsItems, ...essayItems, ...projectItems].sort(
+  const allItems = [...blogItems, ...projectItems].sort(
     (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
   );
 

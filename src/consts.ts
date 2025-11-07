@@ -3,7 +3,7 @@
 
 export const SITE_TITLE = "Bogdan Ouatu";
 export const SITE_DESCRIPTION =
-  "Personal site of Bogdan Ouatu showcasing innovative software projects, ML explorations for audio-visual generation, and in-depth labs and essays.";
+  "Personal site of Bogdan Ouatu featuring a unified blog of labs, essays, and catalogues alongside innovative software projects and ML explorations.";
 
 // Typography options (can be imported in components)
 export const HEADING_FONT = "Inter"; // Modern sans-serif
