@@ -9,7 +9,6 @@ import ClientScripts from "../components/ClientScripts.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getProjects, getHighlightConfig } from "../utils/projects";
 import { getAllPosts, type BlogPost } from "../lib/posts";
-import { CATEGORIES } from "../config/categories";
 import "../styles/pages/blog.css";
 import "../styles/pages/blog-index.css";
 
@@ -84,33 +83,24 @@ const postsToShow =
           Every lab, essay, and catalogue entry now lives together.
           <a href="/blog" class="blog-link">Browse the full archive</a>
         </p>
-        <ul
-          class="blog-index-list blog-index-list--compact blog-index-list--home"
-        >
+        <ul class="blog-index-list blog-index-list--home">
           {
             postsToShow.map((post) => (
-              <li>
-                <a href={`/blog/${post.slug}/`}>
-                  {post.data.heroImage ? (
-                    <img
-                      width={720}
-                      height={360}
-                      src={post.data.heroImage}
-                      alt=""
-                    />
-                  ) : (
-                    <div class="blog-title-fallback">
-                      <h3>{post.data.title}</h3>
-                    </div>
-                  )}
-                  <h4 class="title blog-index-title">{post.data.title}</h4>
-                  <p class="date blog-index-date">
-                    <FormattedDate date={post.data.pubDate} />
-                    {" · "}
-                    {CATEGORIES[post.data.category].name}
-                    {" · "}
+              <li class="blog-card">
+                <a class="blog-card__link" href={`/blog/${post.slug}/`}>
+                  <p class="blog-card__meta">
+                    <FormattedDate date={post.data.pubDate} /> ·{" "}
                     {post.readingTime} min read
                   </p>
+                  <h3 class="blog-card__title">{post.data.title}</h3>
+                  <p class="blog-card__description">{post.data.description}</p>
+                  {post.normalizedTags.length > 0 && (
+                    <div class="blog-card__tags">
+                      {post.normalizedTags.map((tag) => (
+                        <span class="blog-card__tag">#{tag.label}</span>
+                      ))}
+                    </div>
+                  )}
                 </a>
               </li>
             ))

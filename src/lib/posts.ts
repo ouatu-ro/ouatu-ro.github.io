@@ -49,6 +49,23 @@ const computePostProperties = (post: BlogCollectionEntry): BlogPost => {
   };
 };
 
+const summarizeTags = (posts: BlogPost[]): TagSummary[] => {
+  const counts = new Map<string, TagSummary>();
+  for (const post of posts) {
+    for (const tag of post.normalizedTags) {
+      const existing = counts.get(tag.slug);
+      if (existing) {
+        existing.count = (existing.count ?? 0) + 1;
+      } else {
+        counts.set(tag.slug, { ...tag, count: 1 });
+      }
+    }
+  }
+  return Array.from(counts.values()).sort(
+    (a, b) => (b.count ?? 0) - (a.count ?? 0),
+  );
+};
+
 export async function getAllPosts(): Promise<BlogPost[]> {
   const posts = await getCollection("blog");
   return posts
@@ -62,29 +79,24 @@ export async function getPostsByCategory(category: CategoryId): Promise<BlogPost
   return posts.filter((post) => post.data.category === category);
 }
 
-export async function getPostsByTag(tagSlug: string): Promise<BlogPost[]> {
+export async function getPostsByTag(
+  tagSlug: string,
+  category?: CategoryId,
+): Promise<BlogPost[]> {
   const posts = await getAllPosts();
-  return posts.filter((post) =>
-    post.normalizedTags.some((tag) => tag.slug === normalizeTag(tagSlug))
+  const normalized = normalizeTag(tagSlug);
+  return posts.filter(
+    (post) =>
+      (!category || post.data.category === category) &&
+      post.normalizedTags.some((tag) => tag.slug === normalized),
   );
 }
 
-export async function getAllTags(): Promise<TagSummary[]> {
-  const tagCounts = new Map<string, TagSummary>();
-  const posts = await getAllPosts();
-
-  for (const post of posts) {
-    for (const tag of post.normalizedTags) {
-      const existing = tagCounts.get(tag.slug);
-      if (existing) {
-        existing.count = (existing.count ?? 0) + 1;
-      } else {
-        tagCounts.set(tag.slug, { ...tag, count: 1 });
-      }
-    }
-  }
-
-  return Array.from(tagCounts.values()).sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
+export async function getAllTags(category?: CategoryId): Promise<TagSummary[]> {
+  const posts = category
+    ? await getPostsByCategory(category)
+    : await getAllPosts();
+  return summarizeTags(posts);
 }
 
 export function getCategoryMeta(category: CategoryId) {

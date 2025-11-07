@@ -1,34 +1,60 @@
 ---
-import { getAllTags } from "../lib/posts";
+import type { CategoryId } from "@/config/categories";
+import { getAllTags } from "@/lib/posts";
 
 interface Props {
   activeTag?: string;
   showAllLink?: boolean;
+  categoryId?: CategoryId;
 }
 
-const { activeTag, showAllLink = true } = Astro.props as Props;
-const tags = await getAllTags();
+const { activeTag, showAllLink = true, categoryId } = Astro.props as Props;
 const normalizedActive = activeTag?.toLowerCase();
+const tags = categoryId ? await getAllTags(categoryId) : undefined;
+const state = categoryId ? (tags?.length ? "tags" : "empty") : "no-category";
+const baseHref = categoryId ? `/blog/${categoryId}` : undefined;
 ---
 
-{tags.length > 0 && (
-  <nav class="taxonomy-tabs" aria-label="Blog tags">
-    {showAllLink && (
-      <a
-        class={`taxonomy-tab${normalizedActive ? "" : " active"}`}
-        href="/blog/"
-      >
-        All
-      </a>
-    )}
-    {tags.map((tag) => (
-      <a
-        class={`taxonomy-tab${normalizedActive === tag.slug ? " active" : ""}`}
-        href={`/blog/tag/${tag.slug}/`}
-      >
-        #{tag.label}
-        {tag.count ? <span class="taxonomy-count">{tag.count}</span> : null}
-      </a>
-    ))}
-  </nav>
+{state === "no-category" && (
+  <div class="tag-dropdown tag-dropdown--placeholder">
+    <span>Select a category to filter by tags.</span>
+  </div>
+)}
+{state === "empty" && (
+  <div class="tag-dropdown tag-dropdown--placeholder">
+    <span>No tags for this category yet.</span>
+  </div>
+)}
+{state === "tags" && tags && baseHref && (
+  <details
+    class={`tag-dropdown${normalizedActive ? " is-active" : ""}`}
+    aria-label={`Filter ${categoryId} posts by tag`}
+    open={Boolean(normalizedActive)}
+  >
+    <summary>
+      <span>Filter by topic</span>
+      <span class="tag-dropdown__current">
+        {normalizedActive ? `#${normalizedActive}` : "All topics"}
+      </span>
+      <span class="tag-dropdown__chevron" aria-hidden="true">▾</span>
+    </summary>
+    <div class="tag-chip-row">
+      {showAllLink && (
+        <a
+          class={`tag-chip${normalizedActive ? "" : " active"}`}
+          href={`${baseHref}/`}
+        >
+          All topics
+        </a>
+      )}
+      {tags.map((tag) => (
+        <a
+          class={`tag-chip${normalizedActive === tag.slug ? " active" : ""}`}
+          href={`${baseHref}/tag/${tag.slug}/`}
+        >
+          #{tag.label}
+        </a>
+      ))}
+    </div>
+  </details>
 )}

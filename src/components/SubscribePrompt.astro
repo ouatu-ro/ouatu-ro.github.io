@@ -15,15 +15,10 @@ const scopedCategory = categoryId ? CATEGORIES[categoryId] : undefined;
 const normalizedTag = tagSlug ? normalizeTag(tagSlug) : undefined;
 const scopedTagLabel = tagLabel ?? tagSlug;
 
-const scopedRss = categoryId
-  ? `/blog/category/${categoryId}/rss.xml`
-  : normalizedTag
-    ? `/blog/tag/${normalizedTag}/rss.xml`
-    : undefined;
-const scopedJson = categoryId
-  ? `/blog/category/${categoryId}/feed.json`
-  : normalizedTag
-    ? `/blog/tag/${normalizedTag}/feed.json`
+const categoryFeedBase = categoryId ? `/blog/${categoryId}` : undefined;
+const tagFeedBase =
+  normalizedTag && categoryFeedBase
+    ? `${categoryFeedBase}/tag/${normalizedTag}`
     : undefined;
 ---
 <section class="subscribe-prompt">
@@ -40,23 +35,23 @@ const scopedJson = categoryId
     <a href="/blog/feed.json" class="btn btn-secondary" rel="nofollow">
       JSON Feed
     </a>
-    {scopedRss && scopedCategory && (
-      <a href={scopedRss} class="btn" rel="nofollow">
+    {categoryFeedBase && scopedCategory && (
+      <a href={`${categoryFeedBase}/rss.xml`} class="btn" rel="nofollow">
         {`Only ${scopedCategory.name}`}
       </a>
     )}
-    {scopedJson && scopedCategory && (
-      <a href={scopedJson} class="btn btn-secondary" rel="nofollow">
+    {categoryFeedBase && scopedCategory && (
+      <a href={`${categoryFeedBase}/feed.json`} class="btn btn-secondary" rel="nofollow">
         {`${scopedCategory.name} JSON`}
       </a>
     )}
-    {scopedRss && normalizedTag && (
-      <a href={scopedRss} class="btn" rel="nofollow">
+    {tagFeedBase && normalizedTag && (
+      <a href={`${tagFeedBase}/rss.xml`} class="btn" rel="nofollow">
         {`Only #${normalizedTag}`}
       </a>
     )}
-    {scopedJson && normalizedTag && (
-      <a href={scopedJson} class="btn btn-secondary" rel="nofollow">
+    {tagFeedBase && normalizedTag && (
+      <a href={`${tagFeedBase}/feed.json`} class="btn btn-secondary" rel="nofollow">
         {`#${normalizedTag} JSON`}
       </a>
     )}

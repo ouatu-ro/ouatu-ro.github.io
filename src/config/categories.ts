@@ -1,19 +1,19 @@
 export const CATEGORIES = {
+  essay: {
+    name: "Essay",
+    description: "Long-form writing, reflections, and thoughts on technology.",
+  },
   lab: {
-    name: "Lab",
+    name: "Tech",
     description: "In-depth technical explorations and code deep-dives.",
   },
-  // essay: {
-  //   name: "Essay",
-  //   description: "Long-form writing, reflections, and thoughts on technology.",
-  // },
   // catalogue: {
   //   name: "Catalogue",
   //   description: "Curated lists, resources, and structured collections.",
   // },
   note: {
     name: "Note",
-    description: "Short notes"
+    description: "Crief explorations, fragments, and conceptual sketches"
   }
 } as const;
 

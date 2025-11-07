@@ -73,7 +73,7 @@ const imageForMeta = ogImage ?? heroImage;
             )}
           </div>
           <div class="meta__details">
-            <a class="meta-pill meta-pill--link" href={`/blog/category/${category}/`}>
+            <a class="meta-pill meta-pill--link" href={`/blog/${category}/`}>
               {categoryMeta?.name ?? category}
             </a>
             <span class="meta-pill">{readingTime} min read</span>
@@ -87,7 +87,7 @@ const imageForMeta = ogImage ?? heroImage;
       {tags.length > 0 && (
         <div class="post-tags" aria-label="Tags">
           {tags.map((tag) => (
-            <a class="meta-pill" href={`/blog/tag/${tag.slug}/`}>
+            <a class="meta-pill" href={`/blog/${category}/tag/${tag.slug}/`}>
               #{tag.label}
             </a>
           ))}

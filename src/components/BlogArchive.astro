@@ -1,0 +1,134 @@
+---
+import type { CategoryId } from "@/config/categories";
+import CategoryTabs from "@/components/CategoryTabs.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import Icon from "@/components/Icons.astro";
+import SubscribePrompt from "@/components/SubscribePrompt.astro";
+import TagTabs from "@/components/TagTabs.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import type { BlogPost } from "@/lib/posts";
+import "@/styles/pages/blog.css";
+import "@/styles/pages/blog-index.css";
+
+interface PaginationInfo {
+  currentPage: number;
+  lastPage: number;
+  url: { prev?: string; next?: string };
+}
+
+interface Props {
+  title: string;
+  description: string;
+  heading: string;
+  lede: string;
+  posts: BlogPost[];
+  feedBase?: string;
+  pagination?: PaginationInfo;
+  activeCategory?: CategoryId | "all";
+  tagSlug?: string;
+  tagLabel?: string;
+  showCategoryTabs?: boolean;
+  showTagTabs?: boolean;
+  categoryForTags?: CategoryId;
+  paginationLabel?: string;
+}
+
+const {
+  title,
+  description,
+  heading,
+  lede,
+  posts,
+  feedBase = "/blog",
+  pagination,
+  activeCategory = "all",
+  tagSlug,
+  tagLabel,
+  showCategoryTabs = true,
+  showTagTabs = true,
+  categoryForTags,
+  paginationLabel = "Blog pagination",
+} = Astro.props as Props;
+
+const normalizedTag = tagSlug?.toLowerCase();
+const rssHref = `${feedBase}/rss.xml`;
+const jsonHref = `${feedBase}/feed.json`;
+const activeCategoryId = activeCategory === "all" ? undefined : activeCategory;
+const tagCategoryId = categoryForTags ?? activeCategoryId;
+const showPagination = Boolean(pagination);
+---
+
+<BaseLayout title={title} description={description} mainClass="blog-index-main">
+  <section class="blog-index-header">
+    <div>
+      <h1 class="u-heading-font">{heading}</h1>
+      <p class="lede">{lede}</p>
+    </div>
+    <div class="blog-index-subscribe">
+      <a href={rssHref} class="rss-link" title="RSS feed">
+        <Icon name="rss" /> RSS
+      </a>
+      <a href={jsonHref} class="rss-link" title="JSON feed">
+        <Icon name="rss" /> JSON
+      </a>
+    </div>
+    {
+      (showCategoryTabs || showTagTabs) && (
+        <div class="blog-filter-bar">
+          {showCategoryTabs && (
+            <CategoryTabs activeCategory={activeCategory ?? "all"} />
+          )}
+          {showTagTabs && (
+            <TagTabs
+              activeTag={normalizedTag}
+              categoryId={tagCategoryId}
+              showAllLink={Boolean(tagCategoryId)}
+            />
+          )}
+        </div>
+      )
+    }
+  </section>
+
+  <section>
+    <ul class="blog-index-list">
+      {
+        posts.map((post) => (
+          <li class="blog-card">
+            <a class="blog-card__link" href={`/blog/${post.slug}/`}>
+              <p class="blog-card__meta">
+                <FormattedDate date={post.data.pubDate} /> · {post.readingTime}{" "}
+                min read
+              </p>
+              <h3 class="blog-card__title">{post.data.title}</h3>
+              <p class="blog-card__description">{post.data.description}</p>
+              {post.normalizedTags.length > 0 && (
+                <div class="blog-card__tags">
+                  {post.normalizedTags.map((tag) => (
+                    <span class="blog-card__tag">#{tag.label}</span>
+                  ))}
+                </div>
+              )}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  {
+    showPagination && pagination && (
+      <nav class="pagination" aria-label={paginationLabel}>
+        {pagination.url.prev && <a href={pagination.url.prev}>Previous</a>}
+        <span>
+          Page {pagination.currentPage} of {pagination.lastPage}
+        </span>
+        {pagination.url.next && <a href={pagination.url.next}>Next</a>}
+      </nav>
+    )
+  }
+  <SubscribePrompt
+    categoryId={activeCategoryId}
+    tagSlug={tagSlug}
+    tagLabel={tagLabel}
+  />
+</BaseLayout>

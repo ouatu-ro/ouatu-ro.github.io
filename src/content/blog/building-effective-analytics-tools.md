@@ -4,8 +4,6 @@ pubDate: 2022-03-28T00:29:54+03:00
 description: "Learn practical insights from developing interactive visualization tools for analyzing customer feedback with aspect-based sentiment analysis (ABSA)."
 category: "note"
 tags:
-  - analytics
-  - tooling
   - user-experience
 ---
 

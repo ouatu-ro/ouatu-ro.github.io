@@ -7,10 +7,6 @@ math: true
 tags:
     - python
     - machine-learning
-    - recommendation-systems
-    - matrix-factorization
-    - alternating-least-squares
-    - linear-algebra
 ---
 
 Recommendation systems algorithms behind familiar features like Netflix movie suggestions or Amazon product recommendations. These systems rely on _collaborative filtering_, which uses the past behavior of many users to infer preferences. Matrix factorization methods such as ALS are among the most effective techniques for this task.

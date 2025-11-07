@@ -10,10 +10,10 @@ interface Props {
 const { activeCategory, showAllLink = true } = Astro.props as Props;
 ---
 
-<nav class="taxonomy-tabs" aria-label="Blog categories">
+<nav class="category-tabs" aria-label="Filter by category">
   {showAllLink && (
     <a
-      class={`taxonomy-tab${
+      class={`category-tab${
         !activeCategory || activeCategory === "all" ? " active" : ""
       }`}
       href="/blog/"
@@ -23,8 +23,8 @@ const { activeCategory, showAllLink = true } = Astro.props as Props;
   )}
   {CATEGORY_IDS.map((category) => (
     <a
-      class={`taxonomy-tab${activeCategory === category ? " active" : ""}`}
-      href={`/blog/category/${category}/`}
+      class={`category-tab${activeCategory === category ? " active" : ""}`}
+      href={`/blog/${category}/`}
     >
       {CATEGORIES[category].name}
     </a>
