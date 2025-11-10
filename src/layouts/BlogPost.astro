@@ -4,6 +4,7 @@ import SubscribePrompt from "../components/SubscribePrompt.astro";
 import { CATEGORIES, type CategoryId } from "../config/categories";
 import BaseLayout from "./BaseLayout.astro";
 import "../styles/pages/blog.css";
+import "katex/dist/katex.min.css";
 
 interface Props {
   title: string;
@@ -41,21 +42,7 @@ const imageForMeta = ogImage ?? heroImage;
   image={imageForMeta}
   mainClass="blog-post-layout"
 >
-  {math && (
-    <>
-      <link
-        slot="head"
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
-      />
-      <noscript slot="head">
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
-        />
-      </noscript>
-    </>
-  )}
+
   <article>
     <div class="hero-image">
       {heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
@@ -66,11 +53,13 @@ const imageForMeta = ogImage ?? heroImage;
         <div class="meta">
           <div class="meta__dates">
             <FormattedDate date={pubDate} />
-            {updatedDate && (
-              <div class="last-updated-on">
-                Updated <FormattedDate date={updatedDate} />
-              </div>
-            )}
+            {
+              updatedDate && (
+                <div class="last-updated-on">
+                  Updated <FormattedDate date={updatedDate} />
+                </div>
+              )
+            }
           </div>
           <div class="meta__details">
             <a class="meta-pill meta-pill--link" href={`/blog/${category}/`}>
@@ -84,15 +73,17 @@ const imageForMeta = ogImage ?? heroImage;
         <hr />
       </div>
       <slot />
-      {tags.length > 0 && (
-        <div class="post-tags" aria-label="Tags">
-          {tags.map((tag) => (
-            <a class="meta-pill" href={`/blog/${category}/tag/${tag.slug}/`}>
-              #{tag.label}
-            </a>
-          ))}
-        </div>
-      )}
+      {
+        tags.length > 0 && (
+          <div class="post-tags" aria-label="Tags">
+            {tags.map((tag) => (
+              <a class="meta-pill" href={`/blog/${category}/tag/${tag.slug}/`}>
+                #{tag.label}
+              </a>
+            ))}
+          </div>
+        )
+      }
     </div>
   </article>
   <SubscribePrompt categoryId={category} />
