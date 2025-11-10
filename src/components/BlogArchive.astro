@@ -1,5 +1,6 @@
 ---
 import type { CategoryId } from "@/config/categories";
+import { CATEGORIES } from "@/config/categories";
 import CategoryTabs from "@/components/CategoryTabs.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Icon from "@/components/Icons.astro";
@@ -9,6 +10,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import type { BlogPost } from "@/lib/posts";
 import "@/styles/pages/blog.css";
 import "@/styles/pages/blog-index.css";
+import "@/styles/pages/blog-index-overrides.css";
 
 interface PaginationInfo {
   currentPage: number;
@@ -56,6 +58,16 @@ const jsonHref = `${feedBase}/feed.json`;
 const activeCategoryId = activeCategory === "all" ? undefined : activeCategory;
 const tagCategoryId = categoryForTags ?? activeCategoryId;
 const showPagination = Boolean(pagination);
+const showCategoryChips = !activeCategoryId;
+const getCategoryChip = (category: string | undefined) => {
+  if (!category) return undefined;
+  if (!Object.prototype.hasOwnProperty.call(CATEGORIES, category)) return undefined;
+  const meta = CATEGORIES[category as CategoryId];
+  return {
+    label: meta?.name ?? category,
+    href: `/blog/${category}/`,
+  };
+};
 ---
 
 <BaseLayout title={title} description={description} mainClass="blog-index-main">
@@ -82,7 +94,7 @@ const showPagination = Boolean(pagination);
             <TagTabs
               activeTag={normalizedTag}
               categoryId={tagCategoryId}
-              showAllLink={Boolean(tagCategoryId)}
+              showAllLink={Boolean(tagCategoryId) || activeCategory === "all"}
             />
           )}
         </div>
@@ -93,25 +105,37 @@ const showPagination = Boolean(pagination);
   <section>
     <ul class="blog-index-list">
       {
-        posts.map((post) => (
-          <li class="blog-card">
-            <a class="blog-card__link" href={`/blog/${post.slug}/`}>
-              <p class="blog-card__meta">
-                <FormattedDate date={post.data.pubDate} /> · {post.readingTime}{" "}
-                min read
-              </p>
-              <h3 class="blog-card__title">{post.data.title}</h3>
-              <p class="blog-card__description">{post.data.description}</p>
-              {post.normalizedTags.length > 0 && (
-                <div class="blog-card__tags">
-                  {post.normalizedTags.map((tag) => (
-                    <span class="blog-card__tag">#{tag.label}</span>
-                  ))}
-                </div>
-              )}
-            </a>
-          </li>
-        ))
+        posts.map((post) => {
+          const categoryChip =
+            showCategoryChips && post.data.category
+              ? getCategoryChip(post.data.category)
+              : undefined;
+          const hasTags = Boolean(categoryChip) || post.normalizedTags.length > 0;
+          return (
+            <li class="blog-card">
+              <a class="blog-card__link" href={`/blog/${post.slug}/`}>
+                <p class="blog-card__meta">
+                  <FormattedDate date={post.data.pubDate} /> · {post.readingTime}{" "}
+                  min read
+                </p>
+                <h3 class="blog-card__title">{post.data.title}</h3>
+                <p class="blog-card__description">{post.data.description}</p>
+                {hasTags && (
+                  <div class="blog-card__tags">
+                    {categoryChip && (
+                      <span class="blog-card__tag blog-card__category-chip">
+                        {categoryChip.label}
+                      </span>
+                    )}
+                    {post.normalizedTags.map((tag) => (
+                      <span class="blog-card__tag">#{tag.label}</span>
+                    ))}
+                  </div>
+                )}
+              </a>
+            </li>
+          );
+        })
       }
     </ul>
   </section>

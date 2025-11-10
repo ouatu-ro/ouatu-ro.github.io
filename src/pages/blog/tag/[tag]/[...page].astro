@@ -1,0 +1,54 @@
+---
+import type { GetStaticPaths } from "astro";
+import BlogArchive from "@/components/BlogArchive.astro";
+import { POSTS_PER_PAGE } from "@/config/constants";
+import { getAllTags, getPostsByTag, type BlogPost } from "@/lib/posts";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const tags = await getAllTags();
+  const paths = [];
+  for (const tag of tags) {
+    const posts = await getPostsByTag(tag.slug);
+    if (posts.length === 0) continue;
+    paths.push(
+      ...paginate(posts, {
+        pageSize: POSTS_PER_PAGE,
+        params: { tag: tag.slug },
+        props: { tagSlug: tag.slug, tagLabel: tag.label },
+      })
+    );
+  }
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { page, tagSlug, tagLabel } = Astro.props as {
+  page: {
+    data: BlogPost[];
+    currentPage: number;
+    lastPage: number;
+    url: { prev?: string; next?: string };
+  };
+  tagSlug: string;
+  tagLabel: string;
+};
+
+const posts = page.data;
+const prettyTag = tagLabel ?? tagSlug;
+const baseTitle = `Posts tagged ${prettyTag}`;
+const title = page.currentPage === 1 ? baseTitle : `${baseTitle} – Page ${page.currentPage}`;
+const description = `Articles grouped under ${prettyTag}`;
+---
+
+<BlogArchive
+  title={title}
+  description={description}
+  heading={`#${prettyTag}`}
+  lede={`Articles related to ${prettyTag}.`}
+  posts={posts}
+  feedBase={`/blog/tag/${tagSlug}`}
+  pagination={page}
+  activeCategory="all"
+  tagSlug={tagSlug}
+  tagLabel={prettyTag}
+  paginationLabel={`#${prettyTag} pagination`}
+/>

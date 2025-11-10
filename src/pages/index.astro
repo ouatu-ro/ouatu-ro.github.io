@@ -9,8 +9,10 @@ import ClientScripts from "../components/ClientScripts.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getProjects, getHighlightConfig } from "../utils/projects";
 import { getAllPosts, type BlogPost } from "../lib/posts";
+import { CATEGORIES, type CategoryId } from "../config/categories";
 import "../styles/pages/blog.css";
 import "../styles/pages/blog-index.css";
+import { CONTACT_EMAIL } from "../consts";
 
 const [projects, highlights, blogPosts] = await Promise.all([
   getProjects(),
@@ -94,13 +96,27 @@ const postsToShow =
                   </p>
                   <h3 class="blog-card__title">{post.data.title}</h3>
                   <p class="blog-card__description">{post.data.description}</p>
-                  {post.normalizedTags.length > 0 && (
-                    <div class="blog-card__tags">
-                      {post.normalizedTags.map((tag) => (
-                        <span class="blog-card__tag">#{tag.label}</span>
-                      ))}
-                    </div>
-                  )}
+                  {(() => {
+                    const category = post.data.category as string | undefined;
+                    const showCategory = Boolean(category);
+                    const hasTags = post.normalizedTags.length > 0;
+                    if (!showCategory && !hasTags) return null;
+                    const label = category
+                      ? (CATEGORIES[category as CategoryId]?.name ?? category)
+                      : undefined;
+                    return (
+                      <div class="blog-card__tags">
+                        {label && (
+                          <span class="blog-card__tag blog-card__category-chip">
+                            {label}
+                          </span>
+                        )}
+                        {post.normalizedTags.map((tag) => (
+                          <span class="blog-card__tag">#{tag.label}</span>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </a>
               </li>
             ))

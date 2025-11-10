@@ -19,7 +19,9 @@ const categoryFeedBase = categoryId ? `/blog/${categoryId}` : undefined;
 const tagFeedBase =
   normalizedTag && categoryFeedBase
     ? `${categoryFeedBase}/tag/${normalizedTag}`
-    : undefined;
+    : normalizedTag
+      ? `/blog/tag/${normalizedTag}`
+      : undefined;
 ---
 <section class="subscribe-prompt">
   <h3>Stay in the Loop</h3>
