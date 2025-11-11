@@ -9,8 +9,11 @@ const isProduction = import.meta.env.PROD;
 {
   isProduction && GA_ID && (
     <>
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-      <script type="module" src={googleAnalyticsModule}></script>
+      <script
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+      />
+      <script type="module" src={googleAnalyticsModule} />
     </>
   )
 }
