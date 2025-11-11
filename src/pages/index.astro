@@ -12,7 +12,7 @@ import { getAllPosts, type BlogPost } from "../lib/posts";
 import { CATEGORIES, type CategoryId } from "../config/categories";
 import "../styles/pages/blog.css";
 import "../styles/pages/blog-index.css";
-import { CONTACT_EMAIL } from "../consts";
+import { CONTACT_EMAIL, LINKEDIN_URL } from "../consts";
 
 const [projects, highlights, blogPosts] = await Promise.all([
   getProjects(),
@@ -162,11 +162,7 @@ const postsToShow =
               style="display: none;">-</span
             >ouatu.ro
           </a>
-          <a
-            href="https://www.linkedin.com/in/bogdan-ouatu-2788a1b7/"
-            target="_blank"
-            class="btn btn-secondary"
-          >
+          <a href={LINKEDIN_URL} target="_blank" class="btn btn-secondary">
             <Icon name="linkedin" />
             Connect on LinkedIn
           </a>
