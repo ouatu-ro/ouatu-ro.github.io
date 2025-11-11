@@ -50,7 +50,7 @@ If I asked you to sum the series $11 + 15 + 19 + \ldots + 207$, would you instan
 
 ---
 
-## Discovering the rule yourself
+## How to find a common-sense perspective
 
 Start watching your own reasoning unfold:
 
@@ -130,12 +130,13 @@ Area is average height × width.
 
 Probability is average weight × possible outcomes.
 
+This principle works whenever the idea of an *average element* makes sense: arithmetic or smoothly varying progressions. Knowing where a model holds and where it breaks is a key part of making it your own.
+
 ---
 
 ## How to corrupt your common sense
 
-You might be tempted to remember counterintuitive results *by contrast* with your common sense.
-You think: "That is the one that feels wrong. That is how I will remember it."
+A tempting shortcut for a counterintuitive result is to memorize it as a brute-force exception. You frame it in your mind by its contradiction to what you know, thinking: "That is the one that feels wrong. That is how I will remember it."
 
 It works in the short term and breaks everything in the long run.
 
@@ -148,6 +149,8 @@ Every patch you add drifts your model further from coherence, until intuition it
 It is like when people move to the UK and think, "Back home I looked left then right when crossing the street, so I'll remind myself to do what *feels* weird, I'll look right then left."
 But hold two opposite rule sets at once, and soon enough you will be right half the time and dangerously wrong the rest.
 
+This is what it means to corrupt your common sense: holding two contradictory models at once doesn't make you flexible; it makes you *unreliable*.
+
 *Now, what to do instead?* Try to anchor to a **new, coherent cue**, **not a negated one**.
 When I first visited the UK, I would joke to myself when crossing the street in an exaggerated accent: "Roighty-toighty, lefty-loosey!"
 Silly, but stable. It gave my mind a clean model to converge toward.
@@ -156,7 +159,7 @@ The key is not to memorize the contradiction. The key is to build a consistent a
 
 > [!note] **For those who like systems**  
 > Your internal model collapses under noise. In information-theoretic terms, inconsistent beliefs increase entropy: they destroy structure and erase predictive power.  
-> A robust mind is not high-entropy but **low-entropy and adaptive**. It keeps its internal order while staying responsive to the world.  
+> A robust mind is not high-entropy but **low-entropy and adaptive**. Low-entropy here means coherent, not rigid. It keeps its internal order while staying responsive to the world.  
 > The goal is compression, not rigidity: refine your models until they feel inevitable, then keep testing them until they bend without breaking.  
 > Being low-entropy is pointless if you are out of sync with reality, and chasing a "theory of everything" seems to be a trap. Reality itself is not that simple.  
 > Explore widely, integrate tightly, and keep your internal map coherent as the territory shifts. That is how your common sense stays both stable and alive.
@@ -184,7 +187,7 @@ Probability "paradoxes" vanish the moment you anchor them in real, common-sense 
 Take the classic puzzle: "A family has two children, and at least one is a boy. What is the probability that both are boys?"
 People call it a riddle. It is not. It is bookkeeping confusion disguised as mystery.
 Treat it as an actual situation, not a formula, and the paradox dissolves instantly.
-Common sense restores consistency where abstraction created noise.
+Common sense here means reasoning about how the cases are generated (hint: see probability as a sampling process, not as symbolic algebra).
 
 The same applies across domains that celebrate mental stretching.
 Math drills, logic puzzles, and coding challenges often train you to brute-force familiarity instead of integration.
@@ -198,7 +201,7 @@ Methods that looked different turn out to be expressions of the same idea.
 What once felt advanced becomes obvious, and what once felt obvious becomes profound.
 
 This essay is the foundation.  
-If curiosity runs high, I'll follow it with notes showing how **common-sense learning** reshapes probability, reasoning, and creative skill and how to practice it deliberately.
+If curiosity runs high, I'll follow it with notes showing how **common-sense learning** reshapes probability, reasoning, and creative skill and how to practice it deliberately. Later essays will show practical methods for training this kind of integration and for applying it to real reasoning and creative work.
 
 
 ---
