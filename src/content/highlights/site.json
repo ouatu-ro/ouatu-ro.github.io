@@ -4,8 +4,5 @@
     { "slug": "table-planner", "previewType": "wireframe" },
     { "slug": "hall-of-mirrors-3", "previewType": "mesh" }
   ],
-  "posts": [
-    { "slug": "als" },
-    { "slug": "tips-building-effective-analytics-tools" }
-  ]
+  "posts": [{ "slug": "common-sense-learning" }, { "slug": "als" }]
 }
