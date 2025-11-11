@@ -50,7 +50,7 @@ If I asked you to sum the series $11 + 15 + 19 + \ldots + 207$, would you instan
 
 ---
 
-## How you actually discover the rule
+## Discovering the rule yourself
 
 Start watching your own reasoning unfold:
 
@@ -132,10 +132,10 @@ Probability is average weight × possible outcomes.
 
 ---
 
-## Things that do not work
+## How to corrupt your common sense
 
-Some people try to remember counterintuitive results *by contrast* with their common sense.
-They think: "That is the one that feels wrong. That is how I will remember it."
+You might be tempted to remember counterintuitive results *by contrast* with your common sense.
+You think: "That is the one that feels wrong. That is how I will remember it."
 
 It works in the short term and breaks everything in the long run.
 
@@ -143,9 +143,9 @@ When you rely on contradictions as anchors, you stop building structure and star
 
 A deeper problem arises because learning also involves **expanding** your mental model, a process that happens even unconsciously. Your mind *adapts* to what you do.
 So, if you keep acting on inconsistent patterns, your common sense reshapes itself to accommodate them.
-Every patch you add drifts your model further from coherence, until intuition itself becomes completely unreliable (Quite different from George Costanza: perfectly reliable instincts, consistently wrong)
+Every patch you add drifts your model further from coherence, until intuition itself becomes completely unreliable (quite different from George Costanza: perfectly reliable instincts, consistently wrong)
 
-It is like when people move to the UK and think, "Back home I looked left then right when crossing the street, so I need to remind myself to do what *feels* weird, I'll look right then left."
+It is like when people move to the UK and think, "Back home I looked left then right when crossing the street, so I'll remind myself to do what *feels* weird, I'll look right then left."
 But hold two opposite rule sets at once, and soon enough you will be right half the time and dangerously wrong the rest.
 
 *Now, what to do instead?* Try to anchor to a **new, coherent cue**, **not a negated one**.
