@@ -18,7 +18,7 @@ At its core, learning means **modifying your mental model of reality**, the web 
 1. **Integrate** new information into what you already know.  
 2. **Expand** your model to include something genuinely new.
 
-The first is easier and more stable. When you learn, your first move should be to see how the new idea fits. Fitting it is an art: reframe the problem, look at it from different angles until you find a perspective that feels intuitive to you. Once it fits, it stays. Simple as that.
+The first is easier and more stable. When you learn, your first move should be to see how the new idea fits. Fitting it is an art: reframe the problem, look at it from different angles until you find a perspective that feels intuitive to you. Once it fits, it stabilizes. Your brain no longer treats it as foreign information but as structure within your existing model.
 
 ---
 
@@ -176,6 +176,7 @@ The steps vanish, and what remains is a clear internal model you can rebuild fro
 Once a pattern fits that tightly, it becomes part of your intuition.  
 It is no longer something you remember. In a way, it becomes something you are.
 
+**This way of learning is personal. I've come to rely on it so deeply that I struggle to absorb anything I can't make intuitive. I no longer try to memorize what I can't re-derive.**
 
 ---
 
@@ -200,8 +201,10 @@ Do this long enough and you start noticing hidden symmetries everywhere.
 Methods that looked different turn out to be expressions of the same idea.
 What once felt advanced becomes obvious, and what once felt obvious becomes profound.
 
-This essay is the foundation.  
-If curiosity runs high, I'll follow it with notes showing how **common-sense learning** reshapes probability, reasoning, and creative skill and how to practice it deliberately. Later essays will show practical methods for training this kind of integration and for applying it to real reasoning and creative work.
+This essay is the foundation.
+If you have thoughts, counter-examples, or ways this model fails, I'd love to hear them. The next steps I'm exploring involve testing how this kind of integration applies to probabilistic reasoning and creative skill formation.
+
+If those explorations prove useful, I'll turn them into follow-up notes on practicing and applying common-sense learning deliberately.
 
 
 ---
