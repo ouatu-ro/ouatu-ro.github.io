@@ -23,6 +23,7 @@ const tagFeedBase =
       ? `/blog/tag/${normalizedTag}`
       : undefined;
 ---
+
 <section class="subscribe-prompt">
   <h3>Stay in the Loop</h3>
   <p>
@@ -35,27 +36,43 @@ const tagFeedBase =
       Subscribe to All Posts
     </a>
     <a href="/blog/feed.json" class="btn btn-secondary" rel="nofollow">
-      JSON Feed
+      Full JSON Feed
     </a>
-    {categoryFeedBase && scopedCategory && (
-      <a href={`${categoryFeedBase}/rss.xml`} class="btn" rel="nofollow">
-        {`Only ${scopedCategory.name}`}
-      </a>
-    )}
-    {categoryFeedBase && scopedCategory && (
-      <a href={`${categoryFeedBase}/feed.json`} class="btn btn-secondary" rel="nofollow">
-        {`${scopedCategory.name} JSON`}
-      </a>
-    )}
-    {tagFeedBase && normalizedTag && (
-      <a href={`${tagFeedBase}/rss.xml`} class="btn" rel="nofollow">
-        {`Only #${normalizedTag}`}
-      </a>
-    )}
-    {tagFeedBase && normalizedTag && (
-      <a href={`${tagFeedBase}/feed.json`} class="btn btn-secondary" rel="nofollow">
-        {`#${normalizedTag} JSON`}
-      </a>
-    )}
+    {
+      categoryFeedBase && scopedCategory && (
+        <a href={`${categoryFeedBase}/rss.xml`} class="btn" rel="nofollow">
+          {`Only ${scopedCategory.name}`}
+        </a>
+      )
+    }
+    {
+      categoryFeedBase && scopedCategory && (
+        <a
+          href={`${categoryFeedBase}/feed.json`}
+          class="btn btn-secondary"
+          rel="nofollow"
+        >
+          {`${scopedCategory.name} JSON`}
+        </a>
+      )
+    }
+    {
+      tagFeedBase && normalizedTag && (
+        <a href={`${tagFeedBase}/rss.xml`} class="btn" rel="nofollow">
+          {`Only #${normalizedTag}`}
+        </a>
+      )
+    }
+    {
+      tagFeedBase && normalizedTag && (
+        <a
+          href={`${tagFeedBase}/feed.json`}
+          class="btn btn-secondary"
+          rel="nofollow"
+        >
+          {`#${normalizedTag} JSON`}
+        </a>
+      )
+    }
   </div>
 </section>

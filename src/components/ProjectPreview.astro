@@ -62,7 +62,7 @@ try {
 let githubLabel = "";
 if (project.githubUrl) {
   try {
-    githubLabel = new URL(project.githubUrl).pathname.replace(/\//g, "").slice(0, 24) || "GitHub";
+    githubLabel = new URL(project.githubUrl).pathname.slice(0, 30) || "GitHub";
   } catch {
     githubLabel = "GitHub";
   }

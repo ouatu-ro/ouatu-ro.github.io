@@ -15,7 +15,7 @@ export const getStaticPaths = (async ({ paginate }) => {
         pageSize: POSTS_PER_PAGE,
         params: { tag: tag.slug },
         props: { tagSlug: tag.slug, tagLabel: tag.label },
-      })
+      }),
     );
   }
   return paths;
@@ -35,7 +35,10 @@ const { page, tagSlug, tagLabel } = Astro.props as {
 const posts = page.data;
 const prettyTag = tagLabel ?? tagSlug;
 const baseTitle = `Posts tagged ${prettyTag}`;
-const title = page.currentPage === 1 ? baseTitle : `${baseTitle} – Page ${page.currentPage}`;
+const title =
+  page.currentPage === 1
+    ? baseTitle
+    : `${baseTitle} – Page ${page.currentPage}`;
 const description = `Articles grouped under ${prettyTag}`;
 ---
 

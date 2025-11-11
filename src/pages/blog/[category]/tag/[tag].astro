@@ -1,11 +1,7 @@
 ---
 import type { GetStaticPaths } from "astro";
 import BlogArchive from "@/components/BlogArchive.astro";
-import {
-  CATEGORY_IDS,
-  CATEGORIES,
-  type CategoryId,
-} from "@/config/categories";
+import { CATEGORY_IDS, CATEGORIES, type CategoryId } from "@/config/categories";
 import { getAllTags, getPostsByTag, type BlogPost } from "@/lib/posts";
 
 export const getStaticPaths = (async () => {

@@ -14,5 +14,6 @@ if (!post) {
 }
 
 const postSlug = post.data.slug ?? deriveSlugFromId(post.id);
---- 
+---
+
 <a href={`/blog/${postSlug}`}>{post.data.title}</a>

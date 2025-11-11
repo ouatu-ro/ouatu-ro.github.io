@@ -61,7 +61,8 @@ const showPagination = Boolean(pagination);
 const showCategoryChips = !activeCategoryId;
 const getCategoryChip = (category: string | undefined) => {
   if (!category) return undefined;
-  if (!Object.prototype.hasOwnProperty.call(CATEGORIES, category)) return undefined;
+  if (!Object.prototype.hasOwnProperty.call(CATEGORIES, category))
+    return undefined;
   const meta = CATEGORIES[category as CategoryId];
   return {
     label: meta?.name ?? category,
@@ -110,13 +111,14 @@ const getCategoryChip = (category: string | undefined) => {
             showCategoryChips && post.data.category
               ? getCategoryChip(post.data.category)
               : undefined;
-          const hasTags = Boolean(categoryChip) || post.normalizedTags.length > 0;
+          const hasTags =
+            Boolean(categoryChip) || post.normalizedTags.length > 0;
           return (
             <li class="blog-card">
               <a class="blog-card__link" href={`/blog/${post.slug}/`}>
                 <p class="blog-card__meta">
-                  <FormattedDate date={post.data.pubDate} /> · {post.readingTime}{" "}
-                  min read
+                  <FormattedDate date={post.data.pubDate} /> ·{" "}
+                  {post.readingTime} min read
                 </p>
                 <h3 class="blog-card__title">{post.data.title}</h3>
                 <p class="blog-card__description">{post.data.description}</p>

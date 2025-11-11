@@ -25,43 +25,49 @@ const ariaLabel = categoryId
   : "Filter all posts by tag";
 ---
 
-{!hasTags && (
-  <div class="tag-dropdown tag-dropdown--placeholder">
-    <span>{emptyMessage}</span>
-  </div>
-)}
-{hasTags && (
-  <details
-    class={`tag-dropdown${normalizedActive ? " is-active" : ""}`}
-    aria-label={ariaLabel}
-    open={Boolean(normalizedActive)}
-  >
-    <summary>
-      <span>Filter by topic</span>
-      <span class="tag-dropdown__current">
-        {normalizedActive ? `#${normalizedActive}` : "All topics"}
-      </span>
-      <span class="tag-dropdown__chevron" aria-hidden="true">▾</span>
-    </summary>
-    <div class="tag-dropdown__panel">
-      <div class="tag-chip-row">
-        {showAllLink && (
-          <a
-            class={`tag-chip${normalizedActive ? "" : " active"}`}
-            href={allTopicsHref}
-          >
-            All topics
-          </a>
-        )}
-        {tags.map((tag) => (
-          <a
-            class={`tag-chip${normalizedActive === tag.slug ? " active" : ""}`}
-            href={tagHref(tag.slug)}
-          >
-            #{tag.label}
-          </a>
-        ))}
-      </div>
+{
+  !hasTags && (
+    <div class="tag-dropdown tag-dropdown--placeholder">
+      <span>{emptyMessage}</span>
     </div>
-  </details>
-)}
+  )
+}
+{
+  hasTags && (
+    <details
+      class={`tag-dropdown${normalizedActive ? " is-active" : ""}`}
+      aria-label={ariaLabel}
+      open={Boolean(normalizedActive)}
+    >
+      <summary>
+        <span>Filter by topic</span>
+        <span class="tag-dropdown__current">
+          {normalizedActive ? `#${normalizedActive}` : "All topics"}
+        </span>
+        <span class="tag-dropdown__chevron" aria-hidden="true">
+          ▾
+        </span>
+      </summary>
+      <div class="tag-dropdown__panel">
+        <div class="tag-chip-row">
+          {showAllLink && (
+            <a
+              class={`tag-chip${normalizedActive ? "" : " active"}`}
+              href={allTopicsHref}
+            >
+              All topics
+            </a>
+          )}
+          {tags.map((tag) => (
+            <a
+              class={`tag-chip${normalizedActive === tag.slug ? " active" : ""}`}
+              href={tagHref(tag.slug)}
+            >
+              #{tag.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </details>
+  )
+}

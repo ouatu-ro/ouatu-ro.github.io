@@ -11,22 +11,26 @@ const { activeCategory, showAllLink = true } = Astro.props as Props;
 ---
 
 <nav class="category-tabs" aria-label="Filter by category">
-  {showAllLink && (
-    <a
-      class={`category-tab${
-        !activeCategory || activeCategory === "all" ? " active" : ""
-      }`}
-      href="/blog/"
-    >
-      All
-    </a>
-  )}
-  {CATEGORY_IDS.map((category) => (
-    <a
-      class={`category-tab${activeCategory === category ? " active" : ""}`}
-      href={`/blog/${category}/`}
-    >
-      {CATEGORIES[category].name}
-    </a>
-  ))}
+  {
+    showAllLink && (
+      <a
+        class={`category-tab${
+          !activeCategory || activeCategory === "all" ? " active" : ""
+        }`}
+        href="/blog/"
+      >
+        All
+      </a>
+    )
+  }
+  {
+    CATEGORY_IDS.map((category) => (
+      <a
+        class={`category-tab${activeCategory === category ? " active" : ""}`}
+        href={`/blog/${category}/`}
+      >
+        {CATEGORIES[category].name}
+      </a>
+    ))
+  }
 </nav>
