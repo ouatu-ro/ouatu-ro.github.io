@@ -1,17 +1,16 @@
 ---
-const GA_ID = "G-FWXVQ3N6SL";
+import { GA_TRACKING_ID } from "../consts";
+import googleAnalyticsModule from "../scripts/google-analytics.ts?url";
+
+const GA_ID = GA_TRACKING_ID;
 const isProduction = import.meta.env.PROD;
 ---
 
-{isProduction && GA_ID && (
-  <>
-    <!-- Load the Google Analytics script -->
-    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-    <script is:inline define:vars={{ GA_ID }}>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', GA_ID);
-    </script>
-  </>
-)}
+{
+  isProduction && GA_ID && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+      <script type="module" src={googleAnalyticsModule}></script>
+    </>
+  )
+}

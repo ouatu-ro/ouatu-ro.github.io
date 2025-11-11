@@ -20,14 +20,23 @@ interface Props {
 
 const { project, highlighted = false } = Astro.props;
 
-const previewAsset = project.shouldShowPreview && project.previewAsset ? project.previewAsset : null;
-const assetIsVideo = previewAsset ? /\.(mp4|webm|mov|m4v)$/i.test(previewAsset) : false;
-const assetIsImage = previewAsset ? /\.(png|jpe?g|gif|webp|avif)$/i.test(previewAsset) : false;
+const previewAsset =
+  project.shouldShowPreview && project.previewAsset
+    ? project.previewAsset
+    : null;
+const assetIsVideo = previewAsset
+  ? /\.(mp4|webm|mov|m4v)$/i.test(previewAsset)
+  : false;
+const assetIsImage = previewAsset
+  ? /\.(png|jpe?g|gif|webp|avif)$/i.test(previewAsset)
+  : false;
 const hasMedia = Boolean(previewAsset && (assetIsVideo || assetIsImage));
 const previewType = project.previewType ?? "titlecard";
 
 const normalizedSlug = project.slug.replace(/[^a-z0-9]+/gi, "-");
-const promptName = normalizedSlug.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+const promptName = normalizedSlug.replace(/-([a-z])/g, (_, char) =>
+  char.toUpperCase(),
+);
 const pascalName = promptName
   .replace(/(?:^|-)([a-z0-9])/g, (_, char) => char.toUpperCase())
   .replace(/-/g, "");
@@ -111,59 +120,62 @@ const previewComponentMap = {
 } as const;
 
 const ArtworkComponent =
-  previewComponentMap[previewType as keyof typeof previewComponentMap] ?? GlyphArtwork;
+  previewComponentMap[previewType as keyof typeof previewComponentMap] ??
+  GlyphArtwork;
 ---
 
 <li class="project-card">
   <a class="project-card-link" href={`/project/${project.slug}`}>
     {highlighted && <span class="project-card-badge">Featured</span>}
 
-    {hasMedia ? (
-      <div class="project-card-media">
-        {assetIsVideo ? (
-          <video
-            data-src={previewAsset!}
-            preload="none"
-            playsinline
-            muted
-            loop
-            aria-label={`Preview recording for ${project.name}`}
+    {
+      hasMedia ? (
+        <div class="project-card-media">
+          {assetIsVideo ? (
+            <video
+              data-src={previewAsset!}
+              preload="none"
+              playsinline
+              muted
+              loop
+              aria-label={`Preview recording for ${project.name}`}
+            />
+          ) : (
+            <img
+              src={previewAsset!}
+              alt={`Preview for ${project.name}`}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+        </div>
+      ) : (
+        <div
+          class:list={[
+            "project-card-media",
+            "project-card-media--fallback",
+            `project-card-media--${previewType}`,
+          ]}
+        >
+          <ArtworkComponent
+            project={project}
+            trimmedDescription={trimmedDescription}
+            promptName={promptName}
+            pascalName={pascalName}
+            terminalLines={terminalLines}
+            codeLines={codeLines}
+            blueprintNodes={blueprintNodes}
+            blueprintConnectors={blueprintConnectors}
+            graphNodes={graphNodes}
+            graphLinks={graphLinks}
+            label={project.name.slice(0, 2).toUpperCase()}
+            title={project.name}
+            subtitle={trimmedDescription}
+            domain={projectDomain || project.name}
           />
-        ) : (
-          <img
-            src={previewAsset!}
-            alt={`Preview for ${project.name}`}
-            loading="lazy"
-            decoding="async"
-          />
-        )}
-      </div>
-    ) : (
-      <div
-        class:list={[
-          "project-card-media",
-          "project-card-media--fallback",
-          `project-card-media--${previewType}`,
-        ]}
-      >
-        <ArtworkComponent
-          project={project}
-          trimmedDescription={trimmedDescription}
-          promptName={promptName}
-          pascalName={pascalName}
-          terminalLines={terminalLines}
-          codeLines={codeLines}
-          blueprintNodes={blueprintNodes}
-          blueprintConnectors={blueprintConnectors}
-          graphNodes={graphNodes}
-          graphLinks={graphLinks}
-          label={project.name.slice(0, 2).toUpperCase()}
-          title={project.name}
-          subtitle={trimmedDescription}
-          domain={projectDomain || project.name}
-        />
-      </div>
-    )}
+        </div>
+      )
+    }
 
     <div class="project-card-body">
       <h3>{project.name}</h3>
@@ -175,37 +187,3 @@ const ArtworkComponent =
     </div>
   </a>
 </li>
-
-{assetIsVideo && (
-  <script is:inline>
-    if (typeof window !== "undefined") {
-      const w = window;
-      if (!w.__projectPreviewObserver) {
-        w.__projectPreviewObserver = new IntersectionObserver(
-          function (entries, observer) {
-            entries.forEach(function (entry) {
-              if (!entry.isIntersecting) return;
-              const video = entry.target;
-              const dataSrc = video.getAttribute("data-src");
-              if (dataSrc && !video.getAttribute("src")) {
-                video.setAttribute("src", dataSrc);
-                video.load();
-                video.play().catch(function () {});
-              }
-              observer.unobserve(video);
-            });
-          },
-          { rootMargin: "200px 0px", threshold: 0.1 }
-        );
-      }
-
-      document
-        .querySelectorAll(".project-card-media video[data-src]")
-        .forEach(function (video) {
-          if (video.getAttribute("data-observed")) return;
-          video.setAttribute("data-observed", "true");
-          w.__projectPreviewObserver.observe(video);
-        });
-    }
-  </script>
-)}

@@ -24,3 +24,6 @@ export const KAGGLE_URL = "https://www.kaggle.com/ilikehaskell/discussion/";
 
 // Contact information
 export const CONTACT_EMAIL = "hello@ouatu.ro"; // formatted for display as hello *@* ouatu.ro
+
+// Analytics
+export const GA_TRACKING_ID = "G-FWXVQ3N6SL";
