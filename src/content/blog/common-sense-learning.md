@@ -18,7 +18,7 @@ At its core, learning means **modifying your mental model of reality**, the web 
 1. **Integrate** new information into what you already know.  
 2. **Expand** your model to include something genuinely new.
 
-The first is easier and more stable. When you learn, your first move should be to see how the new idea fits. Fitting it is an art: reframe the problem, look at it from different angles until you find a perspective that feels intuitive to you. Once it fits, it stabilizes. Your brain no longer treats it as foreign information but as structure within your existing model.
+The first path is easier and more stable. When you learn, your first move should be to see how the new idea fits. Fitting it is an art: reframe the problem, look at it from different angles until you find a perspective that feels intuitive to you. Once it fits, it stabilizes. Your brain no longer treats it as foreign information but as structure within your existing model.
 
 ---
 
@@ -48,6 +48,10 @@ The formula is a result stored in memory. To get to it, you replay a series of s
 
 If I asked you to sum the series $11 + 15 + 19 + \ldots + 207$, would you instantly know what to do? You'd probably reconstruct the pattern symbolically again. It never became part of your model of how numbers behave.
 
+Many of us remember a mnemonic for arithmetic progressions: *first plus last, times how many, divided by two.*
+You might recall it instantly and use it flawlessly, but that still isn't **common-sense learning**.
+You can't re-derive it on sight, nor see the boundaries of where it holds, unless you also mechanically recall that it reliably works for arithmetic progressions... but why does it?
+
 ---
 
 ## How to find a common-sense perspective
@@ -76,13 +80,12 @@ $$
 \text{sum} = \text{average element} \times \text{number of elements}
 $$
 
-For consecutive numbers, the average element is
+The number of elements is $n$. 
+Also, for any evenly spaced sequence of numbers, the average element is indeed $\frac{\text{first} + \text{last}}{2}$. 
 
-$$
-\frac{1 + n}{2}
-$$
+You can see this the common-sense way: pair the smallest and largest numbers, then the next smallest and next largest. Each pair gives the same sum, whether the spacing is 1, 4, or any constant step.
 
-and the number of elements is $n$.
+Or, my favorite: start with one or two numbers, then add equally spaced terms to the left and right. Inductively, you’ll see that the average stays the same - the first plus the last, divided by two.
 
 Hence:
 
@@ -101,7 +104,7 @@ $$
 $$
 
 Apply the same reasoning.
-Average $= \frac{1 + n}{2}$.
+Average is $\frac{1 + n}{2}$.
 Now count how many elements there are.
 $1 \rightarrow 1$, $3 \rightarrow 2$, $5 \rightarrow 3$, so in general $n \rightarrow \frac{n + 1}{2}$.
 
