@@ -176,7 +176,6 @@ main {
 
 /* Blog title styling */
 .title {
-  margin-bottom: 1.5em;
   padding: 1em 0;
   text-align: left;
   line-height: 1.2;
@@ -295,3 +294,15 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+.tight {
+  margin-block: 1em;
+}
+
+.tight p {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+/* .tight p + p {
+  margin-top: em;
+} */
