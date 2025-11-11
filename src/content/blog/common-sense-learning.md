@@ -58,9 +58,9 @@ Start watching your own reasoning unfold:
 
 "Hm. It seems there are three steps here."
 
-"Multiplying by the last term is not fundamental. That only encodes how many elements there are."
+"Multiplying by the last term is not fundamental. In the formula, $n$ seems to actually encode how many elements there are."
 
-"And the first plus the last, divided by two, that is the average of the series."
+"Wait a minute... the first term plus the last, divided by two. That's simply the average of the series!"
 
 "I'll be damned! The sum of a list of elements is simply **the average element multiplied by how many there are**!"
 
