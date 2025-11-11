@@ -1,16 +1,48 @@
-/* Blog Container */
+/* -------------------------------
+   TYPOGRAPHIC SYSTEM (variables)
+-------------------------------- */
+:root {
+  /* Type sizes */
+  --font-size-base: 1.2rem;
+  --font-size-lede: 1.125rem;
+  --font-size-title: 1.8rem;
+
+  /* Line-heights (unitless) */
+  --lh-body: 1.75;
+  --lh-title: 1.2;
+  --lh-tight: 1.5;
+
+  /* Vertical rhythm */
+  --space-block: 1em; /* outer spacing for grouped blocks */
+  --space-paragraph: 0.5em; /* default paragraph gap */
+  --space-tight: 0.2em; /* gap between tight paragraphs */
+
+  /* Measures / widths */
+  --container-max: 960px;
+  --prose-max: 1200px; /* hard cap for content area */
+  --prose-measure: 1000px; /* max width per paragraph block */
+  --gutter-x: 5vw; /* side padding for content */
+
+  /* Existing palette/tokens assumed present:
+     --radius-base, --shadow-soft, --color-text, --color-muted,
+     --color-accent, --color-primary, --gray-dark, --gray
+  */
+}
+
+/* -------------------------------
+   BLOG CONTAINER + LIST
+-------------------------------- */
 .blog-container {
-  max-width: 960px;
+  max-width: var(--container-max);
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
-/* Blog List */
 .blog-list {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  list-style-type: none;
+  list-style: none;
   margin: 0;
   padding: 0;
 }
@@ -18,7 +50,6 @@
 .blog-list li {
   width: calc(50% - 1rem);
 }
-
 .blog-list li:first-child {
   width: 100%;
   margin-bottom: 1rem;
@@ -41,7 +72,7 @@
   margin: 0;
   color: var(--color-text);
   line-height: 1;
-  font-size: 1.8em;
+  font-size: var(--font-size-title);
 }
 
 .blog-date {
@@ -66,16 +97,18 @@
   box-shadow: var(--shadow-soft);
 }
 
-/* Blog Content */
+/* -------------------------------
+   BLOG CONTENT WRAPPER
+-------------------------------- */
 .prose section {
   width: 100%;
-  padding: 0rem 5vw;
+  padding: 0 var(--gutter-x);
   transition: background-color 0.5s ease;
   box-sizing: border-box;
 }
 
 .prose section.footnotes {
-  padding: 0.5em 0; /* now overrides */
+  padding: 0.5em 0;
 }
 
 .prose li p {
@@ -89,7 +122,6 @@
   padding-left: 2.5em;
   margin: 1em 0;
 }
-
 .prose ul li {
   margin-bottom: 0.5em;
 }
@@ -99,12 +131,177 @@
   color: var(--color-primary);
   text-decoration: underline;
 }
-
 .prose a:hover {
   color: var(--color-text);
 }
 
-/* Responsive Adjustments */
+/* -------------------------------
+   MAIN / HERO / PROSE CONTAINER
+-------------------------------- */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2em 0;
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: var(--prose-measure);
+  margin: 0 auto 2rem auto;
+  padding: 0 var(--gutter-x);
+}
+
+.prose {
+  width: 100%;
+  max-width: var(--prose-max);
+  margin: 0 auto;
+  padding: 2rem var(--gutter-x);
+  color: rgb(var(--gray-dark));
+  line-height: var(--lh-body);
+  font-size: var(--font-size-base);
+}
+
+/* Title + meta */
+.title {
+  padding: 1em 0;
+  text-align: left;
+  line-height: var(--lh-title);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: rgb(var(--gray));
+}
+.meta__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+.meta__dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(var(--gray-dark), 0.1);
+  color: rgb(var(--gray-dark));
+}
+.meta-pill--link {
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+.meta-pill--link:hover {
+  border-color: rgba(var(--gray-dark), 0.4);
+  color: var(--color-accent);
+}
+
+.lede {
+  font-size: var(--font-size-lede);
+  color: rgb(var(--gray-dark));
+  margin-bottom: 1rem;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+.post-tags .meta-pill {
+  text-transform: none;
+}
+
+.subscribe-prompt {
+  max-width: 720px;
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: var(--radius-base);
+  background: rgba(var(--gray-dark), 0.05);
+  text-align: center;
+}
+
+.subscribe-prompt__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.subscribe-prompt__links .btn {
+  min-width: 180px;
+  justify-content: center;
+}
+
+.last-updated-on {
+  font-style: italic;
+}
+
+/* Paragraph blocks (measure + rhythm) */
+.prose p,
+.prose ul,
+.prose ol {
+  width: 100%;
+  max-width: var(--prose-measure);
+  margin: 0 auto var(--space-paragraph) auto;
+}
+
+/* Safety */
+.prose,
+.prose * {
+  box-sizing: border-box;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* -------------------------------
+   TIGHT BLOCK (dialogue/steps)
+-------------------------------- */
+.tight {
+  margin-block: var(--space-block);
+}
+.tight p {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  line-height: var(--lh-tight);
+}
+.tight p + p {
+  margin-top: var(--space-tight);
+}
+
+/* -------------------------------
+   RESPONSIVE
+-------------------------------- */
+@media (max-width: 900px) {
+  .prose {
+    padding: 1.5rem 4vw;
+  }
+}
+
 @media (max-width: 768px) {
   .prose {
     width: 95%;
@@ -137,172 +334,3 @@
     border-radius: 8px;
   }
 }
-
-/* Additional Blog Post Styles from BlogPost.astro */
-/* Math styling for KaTeX */
-.katex-display {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 0.2em 0; /* Reduced padding around math blocks */
-  margin-top: 0.5em;
-  margin-bottom: 0em;
-}
-
-/* Main container styling */
-main {
-  width: 100%;
-  margin: 0 auto;
-  padding: 0;
-  overflow-x: hidden; /* Prevents content from exceeding screen width */
-}
-
-/* Full-width hero image - shared styling */
-.hero-image {
-  width: 100%;
-  max-width: 1000px; /* Match the content width */
-  margin: 0 auto 2rem auto; /* Center the container */
-  padding: 0 5vw; /* Match content padding */
-}
-
-/* Blog content container */
-.prose {
-  width: 100%;
-  max-width: 1200px; /* Prevents text from stretching too much */
-  margin: 0 auto;
-  padding: 2rem 5vw; /* Adds some side padding */
-  color: rgb(var(--gray-dark));
-  line-height: 1.75;
-}
-
-/* Blog title styling */
-.title {
-  padding: 1em 0;
-  text-align: left;
-  line-height: 1.2;
-}
-
-.meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  color: rgb(var(--gray));
-}
-
-.meta__details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.meta__dates {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: baseline;
-}
-
-.meta-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background: rgba(var(--gray-dark), 0.1);
-  color: rgb(var(--gray-dark));
-}
-
-.meta-pill--link {
-  text-decoration: none;
-  border: 1px solid transparent;
-}
-
-.meta-pill--link:hover {
-  border-color: rgba(var(--gray-dark), 0.4);
-  color: var(--color-accent);
-}
-
-.lede {
-  font-size: 1.125rem;
-  color: rgb(var(--gray-dark));
-  margin-bottom: 1rem;
-}
-
-.post-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 2rem;
-}
-
-.post-tags .meta-pill {
-  text-transform: none;
-}
-
-.subscribe-prompt {
-  max-width: 720px;
-  margin: 3rem auto;
-  padding: 2rem;
-  border-radius: var(--radius-base);
-  background: rgba(var(--gray-dark), 0.05);
-  text-align: center;
-}
-
-.subscribe-prompt__links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.subscribe-prompt__links .btn {
-  min-width: 180px;
-  justify-content: center;
-}
-
-.last-updated-on {
-  font-style: italic;
-}
-
-/* Blog content paragraph adjustments */
-.prose p,
-.prose ul,
-.prose ol {
-  width: 100%;
-  max-width: 1000px; /* Ensures it doesn't go too wide */
-  margin: 0 auto 0.5em auto; /* Centers paragraphs */
-}
-
-/* Prevent overflow issues */
-.prose,
-.prose * {
-  box-sizing: border-box; /* Prevents unexpected overflow */
-}
-
-/* Additional Responsive Adjustments */
-@media (max-width: 900px) {
-  .prose {
-    padding: 1.5rem 4vw;
-  }
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-.tight {
-  margin-block: 1em;
-}
-
-.tight p {
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-/* .tight p + p {
-  margin-top: em;
-} */
