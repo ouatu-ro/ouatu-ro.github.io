@@ -20,5 +20,6 @@
 @import url("./components/_rss.css") layer(components);
 @import url("./components/_seo-footer.css") layer(components);
 @import url("./components/_inline-links.css") layer(components);
+@import url("./components/_admonitions.css") layer(components);
 
 /* Utilities layer left available for future helpers */

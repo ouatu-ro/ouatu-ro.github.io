@@ -3,10 +3,50 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
+// import remarkAdmonitions from "remark-admonitions";
+
 
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+
+import { visit } from "unist-util-visit";
+
+function remarkGithubAlerts() {
+  return (tree) => {
+    visit(tree, "blockquote", (node) => {
+      const first = node.children?.[0];
+      if (
+        first?.type === "paragraph" &&
+        first.children?.[0]?.type === "text" &&
+        /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i.test(first.children[0].value)
+      ) {
+        const [, type] = first.children[0].value.match(/^\[!(\w+)\]/i);
+        const lower = type.toLowerCase();
+        first.children[0].value = first.children[0].value.replace(/^\[!\w+\]\s*/, "");
+
+        node.data = {
+          hName: "div",
+          hProperties: {
+            class: `markdown-alert markdown-alert-${lower}`,
+          },
+        };
+
+        // Insert a synthetic title element at the top
+        node.children.unshift({
+          type: "paragraph",
+          data: {
+            hName: "p",
+            hProperties: { class: "markdown-alert-title" },
+          },
+          children: [{ type: "text", value: type.charAt(0) + type.slice(1).toLowerCase() }],
+        });
+      }
+    });
+  };
+}
+
+
 
 const projectUrlsPath = path.join(process.cwd(), "public", "project-urls.json");
 let projectUrls = [];
@@ -197,7 +237,10 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkMath],
+    remarkPlugins: [
+          remarkMath,
+          remarkGithubAlerts
+        ],
     rehypePlugins: [[rehypeKatex, { output: "html", displayMode: true }]],
     shikiConfig: { theme: "github-dark" },
   },

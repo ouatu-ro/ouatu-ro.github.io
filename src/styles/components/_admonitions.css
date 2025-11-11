@@ -1,0 +1,71 @@
+/* File: src/styles/components/_admonitions.css */
+
+/* Base styling for all admonition blocks */
+.markdown-alert {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-base);
+  border-left: 5px solid;
+  background-color: var(--color-surface-alt);
+  color: var(--color-muted);
+}
+
+/* Styling for the title (e.g., "Note", "Warning") */
+.markdown-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Remove extra margin from paragraphs inside the alert */
+.markdown-alert > p {
+  margin-bottom: 0.5rem;
+}
+.markdown-alert > p:last-child {
+  margin-bottom: 0;
+}
+
+/* --- NOTE --- */
+.markdown-alert-note {
+  border-color: var(--color-info);
+}
+.markdown-alert-note .markdown-alert-title {
+  color: var(--color-info);
+}
+
+/* --- TIP --- */
+.markdown-alert-tip {
+  border-color: var(--color-primary);
+}
+.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-primary);
+}
+
+/* --- IMPORTANT --- */
+.markdown-alert-important {
+  border-color: var(--color-accent-strong);
+}
+.markdown-alert-important .markdown-alert-title {
+  color: var(--color-accent-strong);
+}
+
+/* --- WARNING --- */
+.markdown-alert-warning {
+  border-color: var(--color-accent);
+}
+.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-accent);
+}
+
+/* --- CAUTION --- */
+.markdown-alert-caution {
+  border-color: var(--color-danger);
+}
+.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-danger);
+}

@@ -28,6 +28,11 @@
   --color-accent-strong: rgba(138, 43, 226, 1);
   --color-accent-strong-channels: 138, 43, 226;
 
+  --color-info: rgb(88, 166, 255);
+  --color-info-channels: 88, 166, 255;
+  --color-danger: rgb(248, 81, 73);
+  --color-danger-channels: 248, 81, 73;
+
   /* ===== Typography ===== */
   --font-size-min: 17px;
   --font-size-max: 19.5px;
