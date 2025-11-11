@@ -1,7 +1,7 @@
 ---
-title: "Terse Alternating Least Squares Implementation"
+title: "Implementing Alternating Least Squares (ALS) from Scratch in Python"
 pubDate: 2022-08-07T02:53:16+02:00
-description: "This lab teaches the math and engineering behind Alternating Least Squares: how to derive the least-squares formula, why alternation is needed, and how to implement it efficiently. Includes ready-to-use code snippets and a real-world example showing the method's limits."
+description: "A deep dive into building ALS for recommendation systems in Python. Includes the full derivation, a vectorized implementation, and an analysis of its real-world performance limits."
 category: "lab"
 math: true
 tags:
@@ -9,7 +9,7 @@ tags:
     - machine-learning
 ---
 
-Recommendation systems algorithms behind familiar features like Netflix movie suggestions or Amazon product recommendations. These systems rely on _collaborative filtering_, which uses the past behavior of many users to infer preferences. Matrix factorization methods such as ALS are among the most effective techniques for this task.
+Alternating Least Squares (ALS) is a cornerstone of classic recommendation systems. But how well does a pure implementation actually perform on a real-world dataset like MovieLens? I built it from scratch in Python to find out. In this lab, we'll derive the math, build an efficient vectorized implementation, and discover a surprising truth: without specific modifications, it can fail to beat even simple baselines. Here's the full story.
 
 ## The Matrix Factorization Problem
 
@@ -1009,7 +1009,8 @@ In a realistic temporal split, **ALS performed well in implicit feedback**, with
 
 *Note*: after some analysis, our ALS implementations did not include user/item bias terms, which are known to capture a large portion of the signal in explicit rating data. Models like Surprise’s SVD include these biases, so part of their performance edge comes from that. Will come back with better implementation.
 
-[^1]: https://mathworld.wolfram.com/NormalEquation.html
+[^1]: Weisstein, Eric W. "Normal Equation." From MathWorld--A Wolfram Web Resource. [https://mathworld.wolfram.com/NormalEquation.html](https://mathworld.wolfram.com/NormalEquation.html)
+
 [^2]: Stanford CS229 Project. "Weighted Alternating Least Squares." Accessed from: [https://cs229.stanford.edu/proj2017/final-posters/5147271.pdf](https://cs229.stanford.edu/proj2017/final-posters/5147271.pdf)
 
 [^3]: He, Xiangnan, et al. (2017). "Fast Matrix Factorization for Online Recommendation with Implicit Feedback." *Proceedings of SIGIR*. [https://arxiv.org/pdf/1708.05024](https://arxiv.org/pdf/1708.05024)
