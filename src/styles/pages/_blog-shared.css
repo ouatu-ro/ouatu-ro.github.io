@@ -27,6 +27,10 @@
      --radius-base, --shadow-soft, --color-text, --color-muted,
      --color-accent, --color-primary, --gray-dark, --gray
   */
+  --color-bg-reading: var(--color-surface-alt); /* lifted black for essays */
+  --color-text-reading: #e6e6e6;
+  --color-muted-reading: #b4b4b4;
+
 }
 
 /* -------------------------------
@@ -165,7 +169,10 @@ main {
   max-width: var(--prose-max);
   margin: 0 auto;
   padding: 2rem var(--gutter-x);
-  color: rgb(var(--gray-dark));
+  background-color: var(--color-bg-reading);
+  color: var(--color-text-reading);
+  box-shadow: var(--shadow-intense);
+
   line-height: var(--lh-body);
   font-size: var(--font-size-base);
 }

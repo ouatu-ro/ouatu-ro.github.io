@@ -42,6 +42,8 @@
   /* ===== Layout ===== */
   --radius-base: 12px;
   --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-intense: 0 4px 40px rgba(0, 0, 0, 0.6);
+
   --shadow-inset-glow: inset 0 0 30px
     rgba(var(--color-accent-strong-channels), 0.2);
   --bp-tablet: 48rem; /* 768px */
