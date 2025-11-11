@@ -12,15 +12,13 @@ tags:
 
 When you finally understand something, it just clicks. It fits. You can re-derive it, explain it, use it.
 
-That feeling marks what I call **common-sense learning**: the kind of understanding that fuses new ideas into your existing model of the world until they feel self-evident.
+That moment captures the hallmark of what I call **common-sense learning**: an understanding that fuses new ideas into your existing model of the world until they feel self-evident.
 
-This essay focuses on that kind of learning, how to build knowledge that lasts because it aligns with your internal common sense. It applies especially to conceptual and cognitive skills such as mathematics, reasoning, writing, and science. The same principles echo through every skill you learn.
-
-At its core, learning means **modifying your mental model of reality**. You can do this in two ways:
-1. **Integrate** new information into what you already know.
+At its core, learning means **modifying your mental model of reality**, the web of ideas that forms your internal common sense. There are two ways to do this:
+1. **Integrate** new information into what you already know.  
 2. **Expand** your model to include something genuinely new.
 
-The first is much easier and more stable. So whenever you learn, your first move should be to see how the new thing fits. Once it fits, it stays. Simple as that.
+The first is easier and more stable. When you learn, your first move should be to see how the new idea fits. Fitting it is an art: reframe the problem, look at it from different angles until you find a perspective that feels intuitive to you. Once it fits, it stays. Simple as that.
 
 ---
 
@@ -56,6 +54,8 @@ If I asked you to sum the series $11 + 15 + 19 + \ldots + 207$, would you instan
 
 Start watching your own reasoning unfold:
 
+<div class="tight">
+
 "Hm. It seems there are three steps here."
 
 "Multiplying by the last term is not fundamental. In the formula, $n$ seems to actually encode how many elements there are."
@@ -63,6 +63,8 @@ Start watching your own reasoning unfold:
 "Wait a minute... the first term plus the last, divided by two. That's simply the average of the series!"
 
 "I'll be damned! The sum of a list of elements is simply **the average element multiplied by how many there are**!"
+
+</div>
 
 That is the moment understanding fuses with common sense.
 You have found an invariant, a pattern that does not care about the specific numbers.
