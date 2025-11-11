@@ -56,7 +56,7 @@ Start watching your own reasoning unfold:
 
 <div class="tight">
 
-"Hm. There's $n$, $n + 1$, and a divide by 2; but why those?"
+"Hm. There's $n$, $n + 1$, and a divide by 2... but why those?"
 
 "Multiplying by the last term is not fundamental. In the formula, $n$ seems to actually encode how many elements there are."
 
