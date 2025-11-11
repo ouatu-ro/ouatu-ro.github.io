@@ -171,7 +171,6 @@ main {
   background-color: var(--color-bg-reading);
   color: var(--color-text-reading);
   box-shadow: var(--shadow-intense);
-
   line-height: var(--lh-body);
   font-size: var(--font-size-base);
 }

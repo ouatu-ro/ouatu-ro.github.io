@@ -25,5 +25,6 @@ export default {
     "at-rule-empty-line-before": null,
     "color-hex-length": "short",
     "comment-empty-line-before": null,
+    "custom-property-empty-line-before": null,
   },
 };

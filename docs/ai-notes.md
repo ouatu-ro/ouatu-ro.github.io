@@ -4,6 +4,7 @@
 - `pnpm astro check` runs the full TypeScript and Astro diagnostics. Install dev dependency `@astrojs/check` (already added) before running locally.
 - `pnpm lint:css` executes Stylelint; the configuration rejects vendor-prefixed properties unless explicitly commented and enforces short hex colors.
 - Prettier is wired via `pnpm check:format`. Run it before committing large formatting changes.
+- Husky installs a pre-commit hook (via `pnpm install` triggering the `prepare` script) that runs `pnpm lint:all`, so every commit checks CSS linting and Prettier formatting automatically. Set `HUSKY=0` if you need to bypass it for emergency commits.
 
 ## Project previews
 - All project cards render through `src/components/ProjectPreview.astro`, which now delegates artwork to per-type Astro components in `src/components/project-artworks/`.
