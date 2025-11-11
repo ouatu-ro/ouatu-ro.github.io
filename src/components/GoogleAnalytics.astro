@@ -1,12 +1,9 @@
 ---
 const GA_ID = "G-FWXVQ3N6SL";
-const isLocalhost =
-  typeof window !== "undefined" &&
-  (window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1");
+const isProduction = import.meta.env.PROD;
 ---
 
-{!isLocalhost && GA_ID && (
+{isProduction && GA_ID && (
   <>
     <!-- Load the Google Analytics script -->
     <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
