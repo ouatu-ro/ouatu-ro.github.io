@@ -12,10 +12,7 @@ import sanitizeHtml from "sanitize-html";
 import Icon from "../../components/Icons.astro";
 import "../../styles/pages/project-detail.css";
 import "../../styles/components/project-preview.css";
-import {
-  buildProjectArtworkContext,
-  previewComponentMap,
-} from "../../components/project-artwork-context";
+import { previewComponentMap } from "../../components/artwork-manager";
 
 export async function getStaticPaths() {
   const projects = await getAllProjects();
@@ -36,19 +33,13 @@ const previewAsset = project.previewAsset;
 const previewFlag = project.shouldShowPreview ?? false;
 const hasPreview = Boolean(previewFlag && previewAsset);
 const hasHero = project.slug === "maze-solver" ? hasPreview : true;
-const artworkContext = buildProjectArtworkContext(project);
-const {
-  previewType,
-  trimmedDescription,
-  promptName,
-  pascalName,
-  terminalLines,
-  codeLines,
-  blueprintNodes,
-  blueprintConnectors,
-  graphNodes,
-  graphLinks,
-} = artworkContext;
+const fallbackPreviewType = previewComponentMap[project.previewType]
+  ? project.previewType
+  : "titlecard";
+const ArtworkComponent =
+  previewComponentMap[
+    fallbackPreviewType as keyof typeof previewComponentMap
+  ] ?? previewComponentMap.titlecard;
 
 // Render MD/MDX body safely
 let extraHtml: string | null = null;
@@ -156,42 +147,19 @@ const structuredData = {
               </div>
             </div>
           ) : (
-            (() => {
-              const ArtworkComponent =
-                previewComponentMap[
-                  previewType as keyof typeof previewComponentMap
-                ] ?? previewComponentMap.titlecard;
-              return (
-                <a
-                  class="project-card-link project-card-link--hero"
-                  href={project.homepage}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Open ${project.name}`}
-                >
-                  <div
-                    class={`project-card-media project-card-media--fallback project-card-media--${previewType}`}
-                  >
-                    <ArtworkComponent
-                      project={project}
-                      trimmedDescription={trimmedDescription}
-                      promptName={promptName}
-                      pascalName={pascalName}
-                      terminalLines={terminalLines}
-                      codeLines={codeLines}
-                      blueprintNodes={blueprintNodes}
-                      blueprintConnectors={blueprintConnectors}
-                      graphNodes={graphNodes}
-                      graphLinks={graphLinks}
-                      label={project.name.slice(0, 2).toUpperCase()}
-                      title={project.name}
-                      subtitle={trimmedDescription}
-                      domain={project.homepage || project.name}
-                    />
-                  </div>
-                </a>
-              );
-            })()
+            <a
+              class="project-card-link project-card-link--hero"
+              href={project.homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open ${project.name}`}
+            >
+              <div
+                class={`project-card-media project-card-media--fallback project-card-media--${fallbackPreviewType}`}
+              >
+                <ArtworkComponent project={project} />
+              </div>
+            </a>
           )
         }
       </section>

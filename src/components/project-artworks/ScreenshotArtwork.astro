@@ -1,9 +1,20 @@
 ---
-interface Props extends Record<string, any> {
-  domain: string;
+import type { ProjectRecord } from "../../lib/projects";
+
+interface Props {
+  project: ProjectRecord;
 }
 
-const { domain } = Astro.props;
+const { project } = Astro.props as Props;
+const domain = getDomain(project.homepage);
+
+function getDomain(url: string) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
 ---
 
 <div class="screenshot-frame">

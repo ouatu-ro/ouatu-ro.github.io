@@ -1,10 +1,7 @@
 ---
 import type { ProjectRecord } from "../lib/projects";
 import "../styles/components/project-preview.css";
-import {
-  buildProjectArtworkContext,
-  previewComponentMap,
-} from "./project-artwork-context";
+import { previewComponentMap } from "./artwork-manager";
 
 interface Props {
   project: ProjectRecord;
@@ -24,19 +21,15 @@ const assetIsImage = previewAsset
   ? /\.(png|jpe?g|gif|webp|avif)$/i.test(previewAsset)
   : false;
 const hasMedia = Boolean(previewAsset && (assetIsVideo || assetIsImage));
-const artworkContext = buildProjectArtworkContext(project);
-const {
-  trimmedDescription,
-  terminalLines,
-  codeLines,
-  blueprintNodes,
-  blueprintConnectors,
-  graphNodes,
-  graphLinks,
-  previewType,
-  promptName,
-  pascalName,
-} = artworkContext;
+const trimmedDescription = getTrimmedDescription(project.description);
+
+function getTrimmedDescription(description: string, maxLength = 50) {
+  const raw = description ?? "";
+  const firstLine = raw.split(/\r?\n/)[0] ?? "";
+  return firstLine.length > maxLength
+    ? `${firstLine.slice(0, maxLength - 1).trimEnd()}…`
+    : firstLine;
+}
 
 let projectDomain = "";
 try {
@@ -52,9 +45,13 @@ if (project.githubUrl) {
   }
 }
 
+const resolvedPreviewType = previewComponentMap[project.previewType]
+  ? project.previewType
+  : "titlecard";
 const ArtworkComponent =
-  previewComponentMap[previewType as keyof typeof previewComponentMap] ??
-  previewComponentMap.titlecard;
+  previewComponentMap[
+    resolvedPreviewType as keyof typeof previewComponentMap
+  ] ?? previewComponentMap.titlecard;
 ---
 
 <li class="project-card">
@@ -88,25 +85,10 @@ const ArtworkComponent =
           class:list={[
             "project-card-media",
             "project-card-media--fallback",
-            `project-card-media--${previewType}`,
+            `project-card-media--${resolvedPreviewType}`,
           ]}
         >
-          <ArtworkComponent
-            project={project}
-            trimmedDescription={trimmedDescription}
-            promptName={promptName}
-            pascalName={pascalName}
-            terminalLines={terminalLines}
-            codeLines={codeLines}
-            blueprintNodes={blueprintNodes}
-            blueprintConnectors={blueprintConnectors}
-            graphNodes={graphNodes}
-            graphLinks={graphLinks}
-            label={project.name.slice(0, 2).toUpperCase()}
-            title={project.name}
-            subtitle={trimmedDescription}
-            domain={projectDomain || project.name}
-          />
+          <ArtworkComponent project={project} />
         </div>
       )
     }

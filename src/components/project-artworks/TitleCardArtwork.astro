@@ -1,10 +1,20 @@
 ---
-interface Props extends Record<string, any> {
-  title: string;
-  subtitle?: string;
+import type { ProjectRecord } from "../../lib/projects";
+
+interface Props {
+  project: ProjectRecord;
 }
 
-const { title, subtitle } = Astro.props;
+const { project } = Astro.props as Props;
+const title = project.name;
+const subtitle = getTrimmedDescription(project.description);
+
+function getTrimmedDescription(description: string, maxLength = 150) {
+  const firstLine = (description ?? "").split(/\r?\n/)[0] ?? "";
+  return firstLine.length > maxLength
+    ? `${firstLine.slice(0, maxLength - 1).trimEnd()}…`
+    : firstLine;
+}
 ---
 
 <div class="title-card">

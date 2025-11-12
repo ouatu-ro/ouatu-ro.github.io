@@ -1,11 +1,17 @@
 ---
-interface Props extends Record<string, any> {
-  label: string;
-  title?: string;
+import type { ProjectRecord } from "../../lib/projects";
+
+interface Props {
+  project: ProjectRecord;
 }
 
-const { label, title } = Astro.props;
-const displayText = (title ?? label).toUpperCase();
+const { project } = Astro.props as Props;
+const label = getLabel(project.name);
+const displayText = (project.name ?? label).toUpperCase();
+
+function getLabel(name: string) {
+  return name.slice(0, 2).toUpperCase();
+}
 ---
 
 <>

@@ -1,9 +1,28 @@
 ---
-interface Props extends Record<string, any> {
-  terminalLines: string[];
+import type { ProjectRecord } from "../../lib/projects";
+
+interface Props {
+  project: ProjectRecord;
 }
 
-const { terminalLines } = Astro.props;
+const { project } = Astro.props as Props;
+const terminalLines = createTerminalLines(project);
+
+function createTerminalLines(project: ProjectRecord) {
+  const promptName = toPromptName(project);
+  return [
+    `> launch ${promptName}`,
+    "# compiling modules… ok",
+    "# running simulation…",
+    "# solved in 0.13s",
+  ];
+}
+
+function toPromptName(project: ProjectRecord) {
+  const source = project.slug || project.name || "";
+  const normalized = source.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  return normalized.replace(/-([a-z0-9])/g, (_, char) => char.toUpperCase());
+}
 ---
 
 <div class="terminal-screen">

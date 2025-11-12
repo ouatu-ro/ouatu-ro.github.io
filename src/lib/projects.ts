@@ -3,19 +3,7 @@ import path from "node:path";
 import { getCollection } from "astro:content";
 import { projects as projectsConfig } from "../config/site";
 import { slugify } from "./slugify";
-
-export type HighlightPreviewType =
-  | "terminal"
-  | "wireframe"
-  | "glyph"
-  | "blueprint"
-  | "screenshot"
-  | "graph"
-  | "code"
-  | "mesh"
-  | "ouroboros"
-  | "titlecard"
-  | "wink";
+import type { PreviewArtworkType } from "../components/artwork-manager";
 
 export interface ProjectRecord {
   name: string;
@@ -27,7 +15,7 @@ export interface ProjectRecord {
   updatedDate?: string;
   previewAsset: string | null;
   shouldShowPreview: boolean;
-  previewType: HighlightPreviewType;
+  previewType: PreviewArtworkType;
   isHighlight: boolean;
   highlightOrder: number;
   hasExtraContent: boolean;
@@ -95,7 +83,7 @@ export async function getAllProjects(): Promise<ProjectRecord[]> {
       updatedDate: project.updatedDate,
       previewAsset: config.previewAsset ?? null,
       shouldShowPreview: config.shouldShowPreview ?? false,
-      previewType: (config.previewType ?? "titlecard") as HighlightPreviewType,
+      previewType: (config.previewType ?? "titlecard") as PreviewArtworkType,
       isHighlight: config.isHighlight ?? false,
       highlightOrder: config.order ?? 999,
       hasExtraContent: extraContentMap.has(slug),

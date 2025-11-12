@@ -1,9 +1,34 @@
 ---
-interface Props extends Record<string, any> {
-  codeLines: string[];
+import type { ProjectRecord } from "../../lib/projects";
+
+interface Props {
+  project: ProjectRecord;
 }
 
-const { codeLines } = Astro.props;
+const { project } = Astro.props as Props;
+const codeLines = createCodeLines(project);
+
+function createCodeLines(project: ProjectRecord) {
+  const pascalName = toPascalName(project);
+  return [
+    `export function ${pascalName}() {`,
+    `  const app = initTool({ name: "${project.name}" });`,
+    "  return app.run();",
+    "}",
+  ];
+}
+
+function toPascalName(project: ProjectRecord) {
+  const source = project.slug || project.name || "";
+  return source
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .split(" ")
+    .filter(Boolean)
+    .map((segment) => segment[0].toUpperCase() + segment.slice(1))
+    .join("");
+}
 ---
 
 <div class="code-lines">

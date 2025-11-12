@@ -1,9 +1,16 @@
 ---
-interface Props extends Record<string, any> {
-  label: string;
+import type { ProjectRecord } from "../../lib/projects";
+
+interface Props {
+  project: ProjectRecord;
 }
 
-const { label } = Astro.props;
+const { project } = Astro.props as Props;
+const label = getLabel(project.name);
+
+function getLabel(name: string) {
+  return name.slice(0, 2).toUpperCase();
+}
 ---
 
 <div class="mesh-frame">

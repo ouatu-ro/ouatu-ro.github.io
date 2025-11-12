@@ -1,4 +1,6 @@
 ---
+import type { ProjectRecord } from "../../lib/projects";
+
 interface Node {
   top: string;
   left: string;
@@ -9,12 +11,24 @@ interface Link extends Node {
   rotate: string;
 }
 
-interface Props extends Record<string, any> {
-  graphNodes: Node[];
-  graphLinks: Link[];
+interface Props {
+  project: ProjectRecord;
 }
 
-const { graphNodes, graphLinks } = Astro.props;
+const { project } = Astro.props as Props;
+void project;
+const graphNodes: Node[] = [
+  { top: "18%", left: "30%" },
+  { top: "42%", left: "58%" },
+  { top: "65%", left: "24%" },
+  { top: "30%", left: "76%" },
+  { top: "68%", left: "68%" },
+];
+const graphLinks: Link[] = [
+  { top: "26%", left: "32%", width: "30%", rotate: "18deg" },
+  { top: "50%", left: "44%", width: "26%", rotate: "-12deg" },
+  { top: "60%", left: "26%", width: "48%", rotate: "8deg" },
+];
 ---
 
 <div class="graph-map">

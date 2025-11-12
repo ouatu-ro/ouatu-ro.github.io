@@ -1,18 +1,16 @@
 ---
-interface Props extends Record<string, any> {
-  project: {
-    name: string;
-  };
-  trimmedDescription: string;
+import type { ProjectRecord } from "../../lib/projects";
+
+interface Props {
+  project: ProjectRecord;
 }
 
-const { project, trimmedDescription } = Astro.props;
+const { project } = Astro.props as Props;
 ---
 
 <div class="wireframe-device">
   <div class="wireframe-screen">
     <span class="wireframe-title">{project.name}</span>
-    <span class="wireframe-subtitle">{trimmedDescription}</span>
   </div>
 </div>
 
