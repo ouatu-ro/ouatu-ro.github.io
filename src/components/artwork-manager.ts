@@ -1,3 +1,18 @@
+/**
+ * @file Central registry for project preview artwork components.
+ *
+ * Each key in `previewComponentMap` corresponds to a `previewType` value stored
+ * on a `ProjectRecord`. The value is the Astro component responsible for
+ * rendering that artwork.
+ *
+ * To add a new artwork:
+ * 1. Create the component under `src/components/project-artworks/`.
+ * 2. Import it here.
+ * 3. Add a new key/value entry to `previewComponentMap`.
+ *
+ * The `PreviewArtworkType` union is derived from the map's keys, providing a
+ * single source of truth and type safety throughout the app.
+ */
 import TerminalArtwork from "./project-artworks/TerminalArtwork.astro";
 import WireframeArtwork from "./project-artworks/WireframeArtwork.astro";
 import GlyphArtwork from "./project-artworks/GlyphArtwork.astro";
