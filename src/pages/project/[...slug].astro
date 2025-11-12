@@ -2,74 +2,63 @@
 import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
+import type { ProjectRecord } from "../../utils/projects";
+import { getProjects } from "../../utils/projects";
 import { SITE_TITLE, AUTHOR, AUTHOR_TITLE } from "../../consts";
-import fs from "node:fs";
-import path from "node:path";
-import { slugify } from "../../utils/slugify";
 import ClientScripts from "../../components/ClientScripts.astro";
 import { getCollection } from "astro:content";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
 import Icon from "../../components/Icons.astro";
 import "../../styles/pages/project-detail.css";
-
-interface Project {
-  name: string;
-  homepage: string;
-  description: string;
-  githubUrl: string | null;
-  slug?: string;
-  pubDate?: string;
-  updatedDate?: string;
-}
+import "../../styles/components/project-preview.css";
+import {
+  buildProjectArtworkContext,
+  previewComponentMap,
+} from "../../components/project-artwork-context";
 
 export async function getStaticPaths() {
-  let projects: Project[] = [];
-
-  // Try to read projects-data.json at build time
-  try {
-    const projectsFilePath = path.join(
-      process.cwd(),
-      "public",
-      "projects-data.json",
-    );
-    if (fs.existsSync(projectsFilePath)) {
-      const projectsData = JSON.parse(
-        fs.readFileSync(projectsFilePath, "utf8"),
-      );
-      projects = projectsData.projects || [];
-    } else {
-      console.warn("projects-data.json does not exist, trying manual projects");
-    }
-  } catch (error) {
-    console.warn("Error reading projects-data.json:", error);
-  }
-
-  if (projects.length === 0) {
-    console.error(
-      "No projects found! Please ensure the GitHub Action has generated the projects-data.json file.",
-    );
-  }
-
-  console.log(`Generating static paths for ${projects.length} projects`);
-
-  return projects.map((project) => {
-    const slug = project.slug || slugify(project.name);
-    return { params: { slug }, props: { project: { ...project, slug } } };
-  });
+  const projects = await getProjects();
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
 }
 
 // ---- now it's safe to access props
-const { project } = Astro.props;
+const { project } = Astro.props as { project: ProjectRecord };
 
 // Load matching extra snippet (optional)
 const extras = await getCollection("projectsExtra");
 const extra = extras.find((e) => e.data.slug === project.slug);
 
-const previewAsset = extra?.data.projectPreview;
-const hasPreview = Boolean(
-  (extra?.data.shouldShowPreview ?? false) && previewAsset,
-);
+const extraPreviewAsset = extra?.data.projectPreview;
+const previewAsset = project.previewAsset ?? extraPreviewAsset;
+const previewFlag =
+  project.shouldShowPreview ?? extra?.data.shouldShowPreview ?? false;
+const hasPreview = Boolean(previewFlag && previewAsset);
+const hasHero = project.slug === "maze-solver" ? hasPreview : true;
+const assetIsVideo = previewAsset
+  ? /\.(mp4|webm|mov|m4v)$/i.test(previewAsset)
+  : false;
+const assetIsImage = previewAsset
+  ? /\.(png|jpe?g|gif|webp|avif)$/i.test(previewAsset)
+  : false;
+const mediaAvailable = Boolean(previewAsset && (assetIsVideo || assetIsImage));
+
+const artworkContext = buildProjectArtworkContext(project);
+const {
+  previewType,
+  trimmedDescription,
+  promptName,
+  pascalName,
+  terminalLines,
+  codeLines,
+  blueprintNodes,
+  blueprintConnectors,
+  graphNodes,
+  graphLinks,
+} = artworkContext;
 
 // Render MD/MDX body safely
 let extraHtml: string | null = null;
@@ -140,7 +129,79 @@ const structuredData = {
   </head>
   <body>
     <Header />
-    <main class:list={["project-container", { "no-preview": !hasPreview }]}>
+    <main class:list={["project-container", { "no-preview": !hasHero }]}>
+      <section class="project-hero">
+        {
+          project.slug === "maze-solver" && hasPreview ? (
+            <div class="preview-wrapper">
+              <div class="phone-frame">
+                <div class="phone-frame__bezel">
+                  <a
+                    href={project.homepage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="mobile-preview"
+                    aria-label={`Launch a fullscreen demo of ${project.name} (opens in a new tab)`}
+                  >
+                    <video
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                      src={previewAsset}
+                      aria-label={`Animated preview of ${project.name}`}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                    <span class="play-icon-overlay">
+                      <Icon name="external-link" />
+                      <span>Launch App</span>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : (
+            (() => {
+              const ArtworkComponent =
+                previewComponentMap[
+                  previewType as keyof typeof previewComponentMap
+                ] ?? previewComponentMap.titlecard;
+              return (
+                <a
+                  class="project-card-link project-card-link--hero"
+                  href={project.homepage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open ${project.name}`}
+                >
+                  <div
+                    class={`project-card-media project-card-media--fallback project-card-media--${previewType}`}
+                  >
+                    <ArtworkComponent
+                      project={project}
+                      trimmedDescription={trimmedDescription}
+                      promptName={promptName}
+                      pascalName={pascalName}
+                      terminalLines={terminalLines}
+                      codeLines={codeLines}
+                      blueprintNodes={blueprintNodes}
+                      blueprintConnectors={blueprintConnectors}
+                      graphNodes={graphNodes}
+                      graphLinks={graphLinks}
+                      label={project.name.slice(0, 2).toUpperCase()}
+                      title={project.name}
+                      subtitle={trimmedDescription}
+                      domain={project.homepage || project.name}
+                    />
+                  </div>
+                </a>
+              );
+            })()
+          )
+        }
+      </section>
+
       <div class="project-header">
         <h1>{project.name}</h1>
         <div class="project-description">
@@ -174,42 +235,9 @@ const structuredData = {
         </div>
       </div>
 
-      {
-        hasPreview && (
-          <div class="preview-wrapper">
-            <div class="phone-frame">
-              <div class="phone-frame__bezel">
-                <a
-                  href={project.homepage}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="mobile-preview"
-                  aria-label={`Launch a fullscreen demo of ${project.name} (opens in a new tab)`}
-                >
-                  <video
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                    src={previewAsset}
-                    aria-label={`Animated preview of ${project.name}`}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                  <span class="play-icon-overlay">
-                    <Icon name="external-link" />
-                    <span>Launch App</span>
-                  </span>
-                </a>
-              </div>
-            </div>
-          </div>
-        )
-      }
-
       <div
-        class:list={["project-metadata", { "fade-in-on-scroll": hasPreview }]}
-        data-has-preview={hasPreview}
+        class:list={["project-metadata", { "fade-in-on-scroll": hasHero }]}
+        data-has-preview={hasHero}
       >
         <h2>About this project</h2>
         <p set:html={linkify(project.description)} />

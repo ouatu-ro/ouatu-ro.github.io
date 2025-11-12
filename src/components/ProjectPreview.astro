@@ -1,17 +1,10 @@
 ---
 import type { ProjectRecord } from "../utils/projects";
 import "../styles/components/project-preview.css";
-import TerminalArtwork from "./project-artworks/TerminalArtwork.astro";
-import WireframeArtwork from "./project-artworks/WireframeArtwork.astro";
-import GlyphArtwork from "./project-artworks/GlyphArtwork.astro";
-import BlueprintArtwork from "./project-artworks/BlueprintArtwork.astro";
-import CodeArtwork from "./project-artworks/CodeArtwork.astro";
-import GraphArtwork from "./project-artworks/GraphArtwork.astro";
-import MeshArtwork from "./project-artworks/MeshArtwork.astro";
-import OuroborosArtwork from "./project-artworks/OuroborosArtwork.astro";
-import ScreenshotArtwork from "./project-artworks/ScreenshotArtwork.astro";
-import TitleCardArtwork from "./project-artworks/TitleCardArtwork.astro";
-import WinkArtwork from "./project-artworks/WinkArtwork.astro";
+import {
+  buildProjectArtworkContext,
+  previewComponentMap,
+} from "./project-artwork-context";
 
 interface Props {
   project: ProjectRecord;
@@ -20,10 +13,10 @@ interface Props {
 
 const { project, highlighted = false } = Astro.props;
 
-const previewAsset =
-  project.shouldShowPreview && project.previewAsset
-    ? project.previewAsset
-    : null;
+// Prefer showing media preview whenever a preview asset exists.
+// Some entries gate via shouldShowPreview in content, but index should
+// still render media if available.
+const previewAsset = project.previewAsset ?? null;
 const assetIsVideo = previewAsset
   ? /\.(mp4|webm|mov|m4v)$/i.test(previewAsset)
   : false;
@@ -31,37 +24,19 @@ const assetIsImage = previewAsset
   ? /\.(png|jpe?g|gif|webp|avif)$/i.test(previewAsset)
   : false;
 const hasMedia = Boolean(previewAsset && (assetIsVideo || assetIsImage));
-const previewType = project.previewType ?? "titlecard";
-
-const normalizedSlug = project.slug.replace(/[^a-z0-9]+/gi, "-");
-const promptName = normalizedSlug.replace(/-([a-z])/g, (_, char) =>
-  char.toUpperCase(),
-);
-const pascalName = promptName
-  .replace(/(?:^|-)([a-z0-9])/g, (_, char) => char.toUpperCase())
-  .replace(/-/g, "");
-
-const terminalLines = [
-  `> launch ${promptName}`,
-  "# compiling modules… ok",
-  "# running simulation…",
-  "# solved in 0.13s",
-];
-
-const codeLines = [
-  `export function ${pascalName}() {`,
-  `  const app = initTool({ name: "${project.name}" });`,
-  "  return app.run();",
-  "}",
-];
-
-const rawDescription = project.description ?? "";
-const firstLine = rawDescription.split(/\r?\n/)[0] ?? "";
-const maxLength = 150;
-const trimmedDescription =
-  firstLine.length > maxLength
-    ? `${firstLine.slice(0, maxLength - 1).trimEnd()}…`
-    : firstLine;
+const artworkContext = buildProjectArtworkContext(project);
+const {
+  trimmedDescription,
+  terminalLines,
+  codeLines,
+  blueprintNodes,
+  blueprintConnectors,
+  graphNodes,
+  graphLinks,
+  previewType,
+  promptName,
+  pascalName,
+} = artworkContext;
 
 let projectDomain = "";
 try {
@@ -77,51 +52,9 @@ if (project.githubUrl) {
   }
 }
 
-const blueprintNodes = [
-  { top: "12%", left: "18%" },
-  { top: "25%", left: "68%" },
-  { top: "58%", left: "32%" },
-  { top: "70%", left: "74%" },
-  { top: "40%", left: "48%" },
-];
-
-const blueprintConnectors = [
-  { top: "20%", left: "20%", width: "52%", rotate: "12deg" },
-  { top: "42%", left: "30%", width: "44%", rotate: "-6deg" },
-  { top: "62%", left: "18%", width: "62%", rotate: "10deg" },
-];
-
-const graphNodes = [
-  { top: "18%", left: "30%" },
-  { top: "42%", left: "58%" },
-  { top: "65%", left: "24%" },
-  { top: "30%", left: "76%" },
-  { top: "68%", left: "68%" },
-];
-
-const graphLinks = [
-  { top: "26%", left: "32%", width: "30%", rotate: "18deg" },
-  { top: "50%", left: "44%", width: "26%", rotate: "-12deg" },
-  { top: "60%", left: "26%", width: "48%", rotate: "8deg" },
-];
-
-const previewComponentMap = {
-  terminal: TerminalArtwork,
-  wireframe: WireframeArtwork,
-  glyph: GlyphArtwork,
-  blueprint: BlueprintArtwork,
-  code: CodeArtwork,
-  graph: GraphArtwork,
-  mesh: MeshArtwork,
-  ouroboros: OuroborosArtwork,
-  screenshot: ScreenshotArtwork,
-  titlecard: TitleCardArtwork,
-  wink: WinkArtwork,
-} as const;
-
 const ArtworkComponent =
   previewComponentMap[previewType as keyof typeof previewComponentMap] ??
-  GlyphArtwork;
+  previewComponentMap.titlecard;
 ---
 
 <li class="project-card">
@@ -133,6 +66,7 @@ const ArtworkComponent =
         <div class="project-card-media">
           {assetIsVideo ? (
             <video
+              autoplay
               data-src={previewAsset!}
               preload="none"
               playsinline
@@ -187,3 +121,57 @@ const ArtworkComponent =
     </div>
   </a>
 </li>
+
+<script is:inline>
+  if (typeof window !== "undefined") {
+    const w = window;
+    if (!w.__projectPreviewObserver) {
+      w.__projectPreviewObserver = new IntersectionObserver(
+        function (entries, observer) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            const video = entry.target;
+            const dataSrc = video.getAttribute("data-src");
+            if (dataSrc && !video.getAttribute("src")) {
+              video.setAttribute("src", dataSrc);
+              video.load();
+              video.play().catch(function () {});
+            }
+            observer.unobserve(video);
+          });
+        },
+        { rootMargin: "600px 0px", threshold: 0.01 },
+      );
+    }
+
+    const viewportH =
+      window.innerHeight || document.documentElement.clientHeight;
+    document
+      .querySelectorAll(".project-card-media video[data-src]")
+      .forEach(function (video) {
+        if (video.getAttribute("data-observed")) return;
+        video.setAttribute("data-observed", "true");
+
+        const setAndPlay = function () {
+          const dataSrc = video.getAttribute("data-src");
+          if (dataSrc && !video.getAttribute("src")) {
+            video.setAttribute("src", dataSrc);
+            video.load();
+            video.play().catch(function () {});
+          }
+        };
+
+        const rect = video.getBoundingClientRect();
+        const nearViewport = rect.top <= viewportH + 600 && rect.bottom >= -600;
+        if (nearViewport) {
+          setAndPlay();
+          return;
+        }
+
+        w.__projectPreviewObserver.observe(video);
+        setTimeout(function () {
+          if (!video.getAttribute("src")) setAndPlay();
+        }, 250);
+      });
+  }
+</script>

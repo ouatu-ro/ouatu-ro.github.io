@@ -104,17 +104,44 @@ function initProjectPreviewVideos() {
           observer.unobserve(video);
         });
       },
-      { rootMargin: "200px 0px", threshold: 0.1 },
+      { rootMargin: "600px 0px", threshold: 0.01 },
     );
   }
 
-  document
-    .querySelectorAll<HTMLVideoElement>(".project-card-media video[data-src]")
-    .forEach((video) => {
-      if (video.getAttribute("data-observed")) return;
-      video.setAttribute("data-observed", "true");
-      root.__projectPreviewObserver?.observe(video);
-    });
+  const candidates = document.querySelectorAll<HTMLVideoElement>(
+    ".project-card-media video[data-src]",
+  );
+
+  const viewportH = window.innerHeight || document.documentElement.clientHeight;
+
+  candidates.forEach((video) => {
+    if (video.getAttribute("data-observed")) return;
+    video.setAttribute("data-observed", "true");
+
+    const setAndPlay = () => {
+      const dataSrc = video.getAttribute("data-src");
+      if (dataSrc && !video.getAttribute("src")) {
+        video.setAttribute("src", dataSrc);
+        video.load();
+        video.play().catch(() => {});
+      }
+    };
+
+    // Eagerly load if already near viewport (approx. 600px margin)
+    const rect = video.getBoundingClientRect();
+    const nearViewport = rect.top <= viewportH + 600 && rect.bottom >= -600;
+    if (nearViewport) {
+      setAndPlay();
+      return;
+    }
+
+    root.__projectPreviewObserver?.observe(video);
+
+    // Safety timer: try again after styles/layout settle
+    setTimeout(() => {
+      if (!video.getAttribute("src")) setAndPlay();
+    }, 250);
+  });
 }
 
 function setupProjectInfoButtons() {
@@ -294,7 +321,23 @@ document.addEventListener("astro:page-load", () => {
   initProjectPreviewVideos();
   handleInitialHash();
 });
-document.addEventListener("astro:after-swap", handleInitialHash);
+document.addEventListener("astro:after-swap", () => {
+  initProjectPreviewVideos();
+  handleInitialHash();
+});
+
+// If the script loads after DOM is ready, initialize immediately
+if (document.readyState !== "loading") {
+  onDomReady();
+  // Run a second pass after a tick to catch late layout/images
+  setTimeout(initProjectPreviewVideos, 0);
+  setTimeout(initProjectPreviewVideos, 250);
+  setTimeout(initProjectPreviewVideos, 1000);
+}
+
+// Catch late DOM insertions (e.g., after client-side routing/content swaps)
+const mo = new MutationObserver(() => initProjectPreviewVideos());
+mo.observe(document.documentElement, { childList: true, subtree: true });
 window.addEventListener("popstate", handleInitialHash);
 
 export {};
