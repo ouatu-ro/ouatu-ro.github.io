@@ -9,19 +9,24 @@ declare global {
   }
 }
 
+let cleanupBurgerMenu: (() => void) | null = null;
+
 function setupBurgerMenu() {
+  // Remove previous handlers before wiring up the current header instance.
+  cleanupBurgerMenu?.();
+  cleanupBurgerMenu = null;
+
   const burgerMenu = document.querySelector<HTMLElement>(".burger-menu");
   const navLinks = document.querySelector<HTMLElement>(".nav-links");
 
   if (!burgerMenu || !navLinks) return;
 
-  burgerMenu.addEventListener("click", () => {
-    console.log("CLICK!")
+  const toggleMenu = () => {
     burgerMenu.classList.toggle("active");
     navLinks.classList.toggle("active");
-  });
+  };
 
-  document.addEventListener("click", (event) => {
+  const closeOnClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement | null;
     if (
       !target ||
@@ -34,7 +39,15 @@ function setupBurgerMenu() {
 
     burgerMenu.classList.remove("active");
     navLinks.classList.remove("active");
-  });
+  };
+
+  burgerMenu.addEventListener("click", toggleMenu);
+  document.addEventListener("click", closeOnClickOutside);
+
+  cleanupBurgerMenu = () => {
+    burgerMenu.removeEventListener("click", toggleMenu);
+    document.removeEventListener("click", closeOnClickOutside);
+  };
 }
 
 function addCopyButtonsToCodeBlocks() {

@@ -1,7 +1,14 @@
 ---
 import { site } from "../config/site";
+
 const GA_ID = site.gaTrackingId;
 const isProduction = import.meta.env.PROD;
+const gaInitSnippet = `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');
+`;
 ---
 
 {
@@ -12,7 +19,7 @@ const isProduction = import.meta.env.PROD;
         async
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
       />
-      <script is:inline src="/src/scripts/google-analytics.ts" />
+      <script is:inline set:html={gaInitSnippet} />
     </>
   )
 }
