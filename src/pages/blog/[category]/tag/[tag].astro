@@ -4,9 +4,8 @@ import BlogArchive from "@/components/BlogArchive.astro";
 import { blog as blogConfig, type CategoryId } from "@/config/site";
 import { getAllTags, getPostsByTag, type BlogPost } from "@/lib/posts";
 
-const CATEGORY_IDS = Object.keys(blogConfig.categories) as CategoryId[];
-
 export const getStaticPaths = (async () => {
+  const CATEGORY_IDS = Object.keys(blogConfig.categories) as CategoryId[];
   const paths = [];
   for (const category of CATEGORY_IDS) {
     const tags = await getAllTags(category);
