@@ -1,8 +1,12 @@
 ---
 import type { GetStaticPaths } from "astro";
 import BlogArchive from "@/components/BlogArchive.astro";
-import { CATEGORY_IDS, CATEGORIES, type CategoryId } from "@/config/categories";
+import { blog as blogConfig, type CategoryId } from "@/config/site";
 import { getAllTags, getPostsByTag, type BlogPost } from "@/lib/posts";
+
+const CATEGORY_IDS = Object.keys(
+  blogConfig.categories,
+) as CategoryId[];
 
 export const getStaticPaths = (async () => {
   const paths = [];
@@ -27,7 +31,7 @@ const { category, tagSlug, tagLabel, posts } = Astro.props as {
   posts: BlogPost[];
 };
 
-const categoryMeta = CATEGORIES[category];
+const categoryMeta = blogConfig.categories[category];
 const prettyTag = tagLabel ?? tagSlug;
 const description = `Articles in ${categoryMeta.name} tagged ${prettyTag}.`;
 const title = `Posts tagged ${prettyTag} – ${categoryMeta.name}`;

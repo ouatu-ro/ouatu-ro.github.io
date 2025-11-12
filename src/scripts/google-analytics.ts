@@ -1,4 +1,4 @@
-import { GA_TRACKING_ID } from "../consts";
+import { site } from "../config/site";
 
 declare global {
   interface Window {
@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-const GA_ID = GA_TRACKING_ID;
+const GA_ID = site.gaTrackingId;
 
 function initGoogleAnalytics() {
   if (typeof window === "undefined" || !GA_ID) return;

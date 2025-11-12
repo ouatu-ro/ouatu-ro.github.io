@@ -1,8 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
-import { CATEGORIES, type CategoryId } from "../config/categories";
-import { WORDS_PER_MINUTE } from "../config/constants";
-import { slugify } from "../utils/slugify";
+import { blog as blogConfig, type CategoryId } from "../config/site";
+import { slugify } from "./slugify";
 
 export type BlogCollectionEntry = CollectionEntry<"blog">;
 
@@ -34,7 +33,7 @@ const computePostProperties = (post: BlogCollectionEntry): BlogPost => {
   const source = post.body ?? "";
   const words = source.split(wordsRegex).filter(Boolean).length;
   const readingTimeRaw =
-    post.data.readingTime ?? Math.ceil(words / WORDS_PER_MINUTE);
+    post.data.readingTime ?? Math.ceil(words / blogConfig.wordsPerMinute);
   const readingTime = Math.max(1, readingTimeRaw || 1);
   const normalizedTags = (post.data.tags ?? []).map((tag) => ({
     label: tag,
@@ -100,7 +99,7 @@ export async function getAllTags(category?: CategoryId): Promise<TagSummary[]> {
 }
 
 export function getCategoryMeta(category: CategoryId) {
-  return CATEGORIES[category];
+  return blogConfig.categories[category];
 }
 
 export { deriveSlugFromId };

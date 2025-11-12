@@ -6,29 +6,23 @@ import Icon from "../components/Icons.astro";
 import ProjectPreview from "../components/ProjectPreview.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import ClientScripts from "../components/ClientScripts.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import { getProjects, getHighlightConfig } from "../utils/projects";
+import { site, blog as blogConfig, type CategoryId } from "../config/site";
+import { getAllProjects, getHighlightedProjects } from "../lib/projects";
 import { getAllPosts, type BlogPost } from "../lib/posts";
-import { CATEGORIES, type CategoryId } from "../config/categories";
 import "../styles/pages/blog.css";
 import "../styles/pages/blog-index.css";
-import { CONTACT_EMAIL, LINKEDIN_URL } from "../consts";
 
-const [projects, highlights, blogPosts] = await Promise.all([
-  getProjects(),
-  getHighlightConfig(),
+const [projects, highlightedProjects, blogPosts] = await Promise.all([
+  getAllProjects(),
+  getHighlightedProjects(),
   getAllPosts(),
 ]);
 
 const nonNullable = <T,>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
-const projectMap = new Map(projects.map((project) => [project.slug, project]));
 const highlightedProjectSlugs = new Set(
-  highlights.projects.map((ref) => ref.slug),
+  highlightedProjects.map((project) => project.slug),
 );
-const highlightedProjects = highlights.projects
-  .map((ref) => projectMap.get(ref.slug))
-  .filter(nonNullable);
 const fallbackProjects = [...projects].sort((a, b) => {
   const aDate = a.updatedDate ?? a.pubDate ?? "";
   const bDate = b.updatedDate ?? b.pubDate ?? "";
@@ -41,8 +35,8 @@ const projectsToShow =
     : fallbackProjects.slice(0, 3);
 const postsBySlug = new Map(blogPosts.map((post) => [post.slug, post]));
 const highlightedPosts =
-  highlights.posts.length > 0
-    ? highlights.posts
+  blogConfig.highlightedPosts.length > 0
+    ? blogConfig.highlightedPosts
         .map((ref) => postsBySlug.get(ref.slug))
         .filter(nonNullable)
     : [];
@@ -50,12 +44,13 @@ const postsToShow =
   highlightedPosts.length > 0
     ? highlightedPosts.slice(0, 3)
     : (blogPosts.slice(0, 3) as BlogPost[]);
+const [emailUser = "hello", emailDomain = "ouatu.ro"] = site.email.split("@");
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={site.title} description={site.description} />
     <ClientScripts />
   </head>
   <body>
@@ -102,7 +97,10 @@ const postsToShow =
                     const hasTags = post.normalizedTags.length > 0;
                     if (!showCategory && !hasTags) return null;
                     const label = category
-                      ? (CATEGORIES[category as CategoryId]?.name ?? category)
+                      ? (
+                          blogConfig.categories[category as CategoryId]?.name ??
+                          category
+                        )
                       : undefined;
                     return (
                       <div class="blog-card__tags">
@@ -157,12 +155,12 @@ const postsToShow =
         <p>Write to discuss ideas or request technical consulting.</p>
         <div class="contact-links">
           <!-- REFINED EMAIL -->
-          <a href="mailto:hello@ouatu.ro" class="btn btn-primary">
-            Email Me: hello<span style="display: none;">-</span>@<span
+          <a href={`mailto:${site.email}`} class="btn btn-primary">
+            Email Me: {emailUser}<span style="display: none;">-</span>@<span
               style="display: none;">-</span
-            >ouatu.ro
+            >{emailDomain}
           </a>
-          <a href={LINKEDIN_URL} target="_blank" class="btn btn-secondary">
+          <a href={site.linkedinUrl} target="_blank" class="btn btn-secondary">
             <Icon name="linkedin" />
             Connect on LinkedIn
           </a>

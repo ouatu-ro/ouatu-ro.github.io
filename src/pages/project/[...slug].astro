@@ -2,9 +2,9 @@
 import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
-import type { ProjectRecord } from "../../utils/projects";
-import { getProjects } from "../../utils/projects";
-import { SITE_TITLE, AUTHOR, AUTHOR_TITLE } from "../../consts";
+import type { ProjectRecord } from "../../lib/projects";
+import { getAllProjects } from "../../lib/projects";
+import { site } from "../../config/site";
 import ClientScripts from "../../components/ClientScripts.astro";
 import { getCollection } from "astro:content";
 import MarkdownIt from "markdown-it";
@@ -18,7 +18,7 @@ import {
 } from "../../components/project-artwork-context";
 
 export async function getStaticPaths() {
-  const projects = await getProjects();
+  const projects = await getAllProjects();
   return projects.map((project) => ({
     params: { slug: project.slug },
     props: { project },
@@ -32,20 +32,10 @@ const { project } = Astro.props as { project: ProjectRecord };
 const extras = await getCollection("projectsExtra");
 const extra = extras.find((e) => e.data.slug === project.slug);
 
-const extraPreviewAsset = extra?.data.projectPreview;
-const previewAsset = project.previewAsset ?? extraPreviewAsset;
-const previewFlag =
-  project.shouldShowPreview ?? extra?.data.shouldShowPreview ?? false;
+const previewAsset = project.previewAsset;
+const previewFlag = project.shouldShowPreview ?? false;
 const hasPreview = Boolean(previewFlag && previewAsset);
 const hasHero = project.slug === "maze-solver" ? hasPreview : true;
-const assetIsVideo = previewAsset
-  ? /\.(mp4|webm|mov|m4v)$/i.test(previewAsset)
-  : false;
-const assetIsImage = previewAsset
-  ? /\.(png|jpe?g|gif|webp|avif)$/i.test(previewAsset)
-  : false;
-const mediaAvailable = Boolean(previewAsset && (assetIsVideo || assetIsImage));
-
 const artworkContext = buildProjectArtworkContext(project);
 const {
   previewType,
@@ -90,8 +80,8 @@ function linkify(text: string): string {
   );
 }
 
-const pageTitle = `${project.name} - ${SITE_TITLE}`;
-const richDescription = `${project.description} - A project by ${AUTHOR}, ${AUTHOR_TITLE}.`;
+const pageTitle = `${project.name} - ${site.title}`;
+const richDescription = `${project.description} - A project by ${site.author}, ${site.authorTitle}.`;
 
 const pubDate = project.pubDate
   ? new Date(project.pubDate).toISOString()
@@ -105,7 +95,11 @@ const structuredData = {
   "@type": "SoftwareApplication",
   name: project.name,
   description: project.description,
-  author: { "@type": "Person", name: AUTHOR, jobTitle: AUTHOR_TITLE },
+  author: {
+    "@type": "Person",
+    name: site.author,
+    jobTitle: site.authorTitle,
+  },
   url: project.homepage,
   datePublished: pubDate,
   dateModified: updatedDate,

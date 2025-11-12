@@ -1,11 +1,11 @@
 import type { APIContext } from "astro";
-import {
-  CATEGORY_IDS,
-  CATEGORIES,
-  type CategoryId,
-} from "@/config/categories";
+import { blog as blogConfig, type CategoryId } from "@/config/site";
 import { createJsonFeedResponse } from "@/lib/feeds";
 import { getAllTags, getPostsByTag } from "@/lib/posts";
+
+const CATEGORY_IDS = Object.keys(
+  blogConfig.categories,
+) as CategoryId[];
 
 export async function getStaticPaths() {
   const paths = [];
@@ -28,7 +28,7 @@ export async function GET(context: APIContext) {
   const tagSlug = context.params.tag as string;
   const posts = await getPostsByTag(tagSlug, category);
   const label = context.props?.tagLabel ?? tagSlug;
-  const categoryMeta = CATEGORIES[category];
+  const categoryMeta = blogConfig.categories[category];
   return createJsonFeedResponse({
     context,
     posts,

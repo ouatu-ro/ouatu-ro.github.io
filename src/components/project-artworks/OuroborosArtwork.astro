@@ -97,28 +97,30 @@ const { label } = Astro.props;
 <!-- Smooth speed-up/slow-down without losing position -->
 <script>
   const comet = document.querySelector(".comet-group");
-  // Drive the progression with WAAPI (no CSS keyframes; no restarts).
-  const anim = comet.animate(
-    [{ offsetDistance: "0%" }, { offsetDistance: "100%" }],
-    { duration: 6000, iterations: Infinity, easing: "linear" },
-  );
+  if (!comet) {
+    console.warn("Comet element missing for Ouroboros artwork.");
+  } else {
+    const anim = comet.animate(
+      [{ offsetDistance: "0%" }, { offsetDistance: "100%" }],
+      { duration: 6000, iterations: Infinity, easing: "linear" },
+    );
 
-  // Find the hover target (whole card if present, else the component itself)
-  const hoverTarget =
-    comet.closest(".project-card-link") ||
-    document.querySelector(".infinity-container");
+    const hoverTarget =
+      comet.closest<HTMLElement>(".project-card-link") ??
+      document.querySelector<HTMLElement>(".infinity-container");
 
-  function tweenPlaybackRate(target, ms = 800) {
-    const start = anim.playbackRate;
-    const t0 = performance.now();
-    function step(now) {
-      const t = Math.min(1, (now - t0) / ms);
-      anim.playbackRate = start + (target - start) * t;
-      if (t < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+    const tweenPlaybackRate = (target, ms = 800) => {
+      const start = anim.playbackRate;
+      const t0 = performance.now();
+      const step = (now) => {
+        const t = Math.min(1, (now - t0) / ms);
+        anim.playbackRate = start + (target - start) * t;
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    hoverTarget?.addEventListener("mouseenter", () => tweenPlaybackRate(8));
+    hoverTarget?.addEventListener("mouseleave", () => tweenPlaybackRate(1));
   }
-
-  hoverTarget?.addEventListener("mouseenter", () => tweenPlaybackRate(8)); // faster on hover
-  hoverTarget?.addEventListener("mouseleave", () => tweenPlaybackRate(1)); // back to normal
 </script>

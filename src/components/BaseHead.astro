@@ -3,7 +3,7 @@ import "../styles/main.css";
 
 import GoogleAnalytics from "./GoogleAnalytics.astro";
 
-import { SITE_TITLE } from "../consts";
+import { site } from "../config/site";
 
 interface Props {
   title: string;
@@ -23,25 +23,25 @@ const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
 <link
   rel="alternate"
   type="application/rss+xml"
-  title={SITE_TITLE}
+  title={site.title}
   href={new URL("rss.xml", Astro.site)}
 />
 <link
   rel="alternate"
   type="application/rss+xml"
-  title={`${SITE_TITLE} - Blog`}
+  title={`${site.title} - Blog`}
   href={new URL("blog/rss.xml", Astro.site)}
 />
 <link
   rel="alternate"
   type="application/feed+json"
-  title={`${SITE_TITLE} - Blog JSON`}
+  title={`${site.title} - Blog JSON`}
   href={new URL("blog/feed.json", Astro.site)}
 />
 <link
   rel="alternate"
   type="application/rss+xml"
-  title={`${SITE_TITLE} - Projects`}
+  title={`${site.title} - Projects`}
   href={new URL("projects-rss.xml", Astro.site)}
 />
 

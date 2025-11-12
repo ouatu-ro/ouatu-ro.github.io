@@ -2,7 +2,7 @@ import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { site } from "../config/site";
 import type { BlogPost } from "./posts";
 
 const markdown = new MarkdownIt();
@@ -70,8 +70,8 @@ export function rssItemsFromPosts(posts: BlogPost[], site: string) {
 export function createRssResponse({
   context,
   posts,
-  title = `${SITE_TITLE} Blog`,
-  description = SITE_DESCRIPTION,
+  title = `${site.title} Blog`,
+  description = site.description,
   selfPath,
 }: {
   context: APIContext;
@@ -99,8 +99,8 @@ export function createRssResponse({
 export function createJsonFeedResponse({
   context,
   posts,
-  title = `${SITE_TITLE} Blog`,
-  description = SITE_DESCRIPTION,
+  title = `${site.title} Blog`,
+  description = site.description,
   selfPath,
 }: {
   context: APIContext;

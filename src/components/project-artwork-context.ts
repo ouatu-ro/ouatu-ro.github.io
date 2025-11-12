@@ -9,7 +9,7 @@ import OuroborosArtwork from "./project-artworks/OuroborosArtwork.astro";
 import ScreenshotArtwork from "./project-artworks/ScreenshotArtwork.astro";
 import TitleCardArtwork from "./project-artworks/TitleCardArtwork.astro";
 import WinkArtwork from "./project-artworks/WinkArtwork.astro";
-import type { ProjectRecord } from "../utils/projects";
+import type { ProjectRecord } from "../lib/projects";
 
 type Pos = { top: string; left: string };
 type Connector = Pos & { width: string; rotate: string };

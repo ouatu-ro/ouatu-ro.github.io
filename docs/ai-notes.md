@@ -9,7 +9,7 @@
 ## Project previews
 - All project cards render through `src/components/ProjectPreview.astro`, which now delegates artwork to per-type Astro components in `src/components/project-artworks/`.
 - Projects without an explicit `previewType` fall back to the new `titlecard` artwork that prints the full project name and brief description.
-- Default preview types live in `src/utils/projects.ts` (`defaultPreviewTypes`). Extend that map or the content collections if you need specific artwork.
+- Default preview types live in `src/lib/projects.ts` (see the config-driven `projects` map). Extend that map if you need specific artwork.
 
 ## Common pitfalls
 - Avoid using `key={...}` on Astro elements rendered on the server; the TypeScript plugin rejects it. Use `data-*` attributes if you need identifiers.

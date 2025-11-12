@@ -1,11 +1,11 @@
 import type { APIContext } from "astro";
-import {
-  CATEGORY_IDS,
-  CATEGORIES,
-  type CategoryId,
-} from "@/config/categories";
+import { blog as blogConfig, type CategoryId } from "@/config/site";
 import { createRssResponse } from "@/lib/feeds";
 import { getPostsByCategory } from "@/lib/posts";
+
+const CATEGORY_IDS = Object.keys(
+  blogConfig.categories,
+) as CategoryId[];
 
 export async function getStaticPaths() {
   const paths = [];
@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 export async function GET(context: APIContext) {
   const category = context.params.category as CategoryId;
   const posts = await getPostsByCategory(category);
-  const meta = CATEGORIES[category];
+  const meta = blogConfig.categories[category];
   return createRssResponse({
     context,
     posts,

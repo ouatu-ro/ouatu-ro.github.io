@@ -1,67 +1,21 @@
 import rss from "@astrojs/rss";
-import { SITE_TITLE } from "../consts";
-import fs from "node:fs";
-import path from "node:path";
-import { slugify } from "../utils/slugify";
-
-// Helper function to read projects data
-function readProjectsData() {
-  try {
-    const projectsFilePath = path.join(
-      process.cwd(),
-      "public",
-      "projects-data.json"
-    );
-    if (fs.existsSync(projectsFilePath)) {
-      const data = JSON.parse(fs.readFileSync(projectsFilePath, "utf8"));
-      return data.projects || [];
-    }
-    console.warn("projects-data.json does not exist, trying manual projects");
-  } catch (error) {
-    console.warn("Could not read projects-data.json:", error);
-  }
-
-  // Try reading manual projects as fallback
-  try {
-    const manualProjectsPath = path.join(
-      process.cwd(),
-      "public",
-      "manual-projects-data.json"
-    );
-    if (fs.existsSync(manualProjectsPath)) {
-      const data = JSON.parse(fs.readFileSync(manualProjectsPath, "utf8"));
-      return data.manualProjects || [];
-    }
-    console.warn("manual-projects-data.json does not exist");
-  } catch (error) {
-    console.warn("Could not read manual-projects-data.json:", error);
-  }
-
-  return [];
-}
+import { site } from "../config/site";
+import { getAllProjects } from "../lib/projects";
 
 export async function GET(context) {
-  const projects = readProjectsData()
-    .map((project) => ({
-      ...project,
-      slug: project.slug || slugify(project.name),
-    }))
-    .sort((a, b) => {
-      const dateA = new Date(a.pubDate || a.updatedDate || 0);
-      const dateB = new Date(b.pubDate || b.updatedDate || 0);
-      return dateB - dateA; // Descending
-    });
-
-  // Create the RSS feed URL for self-reference
+  const projects = (await getAllProjects()).sort((a, b) => {
+    const dateA = new Date(a.pubDate || a.updatedDate || 0);
+    const dateB = new Date(b.pubDate || b.updatedDate || 0);
+    return dateB.getTime() - dateA.getTime();
+  });
   const rssURL = new URL("projects-rss.xml", context.site).toString();
 
   return rss({
-    title: `${SITE_TITLE} - Projects`,
-    description: `Projects and applications created by ${SITE_TITLE}`,
+    title: `${site.title} - Projects`,
+    description: `Projects and applications created by ${site.title}`,
     site: context.site,
     items: projects.map((project) => ({
       title: project.name,
-      // Use the real creation date from GitHub if available
       pubDate: project.pubDate ? new Date(project.pubDate) : new Date(),
       description: project.description || "",
       content: `
@@ -75,7 +29,7 @@ export async function GET(context) {
         ${
           project.updatedDate
             ? `<p><small>Last updated: ${new Date(
-                project.updatedDate
+                project.updatedDate,
               ).toLocaleDateString()}</small></p>`
             : ""
         }
@@ -84,7 +38,6 @@ export async function GET(context) {
     })),
     customData: `<language>en-us</language>
     <atom:link href="${rssURL}" rel="self" type="application/rss+xml" />`,
-    // Include atom namespace in the XML
     xmlns: {
       atom: "http://www.w3.org/2005/Atom",
     },

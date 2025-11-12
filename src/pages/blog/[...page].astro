@@ -1,13 +1,13 @@
 ---
 import type { GetStaticPaths } from "astro";
 import BlogArchive from "@/components/BlogArchive.astro";
-import { POSTS_PER_PAGE } from "@/config/constants";
-import { SITE_DESCRIPTION, SITE_TITLE } from "@/consts";
+import { blog as blogConfig } from "@/config/site";
+import { site } from "@/config/site";
 import { getAllPosts, type BlogPost } from "@/lib/posts";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getAllPosts();
-  return paginate(posts, { pageSize: POSTS_PER_PAGE });
+  return paginate(posts, { pageSize: blogConfig.postsPerPage });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props as {
@@ -21,11 +21,11 @@ const { page } = Astro.props as {
 
 const posts = page.data;
 const pageSuffix = page.currentPage === 1 ? "" : ` – Page ${page.currentPage}`;
-const pageTitle = `${SITE_TITLE} Blog${pageSuffix}`;
+const pageTitle = `${site.title} Blog${pageSuffix}`;
 const pageDescription =
   page.currentPage === 1
-    ? SITE_DESCRIPTION
-    : `${SITE_TITLE} blog archive page ${page.currentPage}`;
+    ? site.description
+    : `${site.title} blog archive page ${page.currentPage}`;
 ---
 
 <BlogArchive

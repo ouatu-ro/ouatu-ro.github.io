@@ -1,6 +1,5 @@
 ---
-import type { CategoryId } from "../config/categories";
-import { CATEGORIES } from "../config/categories";
+import { blog as blogConfig, type CategoryId } from "../config/site";
 import { normalizeTag } from "../lib/posts";
 
 interface Props {
@@ -11,7 +10,7 @@ interface Props {
 
 const { categoryId, tagSlug, tagLabel } = Astro.props as Props;
 
-const scopedCategory = categoryId ? CATEGORIES[categoryId] : undefined;
+const scopedCategory = categoryId ? blogConfig.categories[categoryId] : undefined;
 const normalizedTag = tagSlug ? normalizeTag(tagSlug) : undefined;
 const scopedTagLabel = tagLabel ?? tagSlug;
 

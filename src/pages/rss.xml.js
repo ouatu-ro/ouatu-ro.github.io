@@ -1,59 +1,18 @@
 import rss from "@astrojs/rss";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { site } from "../config/site";
 import sanitizeHtml from "sanitize-html";
 import MarkdownIt from "markdown-it";
-import fs from "node:fs";
-import path from "node:path";
-import { slugify } from "../utils/slugify";
+import { getAllProjects } from "../lib/projects";
 import { getAllPosts } from "../lib/posts";
 
 const parser = new MarkdownIt();
-
-// Helper function to read projects data
-function readProjectsData() {
-  try {
-    const projectsFilePath = path.join(
-      process.cwd(),
-      "public",
-      "projects-data.json"
-    );
-    if (fs.existsSync(projectsFilePath)) {
-      const data = JSON.parse(fs.readFileSync(projectsFilePath, "utf8"));
-      return data.projects || [];
-    }
-    console.warn("projects-data.json does not exist, trying manual projects");
-  } catch (error) {
-    console.warn("Could not read projects-data.json:", error);
-  }
-
-  // Try reading manual projects as fallback
-  try {
-    const manualProjectsPath = path.join(
-      process.cwd(),
-      "public",
-      "manual-projects-data.json"
-    );
-    if (fs.existsSync(manualProjectsPath)) {
-      const data = JSON.parse(fs.readFileSync(manualProjectsPath, "utf8"));
-      return data.manualProjects || [];
-    }
-    console.warn("manual-projects-data.json does not exist");
-  } catch (error) {
-    console.warn("Could not read manual-projects-data.json:", error);
-  }
-
-  return [];
-}
 
 export async function GET(context) {
   const siteOrigin = context.site ?? context.url;
 
   const blogPosts = await getAllPosts();
 
-  const projects = readProjectsData().map((project) => ({
-    ...project,
-    slug: project.slug || slugify(project.name),
-  }));
+  const projects = await getAllProjects();
 
   const renderMarkdownItem = (post) => {
     const description =
@@ -149,8 +108,8 @@ export async function GET(context) {
   const rssURL = new URL("rss.xml", siteOrigin).toString();
 
   return rss({
-    title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
+    title: site.title,
+    description: site.description,
     site: siteOrigin,
     items: allItems,
     customData: `<language>en-us</language>

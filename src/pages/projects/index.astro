@@ -3,24 +3,23 @@ import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import ProjectPreview from "../../components/ProjectPreview.astro";
-import { getProjects, getHighlightConfig } from "../../utils/projects";
+import { getAllProjects, getHighlightedProjects } from "../../lib/projects";
 import ClientScripts from "../../components/ClientScripts.astro";
 import "../../styles/pages/projects-index.css";
 
-const [projects, highlights] = await Promise.all([
-  getProjects(),
-  getHighlightConfig(),
+const [projects, highlightedProjects] = await Promise.all([
+  getAllProjects(),
+  getHighlightedProjects(),
 ]);
 
-const highlightOrder = highlights.projects.map((item) => item.slug);
-const highlightedSlugs = new Set(highlightOrder);
+const highlightedSlugs = new Set(
+  highlightedProjects.map((project) => project.slug),
+);
 
 const nonNullable = <T,>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined;
 
-const prioritizedProjects = highlightOrder
-  .map((slug) => projects.find((project) => project.slug === slug))
-  .filter(nonNullable);
+const prioritizedProjects = highlightedProjects.filter(nonNullable);
 
 const sortedRemainder = projects
   .filter((project) => !highlightedSlugs.has(project.slug))

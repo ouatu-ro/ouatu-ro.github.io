@@ -1,8 +1,0 @@
-{
-  "projects": [
-    { "slug": "maze-solver", "previewType": "terminal" },
-    { "slug": "table-planner", "previewType": "wireframe" },
-    { "slug": "hall-of-mirrors-3", "previewType": "mesh" }
-  ],
-  "posts": [{ "slug": "common-sense-learning" }, { "slug": "als" }]
-}

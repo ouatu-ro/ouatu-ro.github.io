@@ -1,5 +1,5 @@
 ---
-import { GITHUB_URL, LINKEDIN_URL, KAGGLE_URL } from "../consts";
+import { site } from "../config/site";
 import Icon from "../components/Icons.astro";
 
 const today = new Date();
@@ -9,7 +9,7 @@ const today = new Date();
   <p class="u-heading-font footer-heading">You can also find me here</p>
   <div class="social-links">
     <a
-      href={LINKEDIN_URL}
+      href={site.linkedinUrl}
       class="social-icon"
       target="_blank"
       aria-label="LinkedIn Profile"
@@ -17,7 +17,7 @@ const today = new Date();
       <Icon name="linkedin" />
     </a>
     <a
-      href={GITHUB_URL}
+      href={site.githubUrl}
       class="social-icon"
       target="_blank"
       aria-label="GitHub Profile"
@@ -25,7 +25,7 @@ const today = new Date();
       <Icon name="github" />
     </a>
     <a
-      href={KAGGLE_URL}
+      href={site.kaggleUrl}
       class="social-icon"
       target="_blank"
       aria-label="Kaggle Profile"
@@ -68,5 +68,5 @@ const today = new Date();
     </div>
   </div>
 
-  <p>&copy; {today.getFullYear()} Bogdan Ouatu. All rights reserved.</p>
+  <p>&copy; {today.getFullYear()} {site.author}. All rights reserved.</p>
 </footer>

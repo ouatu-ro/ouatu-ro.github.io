@@ -1,12 +1,12 @@
 ---
-import { SITE_TITLE, TAGLINE_PRIMARY } from "../consts";
+import { site } from "../config/site";
 ---
 
 <header>
   <nav>
     <div class="nav-brand">
-      <a href="/" class="home-link u-site-title">{SITE_TITLE}</a>
-      <span class="tagline u-heading-font">{TAGLINE_PRIMARY}</span>
+      <a href="/" class="home-link u-site-title">{site.title}</a>
+      <span class="tagline u-heading-font">{site.tagline}</span>
       <button class="burger-menu" aria-label="Toggle navigation menu">
         <span></span>
         <span></span>

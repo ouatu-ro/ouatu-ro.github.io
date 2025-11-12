@@ -1,6 +1,5 @@
 ---
-import type { CategoryId } from "@/config/categories";
-import { CATEGORIES } from "@/config/categories";
+import { blog as blogConfig, type CategoryId } from "@/config/site";
 import CategoryTabs from "@/components/CategoryTabs.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Icon from "@/components/Icons.astro";
@@ -61,9 +60,9 @@ const showPagination = Boolean(pagination);
 const showCategoryChips = !activeCategoryId;
 const getCategoryChip = (category: string | undefined) => {
   if (!category) return undefined;
-  if (!Object.prototype.hasOwnProperty.call(CATEGORIES, category))
+  if (!Object.prototype.hasOwnProperty.call(blogConfig.categories, category))
     return undefined;
-  const meta = CATEGORIES[category as CategoryId];
+  const meta = blogConfig.categories[category as CategoryId];
   return {
     label: meta?.name ?? category,
     href: `/blog/${category}/`,

@@ -1,7 +1,7 @@
 ---
 import FormattedDate from "../components/FormattedDate.astro";
 import SubscribePrompt from "../components/SubscribePrompt.astro";
-import { CATEGORIES, type CategoryId } from "../config/categories";
+import { blog as blogConfig, type CategoryId } from "../config/site";
 import BaseLayout from "./BaseLayout.astro";
 import "../styles/pages/blog.css";
 import "katex/dist/katex.min.css";
@@ -26,13 +26,12 @@ const {
   updatedDate,
   heroImage,
   ogImage,
-  math,
   readingTime,
   category,
   tags = [],
 } = Astro.props;
 
-const categoryMeta = CATEGORIES[category];
+const categoryMeta = blogConfig.categories[category];
 const imageForMeta = ogImage ?? heroImage;
 ---
 

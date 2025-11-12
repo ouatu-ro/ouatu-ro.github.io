@@ -1,7 +1,5 @@
 ---
 slug: "maze-solver"
-projectPreview: "/preview/maze-demo-720p.webm"
-shouldShowPreview: true
 ---
 
 ## Behind the scenes

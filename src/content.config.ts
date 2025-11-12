@@ -1,14 +1,13 @@
-import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
-import { CATEGORIES, type CategoryId } from "./config/categories";
+import { blog as blogConfig, type CategoryId } from "./config/site";
+import { glob } from "astro/loaders";
 
-const categoryKeys = Object.keys(CATEGORIES) as [
+const categoryKeys = Object.keys(blogConfig.categories) as [
   CategoryId,
   ...CategoryId[],
 ];
 
 const blog = defineCollection({
-  loader: glob({ base: "./src/content/blog", pattern: "**/*.{md,mdx}" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -32,44 +31,8 @@ const projectsExtra = defineCollection({
     pattern: "**/*.{md,mdx}",
   }),
   schema: z.object({
-    slug: z.string(), // must match project.slug from projects-data.json
-    title: z.string().optional(), // optional override
-    order: z.number().optional(),
-    projectPreview: z.string().optional(),
-    shouldShowPreview: z.boolean().optional(),
+    slug: z.string(),
   }),
 });
 
-const highlights = defineCollection({
-  type: "data",
-  schema: z.object({
-    projects: z
-      .array(
-        z.object({
-          slug: z.string(),
-          previewType: z
-            .enum([
-              "terminal",
-              "wireframe",
-              "glyph",
-              "blueprint",
-              "screenshot",
-              "graph",
-              "code",
-              "mesh",
-            ])
-            .optional(),
-        }),
-      )
-      .default([]),
-    posts: z
-      .array(
-        z.object({
-          slug: z.string(),
-        }),
-      )
-      .default([]),
-  }),
-});
-
-export const collections = { blog, projectsExtra, highlights };
+export const collections = { blog, projectsExtra };

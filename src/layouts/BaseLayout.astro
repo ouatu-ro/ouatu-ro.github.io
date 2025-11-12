@@ -3,7 +3,7 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ClientScripts from "../components/ClientScripts.astro";
-import { SITE_TITLE } from "../consts";
+import { site } from "../config/site";
 
 interface Props {
   title?: string;
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const {
-  title = SITE_TITLE,
+  title = site.title,
   description = "",
   image,
   mainClass = "",
