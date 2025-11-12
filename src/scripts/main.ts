@@ -16,6 +16,7 @@ function setupBurgerMenu() {
   if (!burgerMenu || !navLinks) return;
 
   burgerMenu.addEventListener("click", () => {
+    console.log("CLICK!")
     burgerMenu.classList.toggle("active");
     navLinks.classList.toggle("active");
   });

@@ -1,11 +1,8 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
 import Icon from "../components/Icons.astro";
 import ProjectPreview from "../components/ProjectPreview.astro";
 import FormattedDate from "../components/FormattedDate.astro";
-import ClientScripts from "../components/ClientScripts.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import { site, blog as blogConfig, type CategoryId } from "../config/site";
 import { getAllProjects, getHighlightedProjects } from "../lib/projects";
 import { getAllPosts, type BlogPost } from "../lib/posts";
@@ -47,148 +44,133 @@ const postsToShow =
 const [emailUser = "hello", emailDomain = "ouatu.ro"] = site.email.split("@");
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead title={site.title} description={site.description} />
-    <ClientScripts />
-  </head>
-  <body>
-    <Header />
+<BaseLayout title={site.title} description={site.description}>
+  <div id="tooltip"></div>
+  <main>
+    <section id="about" class="bg-primary">
+      <h2 class="u-heading-font">About Me</h2>
+      <p>
+        I think about complex systems. I write essays when I find something
+        valuable.
+      </p>
+    </section>
 
-    <div id="tooltip"></div>
-    <main>
-      <section id="about" class="bg-primary">
-        <h2 class="u-heading-font">About Me</h2>
-        <p>
-          I think about complex systems. I write essays when I find something
-          valuable.
-        </p>
-      </section>
-
-      <section id="blog">
-        <h2>
-          <a href="/blog" class="blog-title-link">Blog</a>
-          <a href="/blog/rss.xml" class="rss-link" title="Blog RSS Feed">
-            <Icon name="rss" />
-          </a>
-          <!-- <a href="/blog/feed.json" class="rss-link" title="Blog JSON Feed">
-            <Icon name="rss" />
-          </a> -->
-        </h2>
-        <p>
-          Every lab, essay, and catalogue entry now lives together.
-          <a href="/blog" class="blog-link">Browse the full archive</a>
-        </p>
-        <ul class="blog-index-list blog-index-list--home">
-          {
-            postsToShow.map((post) => (
-              <li class="blog-card">
-                <a class="blog-card__link" href={`/blog/${post.slug}/`}>
-                  <p class="blog-card__meta">
-                    <FormattedDate date={post.data.pubDate} /> ·{" "}
-                    {post.readingTime} min read
-                  </p>
-                  <h3 class="blog-card__title">{post.data.title}</h3>
-                  <p class="blog-card__description">{post.data.description}</p>
-                  {(() => {
-                    const category = post.data.category as string | undefined;
-                    const showCategory = Boolean(category);
-                    const hasTags = post.normalizedTags.length > 0;
-                    if (!showCategory && !hasTags) return null;
-                    const label = category
-                      ? (blogConfig.categories[category as CategoryId]?.name ??
-                        category)
-                      : undefined;
-                    return (
-                      <div class="blog-card__tags">
-                        {label && (
-                          <span class="blog-card__tag blog-card__category-chip">
-                            {label}
-                          </span>
-                        )}
-                        {post.normalizedTags.map((tag) => (
-                          <span class="blog-card__tag">#{tag.label}</span>
-                        ))}
-                      </div>
-                    );
-                  })()}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <section id="projects">
-        <h2>
-          <a href="/projects" class="blog-title-link">Projects</a>
-          <a
-            href="/projects-rss.xml"
-            class="rss-link"
-            title="Projects RSS Feed"
-          >
-            <Icon name="rss" />
-          </a>
-        </h2>
-        <p>
-          A collection of my joy-driven projects. Browse the{" "}
-          <a href="/projects" class="blog-link">full projects archive</a> for every
-          launch and experiment.
-        </p>
-        <ul class="projects-highlight-grid projects-highlight-grid--home">
-          {
-            projectsToShow.map((project) => (
-              <ProjectPreview
-                project={project}
-                highlighted={highlightedProjectSlugs.has(project.slug)}
-              />
-            ))
-          }
-        </ul>
-      </section>
-
-      <section id="contact">
-        <h2>Get In Touch</h2>
-        <p>Write to discuss ideas or request technical consulting.</p>
-        <div class="contact-links">
-          <!-- REFINED EMAIL -->
-          <a href={`mailto:${site.email}`} class="btn btn-primary">
-            Email Me: {emailUser}<span style="display: none;">-</span>@<span
-              style="display: none;">-</span
-            >{emailDomain}
-          </a>
-          <a href={site.linkedinUrl} target="_blank" class="btn btn-secondary">
-            <Icon name="linkedin" />
-            Connect on LinkedIn
-          </a>
-        </div>
-      </section>
-    </main>
-
-    <Footer />
-
-    <div class="seo-footer">
-      <div class="container">
-        <h3>Explore Projects</h3>
-        <div class="seo-project-links">
-          {
-            projects.map((project) => (
-              <a
-                href={project.homepage}
-                class="seo-project-link"
-                target="_blank"
-                rel="noopener"
-              >
-                {project.name}
+    <section id="blog">
+      <h2>
+        <a href="/blog" class="blog-title-link">Blog</a>
+        <a href="/blog/rss.xml" class="rss-link" title="Blog RSS Feed">
+          <Icon name="rss" />
+        </a>
+        <!-- <a href="/blog/feed.json" class="rss-link" title="Blog JSON Feed">
+          <Icon name="rss" />
+        </a> -->
+      </h2>
+      <p>
+        Every lab, essay, and catalogue entry now lives together.
+        <a href="/blog" class="blog-link">Browse the full archive</a>
+      </p>
+      <ul class="blog-index-list blog-index-list--home">
+        {
+          postsToShow.map((post) => (
+            <li class="blog-card">
+              <a class="blog-card__link" href={`/blog/${post.slug}/`}>
+                <p class="blog-card__meta">
+                  <FormattedDate date={post.data.pubDate} /> ·{" "}
+                  {post.readingTime} min read
+                </p>
+                <h3 class="blog-card__title">{post.data.title}</h3>
+                <p class="blog-card__description">{post.data.description}</p>
+                {(() => {
+                  const category = post.data.category as string | undefined;
+                  const showCategory = Boolean(category);
+                  const hasTags = post.normalizedTags.length > 0;
+                  if (!showCategory && !hasTags) return null;
+                  const label = category
+                    ? (blogConfig.categories[category as CategoryId]?.name ??
+                      category)
+                    : undefined;
+                  return (
+                    <div class="blog-card__tags">
+                      {label && (
+                        <span class="blog-card__tag blog-card__category-chip">
+                          {label}
+                        </span>
+                      )}
+                      {post.normalizedTags.map((tag) => (
+                        <span class="blog-card__tag">#{tag.label}</span>
+                      ))}
+                    </div>
+                  );
+                })()}
               </a>
-            ))
-          }
-        </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section id="projects">
+      <h2>
+        <a href="/projects" class="blog-title-link">Projects</a>
+        <a href="/projects-rss.xml" class="rss-link" title="Projects RSS Feed">
+          <Icon name="rss" />
+        </a>
+      </h2>
+      <p>
+        A collection of my joy-driven projects. Browse the{" "}
+        <a href="/projects" class="blog-link">full projects archive</a> for every
+        launch and experiment.
+      </p>
+      <ul class="projects-highlight-grid projects-highlight-grid--home">
+        {
+          projectsToShow.map((project) => (
+            <ProjectPreview
+              project={project}
+              highlighted={highlightedProjectSlugs.has(project.slug)}
+            />
+          ))
+        }
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h2>Get In Touch</h2>
+      <p>Write to discuss ideas or request technical consulting.</p>
+      <div class="contact-links">
+        <!-- REFINED EMAIL -->
+        <a href={`mailto:${site.email}`} class="btn btn-primary">
+          Email Me: {emailUser}<span style="display: none;">-</span>@<span
+            style="display: none;">-</span
+          >{emailDomain}
+        </a>
+        <a href={site.linkedinUrl} target="_blank" class="btn btn-secondary">
+          <Icon name="linkedin" />
+          Connect on LinkedIn
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div class="seo-footer">
+    <div class="container">
+      <h3>Explore Projects</h3>
+      <div class="seo-project-links">
+        {
+          projects.map((project) => (
+            <a
+              href={project.homepage}
+              class="seo-project-link"
+              target="_blank"
+              rel="noopener"
+            >
+              {project.name}
+            </a>
+          ))
+        }
       </div>
     </div>
-  </body>
-</html>
+  </div>
+</BaseLayout>
 
 <style>
   .contact-links {

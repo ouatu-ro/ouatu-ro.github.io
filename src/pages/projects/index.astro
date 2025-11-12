@@ -1,10 +1,7 @@
 ---
-import BaseHead from "../../components/BaseHead.astro";
-import Header from "../../components/Header.astro";
-import Footer from "../../components/Footer.astro";
 import ProjectPreview from "../../components/ProjectPreview.astro";
 import { getAllProjects, getHighlightedProjects } from "../../lib/projects";
-import ClientScripts from "../../components/ClientScripts.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/pages/projects-index.css";
 
 const [projects, highlightedProjects] = await Promise.all([
@@ -36,38 +33,29 @@ const pageTitle = "Projects";
 const description = "All shipped experiments, products, and live demos.";
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead title={`${pageTitle} – Bogdan Ouatu`} description={description} />
-    <ClientScripts />
-  </head>
-  <body>
-    <Header />
-    <main class="projects-page">
-      <div class="projects-page-intro">
-        <h1>{pageTitle}</h1>
-        <p>{description}</p>
-      </div>
+<BaseLayout
+  title={`${pageTitle} – Bogdan Ouatu`}
+  description={description}
+  mainClass="projects-page"
+>
+  <div class="projects-page-intro">
+    <h1>{pageTitle}</h1>
+    <p>{description}</p>
+  </div>
 
-      <h2 class="visually-hidden" id="projects-list-heading">
-        Project listings
-      </h2>
+  <h2 class="visually-hidden" id="projects-list-heading">Project listings</h2>
 
-      <ul
-        class="projects-highlight-grid projects-archive-grid"
-        aria-labelledby="projects-list-heading"
-      >
-        {
-          orderedProjects.map((project) => (
-            <ProjectPreview
-              project={project}
-              highlighted={highlightedSlugs.has(project.slug)}
-            />
-          ))
-        }
-      </ul>
-    </main>
-    <Footer />
-  </body>
-</html>
+  <ul
+    class="projects-highlight-grid projects-archive-grid"
+    aria-labelledby="projects-list-heading"
+  >
+    {
+      orderedProjects.map((project) => (
+        <ProjectPreview
+          project={project}
+          highlighted={highlightedSlugs.has(project.slug)}
+        />
+      ))
+    }
+  </ul>
+</BaseLayout>

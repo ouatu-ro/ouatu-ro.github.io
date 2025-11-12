@@ -1,6 +1,5 @@
 ---
 import { site } from "../config/site";
-
 const GA_ID = site.gaTrackingId;
 const isProduction = import.meta.env.PROD;
 ---
@@ -13,9 +12,7 @@ const isProduction = import.meta.env.PROD;
         async
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
       />
-      <script is:inline type="module">
-        import "../scripts/google-analytics.ts";
-      </script>
+      <script is:inline src="/src/scripts/google-analytics.ts" />
     </>
   )
 }

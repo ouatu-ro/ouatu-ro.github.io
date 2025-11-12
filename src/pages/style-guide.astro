@@ -1,9 +1,5 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
 import Icon from "../components/Icons.astro";
-import ClientScripts from "../components/ClientScripts.astro";
 import { Code } from "astro/components";
 import { ICONS } from "../components/icons.data";
 import resumeData from "../content/resume/resume.json";
@@ -12,6 +8,7 @@ import "katex/dist/katex.min.css";
 import "../styles/pages/style-guide.css";
 import "../styles/pages/blog-index.css";
 import "../styles/pages/resume.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 const colorSwatches = [
   {
@@ -61,335 +58,319 @@ const { selectedResults, experience } = resumeData;
 const firstResult = selectedResults.items[0];
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead
-      title="Style Guide"
-      description="Reference for the site's design system."
-    />
-    <ClientScripts />
-  </head>
-  <body>
-    <Header />
-    <main>
-      <div class="p-style-guide-wrapper">
-        <header class="p-style-guide-heading">
-          <h1 class="u-heading-font">Design System</h1>
-          <p class="p-style-guide-intro">
-            A living catalog of the tokens, components, and utilities that power
-            this site. Copy, paste, and remix freely.
-          </p>
-        </header>
+<BaseLayout
+  title="Style Guide"
+  description="Reference for the site's design system."
+>
+  <div class="p-style-guide-wrapper">
+    <header class="p-style-guide-heading">
+      <h1 class="u-heading-font">Design System</h1>
+      <p class="p-style-guide-intro">
+        A living catalog of the tokens, components, and utilities that power
+        this site. Copy, paste, and remix freely.
+      </p>
+    </header>
 
-        <article class="p-style-guide-card">
-          <h3>Color Tokens</h3>
-          <p class="p-style-guide-code">
-            Defined in <code>src/styles/base/_variables.css</code>
-          </p>
-          <div class="p-style-guide-swatches">
-            {
-              colorSwatches.map(({ name, label, modifier }) => (
-                <div class={`p-style-guide-swatch ${modifier}`}>
-                  <div class="p-style-guide-swatch-sample" />
-                  <div class="p-style-guide-swatch-meta">
-                    <strong>{name}</strong>
-                    <span>{label}</span>
-                  </div>
-                </div>
-              ))
-            }
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>Typography Scale</h3>
-          <div class="p-style-guide-type-scale">
-            <div class="p-style-guide-type-item">
-              <h1 class="u-heading-font">Heading 1</h1>
-              <span class="p-style-guide-code"
-                ><strong>Element</strong> <code>&lt;h1&gt;</code></span
-              >
-            </div>
-            <div class="p-style-guide-type-item">
-              <h2 class="u-heading-font">Heading 2</h2>
-              <span class="p-style-guide-code"
-                ><strong>Element</strong> <code>&lt;h2&gt;</code></span
-              >
-            </div>
-            <div class="p-style-guide-type-item">
-              <h3 class="u-heading-font">Heading 3</h3>
-              <span class="p-style-guide-code"
-                ><strong>Element</strong> <code>&lt;h3&gt;</code></span
-              >
-            </div>
-            <div class="p-style-guide-type-item">
-              <p class="u-body-font">
-                Body copy uses <code>u-body-font</code> on paragraphs for Source
-                Sans Pro.
-              </p>
-              <span class="p-style-guide-code"
-                ><strong>Class</strong> <code>u-body-font</code></span
-              >
-            </div>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>Buttons</h3>
-          <p class="p-style-guide-code">
-            Components <code>.btn</code>, variants <code>.btn-primary</code>,
-            <code>.btn-secondary</code>
-          </p>
-          <div class="p-style-guide-code-demo">
-            <div class="project-links p-style-guide-button-row">
-              <a href="#" class="btn btn-primary">
-                <span>Primary Action</span>
-                <Icon name="external-link" />
-              </a>
-              <a href="#" class="btn btn-secondary">
-                <Icon name="github" />
-                Secondary Action
-              </a>
-              <button class="btn btn-secondary" type="button">
-                <Icon name="github" />
-                Button Element
-              </button>
-            </div>
-            <p class="p-style-guide-code">
-              <code>&lt;a class="btn btn-primary"&gt;...&lt;/a&gt;</code>
-            </p>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>Icon Library</h3>
-          <div class="p-style-guide-icon-grid">
-            {
-              iconEntries.map((iconName) => (
-                <div class="p-style-guide-icon">
-                  <div class="p-style-guide-icon-sample">
-                    <Icon name={iconName} />
-                  </div>
-                  <span class="p-style-guide-icon-name">{iconName}</span>
-                </div>
-              ))
-            }
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>Utilities</h3>
-          <div class="p-style-guide-utility">
-            <div>
-              <h4 class="u-heading-font">Cluster</h4>
-              <div class="cluster" style="--gap: 0.5rem">
-                <button type="button" class="btn btn-secondary">One</button>
-                <button type="button" class="btn btn-secondary">Two</button>
-                <button type="button" class="btn btn-secondary">Three</button>
-              </div>
-              <p class="p-style-guide-code">
-                <code
-                  >&lt;div class="cluster" style="--gap:
-                  0.5rem"&gt;...&lt;/div&gt;</code
-                >
-              </p>
-            </div>
-            <div class="p-style-guide-tooltip-demo">
-              <h4 class="u-heading-font">Tooltip</h4>
-              <div class="project-link-wrapper">
-                <button class="info-btn" aria-label="Show tooltip example">
-                  <Icon name="info-circle" />
-                </button>
-              </div>
-              <div class="project-description">
-                Hover to view the tooltip in action.
-              </div>
-              <p class="p-style-guide-code">
-                Tooltip container is managed as a singleton <code>#tooltip</code
-                > element appended by
-                <code>ClientScripts.astro</code>.
-              </p>
-            </div>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>Project Links</h3>
-          <div class="p-style-guide-project-demo">
-            <div class="project-link-wrapper">
-              <a href="#">Telemetry Dashboard</a>
-              <button class="info-btn" aria-label="Toggle project description">
-                <Icon name="info-circle" />
-              </button>
-            </div>
-            <div class="project-description">
-              Comprehensive monitoring for edge devices with real-time alerts.
-            </div>
-            <div class="project-links">
-              <a class="btn btn-primary" href="#">
-                <span>Visit Website</span>
-                <Icon name="external-link" />
-              </a>
-              <a class="btn btn-secondary" href="#">
-                <Icon name="github" />
-                GitHub
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>Code Block</h3>
-          <div class="p-style-guide-preview">
-            <Code code={pipelineCodeSample} lang="ts" />
-            <p class="p-style-guide-note">
-              Code blocks are themed and include line numbers and a copy button.
-            </p>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>KaTeX Math</h3>
-          <div class="p-style-guide-preview">
-            <div class="p-style-guide-katex" set:html={katexExample} />
-            <p class="p-style-guide-code">
-              Render math with KaTeX: <code>{katexInline}</code>
-            </p>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>Article Previews</h3>
-          <div class="p-style-guide-grid">
-            <div class="p-style-guide-card">
-              <h4>Featured Article</h4>
-              <p>The main card from the blog index.</p>
-              <div class="p-style-guide-preview">
-                <ul class="blog-index-list">
-                  <li>
-                    <a href="#">
-                      <div class="blog-title-fallback" style="height: 150px;">
-                        <h3 style="font-size: 1.5rem;">
-                          Effective Analytics Tools
-                        </h3>
-                      </div>
-                      <h4 class="blog-index-title">
-                        Tips for Building Effective Analytics Tools
-                      </h4>
-                      <p class="blog-index-date">March 28, 2022</p>
-                    </a>
-                  </li>
-                </ul>
+    <article class="p-style-guide-card">
+      <h3>Color Tokens</h3>
+      <p class="p-style-guide-code">
+        Defined in <code>src/styles/base/_variables.css</code>
+      </p>
+      <div class="p-style-guide-swatches">
+        {
+          colorSwatches.map(({ name, label, modifier }) => (
+            <div class={`p-style-guide-swatch ${modifier}`}>
+              <div class="p-style-guide-swatch-sample" />
+              <div class="p-style-guide-swatch-meta">
+                <strong>{name}</strong>
+                <span>{label}</span>
               </div>
             </div>
-            <div class="p-style-guide-grid p-style-guide-grid--two">
-              {
-                Array.from({ length: 2 }).map((_, i) => (
-                  <div class="p-style-guide-card" data-card-index={i}>
-                    <h4>Standard Article</h4>
-                    <p>The standard card from the blog feed.</p>
-                    <div class="p-style-guide-preview">
-                      <ul class="blog-index-list">
-                        <li>
-                          <a href="#">
-                            <div
-                              class="blog-title-fallback"
-                              style="height: 150px;"
-                            >
-                              <h3 style="font-size: 1.5rem;">
-                                Effective Analytics Tools
-                              </h3>
-                            </div>
-                            <h4 class="blog-index-title">
-                              Tips for Building Effective Analytics Tools
-                            </h4>
-                            <p class="blog-index-date">March 28, 2022</p>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-        </article>
-
-        <article class="p-style-guide-card">
-          <h3>Resume Components</h3>
-          <div class="p-style-guide-grid">
-            <div class="p-style-guide-card">
-              <h4>Selected Result</h4>
-              <p>Highlights a key achievement.</p>
-              <div class="p-style-guide-preview">
-                <ul class="resume-item-list">
-                  <li>
-                    <h3 class="resume-item__title">{firstResult.title}</h3>
-                    <p class="resume-item__body">{firstResult.description}</p>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="p-style-guide-card">
-              <h4>Experience Section</h4>
-              <p>A full preview of the experience list.</p>
-              <div class="p-style-guide-preview">
-                <section class="resume-section">
-                  <div class="resume-role">
-                    <div class="resume-role__header">
-                      <div>
-                        <h3>{experience.items[0].position}</h3>
-                        <p class="resume-role__company">
-                          <a
-                            href={experience.items[0].url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            >{experience.items[0].company}</a
-                          >
-                        </p>
-                      </div>
-                      <p class="resume-role__date">
-                        {experience.items[0].date}
-                      </p>
-                    </div>
-                    <ul class="resume-role__bullets">
-                      {
-                        experience.items[0].highlights.map((highlight) => (
-                          <li>{highlight}</li>
-                        ))
-                      }
-                    </ul>
-                  </div>
-                  <div class="resume-role">
-                    <div class="resume-role__header">
-                      <div>
-                        <h3>{experience.items[2].position}</h3>
-                        <p class="resume-role__company">
-                          <a
-                            href={experience.items[2].url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            >{experience.items[2].company}</a
-                          >
-                        </p>
-                      </div>
-                      <p class="resume-role__date">
-                        {experience.items[2].date}
-                      </p>
-                    </div>
-                    <ul class="resume-role__bullets">
-                      <li>{experience.items[2].highlights[0]}</li>
-                      <li>{experience.items[2].highlights[1]}</li>
-                    </ul>
-                  </div>
-                </section>
-              </div>
-            </div>
-          </div>
-        </article>
+          ))
+        }
       </div>
-    </main>
-    <Footer />
-  </body>
-</html>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Typography Scale</h3>
+      <div class="p-style-guide-type-scale">
+        <div class="p-style-guide-type-item">
+          <h1 class="u-heading-font">Heading 1</h1>
+          <span class="p-style-guide-code"
+            ><strong>Element</strong> <code>&lt;h1&gt;</code></span
+          >
+        </div>
+        <div class="p-style-guide-type-item">
+          <h2 class="u-heading-font">Heading 2</h2>
+          <span class="p-style-guide-code"
+            ><strong>Element</strong> <code>&lt;h2&gt;</code></span
+          >
+        </div>
+        <div class="p-style-guide-type-item">
+          <h3 class="u-heading-font">Heading 3</h3>
+          <span class="p-style-guide-code"
+            ><strong>Element</strong> <code>&lt;h3&gt;</code></span
+          >
+        </div>
+        <div class="p-style-guide-type-item">
+          <p class="u-body-font">
+            Body copy uses <code>u-body-font</code> on paragraphs for Source Sans
+            Pro.
+          </p>
+          <span class="p-style-guide-code"
+            ><strong>Class</strong> <code>u-body-font</code></span
+          >
+        </div>
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Buttons</h3>
+      <p class="p-style-guide-code">
+        Components <code>.btn</code>, variants <code>.btn-primary</code>,
+        <code>.btn-secondary</code>
+      </p>
+      <div class="p-style-guide-code-demo">
+        <div class="project-links p-style-guide-button-row">
+          <a href="#" class="btn btn-primary">
+            <span>Primary Action</span>
+            <Icon name="external-link" />
+          </a>
+          <a href="#" class="btn btn-secondary">
+            <Icon name="github" />
+            Secondary Action
+          </a>
+          <button class="btn btn-secondary" type="button">
+            <Icon name="github" />
+            Button Element
+          </button>
+        </div>
+        <p class="p-style-guide-code">
+          <code>&lt;a class="btn btn-primary"&gt;...&lt;/a&gt;</code>
+        </p>
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Icon Library</h3>
+      <div class="p-style-guide-icon-grid">
+        {
+          iconEntries.map((iconName) => (
+            <div class="p-style-guide-icon">
+              <div class="p-style-guide-icon-sample">
+                <Icon name={iconName} />
+              </div>
+              <span class="p-style-guide-icon-name">{iconName}</span>
+            </div>
+          ))
+        }
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Utilities</h3>
+      <div class="p-style-guide-utility">
+        <div>
+          <h4 class="u-heading-font">Cluster</h4>
+          <div class="cluster" style="--gap: 0.5rem">
+            <button type="button" class="btn btn-secondary">One</button>
+            <button type="button" class="btn btn-secondary">Two</button>
+            <button type="button" class="btn btn-secondary">Three</button>
+          </div>
+          <p class="p-style-guide-code">
+            <code
+              >&lt;div class="cluster" style="--gap: 0.5rem"&gt;...&lt;/div&gt;</code
+            >
+          </p>
+        </div>
+        <div class="p-style-guide-tooltip-demo">
+          <h4 class="u-heading-font">Tooltip</h4>
+          <div class="project-link-wrapper">
+            <button class="info-btn" aria-label="Show tooltip example">
+              <Icon name="info-circle" />
+            </button>
+          </div>
+          <div class="project-description">
+            Hover to view the tooltip in action.
+          </div>
+          <p class="p-style-guide-code">
+            Tooltip container is managed as a singleton <code>#tooltip</code>
+            element created by <code>src/scripts/main.ts</code>.
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Project Links</h3>
+      <div class="p-style-guide-project-demo">
+        <div class="project-link-wrapper">
+          <a href="#">Telemetry Dashboard</a>
+          <button class="info-btn" aria-label="Toggle project description">
+            <Icon name="info-circle" />
+          </button>
+        </div>
+        <div class="project-description">
+          Comprehensive monitoring for edge devices with real-time alerts.
+        </div>
+        <div class="project-links">
+          <a class="btn btn-primary" href="#">
+            <span>Visit Website</span>
+            <Icon name="external-link" />
+          </a>
+          <a class="btn btn-secondary" href="#">
+            <Icon name="github" />
+            GitHub
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Code Block</h3>
+      <div class="p-style-guide-preview">
+        <Code code={pipelineCodeSample} lang="ts" />
+        <p class="p-style-guide-note">
+          Code blocks are themed and include line numbers and a copy button.
+        </p>
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>KaTeX Math</h3>
+      <div class="p-style-guide-preview">
+        <div class="p-style-guide-katex" set:html={katexExample} />
+        <p class="p-style-guide-code">
+          Render math with KaTeX: <code>{katexInline}</code>
+        </p>
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Article Previews</h3>
+      <div class="p-style-guide-grid">
+        <div class="p-style-guide-card">
+          <h4>Featured Article</h4>
+          <p>The main card from the blog index.</p>
+          <div class="p-style-guide-preview">
+            <ul class="blog-index-list">
+              <li>
+                <a href="#">
+                  <div class="blog-title-fallback" style="height: 150px;">
+                    <h3 style="font-size: 1.5rem;">
+                      Effective Analytics Tools
+                    </h3>
+                  </div>
+                  <h4 class="blog-index-title">
+                    Tips for Building Effective Analytics Tools
+                  </h4>
+                  <p class="blog-index-date">March 28, 2022</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="p-style-guide-grid p-style-guide-grid--two">
+          {
+            Array.from({ length: 2 }).map((_, i) => (
+              <div class="p-style-guide-card" data-card-index={i}>
+                <h4>Standard Article</h4>
+                <p>The standard card from the blog feed.</p>
+                <div class="p-style-guide-preview">
+                  <ul class="blog-index-list">
+                    <li>
+                      <a href="#">
+                        <div class="blog-title-fallback" style="height: 150px;">
+                          <h3 style="font-size: 1.5rem;">
+                            Effective Analytics Tools
+                          </h3>
+                        </div>
+                        <h4 class="blog-index-title">
+                          Tips for Building Effective Analytics Tools
+                        </h4>
+                        <p class="blog-index-date">March 28, 2022</p>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Resume Components</h3>
+      <div class="p-style-guide-grid">
+        <div class="p-style-guide-card">
+          <h4>Selected Result</h4>
+          <p>Highlights a key achievement.</p>
+          <div class="p-style-guide-preview">
+            <ul class="resume-item-list">
+              <li>
+                <h3 class="resume-item__title">{firstResult.title}</h3>
+                <p class="resume-item__body">{firstResult.description}</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="p-style-guide-card">
+          <h4>Experience Section</h4>
+          <p>A full preview of the experience list.</p>
+          <div class="p-style-guide-preview">
+            <section class="resume-section">
+              <div class="resume-role">
+                <div class="resume-role__header">
+                  <div>
+                    <h3>{experience.items[0].position}</h3>
+                    <p class="resume-role__company">
+                      <a
+                        href={experience.items[0].url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >{experience.items[0].company}</a
+                      >
+                    </p>
+                  </div>
+                  <p class="resume-role__date">
+                    {experience.items[0].date}
+                  </p>
+                </div>
+                <ul class="resume-role__bullets">
+                  {
+                    experience.items[0].highlights.map((highlight) => (
+                      <li>{highlight}</li>
+                    ))
+                  }
+                </ul>
+              </div>
+              <div class="resume-role">
+                <div class="resume-role__header">
+                  <div>
+                    <h3>{experience.items[2].position}</h3>
+                    <p class="resume-role__company">
+                      <a
+                        href={experience.items[2].url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >{experience.items[2].company}</a
+                      >
+                    </p>
+                  </div>
+                  <p class="resume-role__date">
+                    {experience.items[2].date}
+                  </p>
+                </div>
+                <ul class="resume-role__bullets">
+                  <li>{experience.items[2].highlights[0]}</li>
+                  <li>{experience.items[2].highlights[1]}</li>
+                </ul>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

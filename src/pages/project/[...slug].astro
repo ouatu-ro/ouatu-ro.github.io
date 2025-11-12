@@ -1,11 +1,7 @@
 ---
-import BaseHead from "../../components/BaseHead.astro";
-import Header from "../../components/Header.astro";
-import Footer from "../../components/Footer.astro";
 import type { ProjectRecord } from "../../lib/projects";
 import { getAllProjects } from "../../lib/projects";
 import { site } from "../../config/site";
-import ClientScripts from "../../components/ClientScripts.astro";
 import { getCollection } from "astro:content";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
@@ -13,6 +9,7 @@ import Icon from "../../components/Icons.astro";
 import "../../styles/pages/project-detail.css";
 import "../../styles/components/project-preview.css";
 import { previewComponentMap } from "../../components/artwork-manager";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const projects = await getAllProjects();
@@ -22,10 +19,8 @@ export async function getStaticPaths() {
   }));
 }
 
-// ---- now it's safe to access props
 const { project } = Astro.props as { project: ProjectRecord };
 
-// Load matching extra snippet (optional)
 const extras = await getCollection("projectsExtra");
 const extra = extras.find((e) => e.data.slug === project.slug);
 
@@ -41,7 +36,10 @@ const ArtworkComponent =
     fallbackPreviewType as keyof typeof previewComponentMap
   ] ?? previewComponentMap.titlecard;
 
-// Render MD/MDX body safely
+const mainClassNames = ["project-container"];
+if (!hasHero) mainClassNames.push("no-preview");
+const mainClass = mainClassNames.join(" ");
+
 let extraHtml: string | null = null;
 if (extra?.body) {
   const md = new MarkdownIt({ html: true, linkify: true });
@@ -62,7 +60,6 @@ if (extra?.body) {
   });
 }
 
-// Utility to linkify URLs in text
 function linkify(text: string): string {
   return text.replace(
     /(https?:\/\/[^\s]+)/g,
@@ -100,167 +97,163 @@ const structuredData = {
 };
 ---
 
-<html lang="en">
-  <head>
-    <BaseHead title={pageTitle} description={richDescription} />
-    <ClientScripts />
-
-    <!-- Structured data for better SEO -->
+<BaseLayout
+  title={pageTitle}
+  description={richDescription}
+  mainClass={mainClass}
+>
+  <Fragment slot="head">
     <script
       is:inline
       type="application/ld+json"
       set:html={JSON.stringify(structuredData)}
     />
-  </head>
-  <body>
-    <Header />
-    <main class:list={["project-container", { "no-preview": !hasHero }]}>
-      <section class="project-hero">
-        {
-          project.slug === "maze-solver" && hasPreview ? (
-            <div class="preview-wrapper">
-              <div class="phone-frame">
-                <div class="phone-frame__bezel">
-                  <a
-                    href={project.homepage}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="mobile-preview"
-                    aria-label={`Launch a fullscreen demo of ${project.name} (opens in a new tab)`}
-                  >
-                    <video
-                      autoplay
-                      loop
-                      muted
-                      playsinline
-                      src={previewAsset}
-                      aria-label={`Animated preview of ${project.name}`}
-                    >
-                      Your browser does not support the video tag.
-                    </video>
-                    <span class="play-icon-overlay">
-                      <Icon name="external-link" />
-                      <span>Launch App</span>
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <a
-              class="project-card-link project-card-link--hero"
-              href={project.homepage}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Open ${project.name}`}
-            >
-              <div
-                class={`project-card-media project-card-media--fallback project-card-media--${fallbackPreviewType}`}
-              >
-                <ArtworkComponent project={project} />
-              </div>
-            </a>
-          )
-        }
-      </section>
+  </Fragment>
 
-      <div class="project-header">
-        <h1>{project.name}</h1>
-        <div class="project-description">
-          <p set:html={linkify(project.description)} />
+  <section class="project-hero">
+    {
+      project.slug === "maze-solver" && hasPreview ? (
+        <div class="preview-wrapper">
+          <div class="phone-frame">
+            <div class="phone-frame__bezel">
+              <a
+                href={project.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mobile-preview"
+                aria-label={`Launch a fullscreen demo of ${project.name} (opens in a new tab)`}
+              >
+                <video
+                  autoplay
+                  loop
+                  muted
+                  playsinline
+                  src={previewAsset}
+                  aria-label={`Animated preview of ${project.name}`}
+                >
+                  Your browser does not support the video tag.
+                </video>
+                <span class="play-icon-overlay">
+                  <Icon name="external-link" />
+                  <span>Launch App</span>
+                </span>
+              </a>
+            </div>
+          </div>
         </div>
-        <div class="project-links">
+      ) : (
+        <a
+          class="project-card-link project-card-link--hero"
+          href={project.homepage}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${project.name}`}
+        >
+          <div
+            class={`project-card-media project-card-media--fallback project-card-media--${fallbackPreviewType}`}
+          >
+            <ArtworkComponent project={project} />
+          </div>
+        </a>
+      )
+    }
+  </section>
+
+  <div class="project-header">
+    <h1>{project.name}</h1>
+    <div class="project-description">
+      <p set:html={linkify(project.description)} />
+    </div>
+    <div class="project-links">
+      <a
+        href={project.homepage}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-primary"
+        aria-label={`Open ${project.name} in a new tab`}
+      >
+        Open in New Tab
+        <Icon name="external-link" />
+      </a>
+      {
+        project.githubUrl && (
           <a
-            href={project.homepage}
+            href={project.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="btn btn-primary"
-            aria-label={`Open ${project.name} in a new tab`}
+            class="btn btn-secondary"
+            aria-label={`View ${project.name} on GitHub (opens in a new tab)`}
           >
-            Open in New Tab
-            <Icon name="external-link" />
+            <Icon name="github" />
+            View on GitHub
           </a>
-          {
-            project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-secondary"
-                aria-label={`View ${project.name} on GitHub (opens in a new tab)`}
-              >
-                <Icon name="github" />
-                View on GitHub
-              </a>
-            )
-          }
-        </div>
-      </div>
+        )
+      }
+    </div>
+  </div>
 
-      <div
-        class:list={["project-metadata", { "fade-in-on-scroll": hasHero }]}
-        data-has-preview={hasHero}
-      >
-        <h2>About this project</h2>
-        <p set:html={linkify(project.description)} />
+  <div
+    class:list={["project-metadata", { "fade-in-on-scroll": hasHero }]}
+    data-has-preview={hasHero}
+  >
+    <h2>About this project</h2>
+    <p set:html={linkify(project.description)} />
 
-        {extraHtml && <div set:html={extraHtml} />}
-        {
-          project.githubUrl && (
-            <p>
-              This is an open-source project. Feel free to explore the source
-              code on
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {" "}
-                GitHub
-              </a>
-              .
-            </p>
-          )
-        }
-      </div>
-    </main>
-    <Footer />
-    <script>
-      (() => {
-        const root = document.documentElement;
-        root.classList.add("js-ready");
+    {extraHtml && <div set:html={extraHtml} />}
+    {
+      project.githubUrl && (
+        <p>
+          This is an open-source project. Feel free to explore the source code
+          on
+          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+            {" "}
+            GitHub
+          </a>
+          .
+        </p>
+      )
+    }
+  </div>
 
-        const target = document.querySelector(".project-metadata");
-        if (!(target instanceof HTMLElement)) return;
+  <Fragment slot="foot">
+    <script is:inline>
+      {
+        `(() => {
+  const root = document.documentElement;
+  root.classList.add("js-ready");
 
-        const hasPreview = target.dataset.hasPreview === "true";
-        if (!hasPreview) return;
+  const target = document.querySelector(".project-metadata");
+  if (!(target instanceof HTMLElement)) return;
 
-        const reveal = () => {
-          requestAnimationFrame(() => {
-            target.classList.add("is-visible");
-          });
-        };
+  const hasPreview = target.dataset.hasPreview === "true";
+  if (!hasPreview) return;
 
-        if (!("IntersectionObserver" in window)) {
+  const reveal = () => {
+    requestAnimationFrame(() => {
+      target.classList.add("is-visible");
+    });
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    reveal();
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
           reveal();
-          return;
+          observer.disconnect();
         }
+      });
+    },
+    { threshold: 0.1 },
+  );
 
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                reveal();
-                observer.disconnect();
-              }
-            });
-          },
-          { threshold: 0.1 },
-        );
-
-        observer.observe(target);
-      })();
+  observer.observe(target);
+})();`;
+      }
     </script>
-  </body>
-</html>
+  </Fragment>
+</BaseLayout>

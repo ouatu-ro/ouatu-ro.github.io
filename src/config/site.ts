@@ -1,5 +1,5 @@
 // --- PROJECTS CONFIG ---
-import type { HighlightPreviewType } from "../lib/projects";
+import type { PreviewArtworkType } from "../components/artwork-manager";
 
 // --- SITE METADATA ---
 export const site = {
@@ -56,7 +56,7 @@ export const projects = {
   } as Record<
     string,
     {
-      previewType?: HighlightPreviewType;
+      previewType?: PreviewArtworkType;
       isHighlight?: boolean;
       order?: number;
       previewAsset?: string;
