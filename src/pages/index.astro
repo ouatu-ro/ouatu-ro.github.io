@@ -97,10 +97,8 @@ const [emailUser = "hello", emailDomain = "ouatu.ro"] = site.email.split("@");
                     const hasTags = post.normalizedTags.length > 0;
                     if (!showCategory && !hasTags) return null;
                     const label = category
-                      ? (
-                          blogConfig.categories[category as CategoryId]?.name ??
-                          category
-                        )
+                      ? (blogConfig.categories[category as CategoryId]?.name ??
+                        category)
                       : undefined;
                     return (
                       <div class="blog-card__tags">

@@ -1,9 +1,7 @@
 ---
 import { blog as blogConfig, type CategoryId } from "../config/site";
 
-const CATEGORY_IDS = Object.keys(
-  blogConfig.categories,
-) as CategoryId[];
+const CATEGORY_IDS = Object.keys(blogConfig.categories) as CategoryId[];
 
 interface Props {
   activeCategory?: CategoryId | "all";
