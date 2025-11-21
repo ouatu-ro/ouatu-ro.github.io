@@ -162,7 +162,7 @@ The key is not to memorize the contradiction. The key is to build a consistent a
 
 > [!note] **For those who like systems**  
 > Your internal model collapses under noise. In information-theoretic terms, inconsistent beliefs increase entropy: they destroy structure and erase predictive power.  
-> A robust mind is not high-entropy but **low-entropy and adaptive**. Low-entropy here means coherent, not rigid. It keeps its internal order while staying responsive to the world.  
+> A robust mind is not high-entropy but **low-entropy and adaptive**. Low-entropy here means coherence, not rigidity. Coherence keeps the internal order; adaptiveness comes from staying responsive to the world.  
 > The goal is compression, not rigidity: refine your models until they feel inevitable, then keep testing them until they bend without breaking.  
 > Being low-entropy is pointless if you are out of sync with reality and chasing a "theory of everything" seems to be a trap. Reality itself is not that simple.  
 > Explore widely, integrate tightly, and keep your internal map coherent as the territory shifts. That is how your common sense stays both stable and alive.
