@@ -138,6 +138,25 @@
   gap: 1rem;
 }
 
+.p-style-guide-prose-preview {
+  gap: 0.65rem;
+}
+
+.p-style-guide-prose-preview p {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.p-style-guide-alert-preview {
+  gap: 0.75rem;
+}
+
+.p-style-guide-alert-preview .markdown-alert {
+  margin: 0;
+}
+
 .p-style-guide-icon-grid {
   display: grid;
   gap: 1.25rem;

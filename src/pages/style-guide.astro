@@ -54,6 +54,34 @@ const katexFormula = String.raw`\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2
 const katexInline = String.raw`$$\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}$$`;
 const katexExample = katex.renderToString(katexFormula, { displayMode: true });
 
+const proseLines = [
+  "This site carries a clear, confident voice while staying technical when it counts.",
+  "Short paragraphs with inline emphasis and occasional code snippets keep each idea focused.",
+  "Connections between experimental work and the visitor's curiosity live in the spacing and punctuation.",
+];
+const prosePreview = proseLines.map((line) => `<p>${line}</p>`).join("");
+
+const alertSamples = [
+  {
+    type: "note",
+    body: "The compiler notices most lints, but an explicit remark keeps people on the same page.",
+  },
+  {
+    type: "warning",
+    body: "Deploying without a release checklist risks bypassing the monitoring hooks we rely on.",
+  },
+];
+const alertTitle = (type: string | number) =>
+  ({ note: "Note", warning: "Warning" })[type] ?? "Note";
+const renderAlert = (type: string, body: string) =>
+  `<div class="markdown-alert markdown-alert-${type}">
+    <p class="markdown-alert-title">${alertTitle(type)}</p>
+    <p>${body}</p>
+  </div>`;
+const remarkAlertPreview = alertSamples
+  .map((sample) => renderAlert(sample.type, sample.body))
+  .join("");
+
 const { selectedResults, experience } = resumeData;
 const firstResult = selectedResults.items[0];
 ---
@@ -298,6 +326,31 @@ const firstResult = selectedResults.items[0];
           }
         </div>
       </div>
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>Copy & Prose</h3>
+      <p class="p-style-guide-code">
+        Body copy leans on concise paragraphs with purposeful verbs and
+        occasional inline emphasis.
+      </p>
+      <div
+        class="p-style-guide-preview p-style-guide-prose-preview"
+        set:html={prosePreview}
+      />
+    </article>
+
+    <article class="p-style-guide-card">
+      <h3>remarkGithubAlerts</h3>
+      <p class="p-style-guide-code">
+        Blockquotes beginning with <code>[!NOTE]</code> or <code
+          >[!WARNING]</code
+        > become alert cards.
+      </p>
+      <div
+        class="p-style-guide-preview p-style-guide-alert-preview"
+        set:html={remarkAlertPreview}
+      />
     </article>
 
     <article class="p-style-guide-card">
