@@ -205,6 +205,22 @@
   gap: 1rem;
 }
 
+.p-style-guide-project-preview {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.p-style-guide-project-grid {
+  margin: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.p-style-guide-project-grid .project-card-link {
+  max-width: 460px;
+  margin: 0 auto;
+}
+
 .p-style-guide-project-demo .project-link-wrapper {
   display: flex;
   align-items: center;
@@ -227,6 +243,11 @@
 
 .p-style-guide-button-row .btn {
   flex: 0 0 auto;
+}
+
+.p-style-guide-blog-list {
+  margin: 0;
+  padding: 0;
 }
 
 .p-style-guide-note {

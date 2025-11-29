@@ -1,7 +1,12 @@
 ---
 import Icon from "../components/Icons.astro";
+import ProjectPreview from "../components/ProjectPreview.astro";
+import FormattedDate from "../components/FormattedDate.astro";
 import { Code } from "astro/components";
 import { ICONS } from "../components/icons.data";
+import { blog as blogConfig, type CategoryId } from "../config/site";
+import { getAllProjects, type ProjectRecord } from "../lib/projects";
+import { getAllPosts } from "../lib/posts";
 import resumeData from "../content/resume/resume.json";
 import katex from "katex";
 import "katex/dist/katex.min.css";
@@ -81,6 +86,85 @@ const renderAlert = (type: string, body: string) =>
 const remarkAlertPreview = alertSamples
   .map((sample) => renderAlert(sample.type, sample.body))
   .join("");
+
+const allProjects = await getAllProjects();
+const fallbackMazeSolver = {
+  name: "maze-solver",
+  homepage: "https://ouatu.ro/maze-solver/",
+  description:
+    "Upload or photograph a black and white maze, click the start and end points on the image, and get the solution in milliseconds.",
+  githubUrl: "https://github.com/ouatu-ro/maze-solver",
+  slug: "maze-solver",
+  pubDate: "2025-03-14T12:52:32.000Z",
+  updatedDate: "2025-11-07T03:10:26.000Z",
+  previewAsset: "/preview/maze-demo-720p.webm",
+  shouldShowPreview: true,
+  previewType: "terminal",
+  isHighlight: true,
+  highlightOrder: 1,
+  hasExtraContent: true,
+} satisfies ProjectRecord;
+const mazeSolverProject =
+  allProjects.find((project) => project.slug === "maze-solver") ??
+  fallbackMazeSolver;
+
+const allPosts = await getAllPosts();
+type PreviewPost = {
+  slug: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  readingTime: number;
+  category?: string;
+  tags: string[];
+};
+const fallbackPosts: PreviewPost[] = [
+  {
+    slug: "common-sense-learning",
+    title: "Common-Sense Learning",
+    description: "A faster and longer-lasting way to learn",
+    pubDate: new Date("2025-11-10T16:00:00Z"),
+    readingTime: 10,
+    category: "essay",
+    tags: ["learning", "cognition", "reasoning"],
+  },
+  {
+    slug: "als",
+    title:
+      "Implementing Alternating Least Squares (ALS) from Scratch in Python",
+    description:
+      "A deep dive into building ALS for recommendation systems in Python. Includes the full derivation, a vectorized implementation, and an analysis of its real-world performance limits.",
+    pubDate: new Date("2022-08-07T00:00:00Z"),
+    readingTime: 22,
+    category: "lab",
+    tags: ["python", "machine-learning"],
+  },
+];
+const previewPosts: PreviewPost[] = (allPosts.length ? allPosts : fallbackPosts)
+  .slice(0, 2)
+  .map((post) => {
+    const entry = post as any;
+    const pubDate =
+      entry.data?.pubDate ?? entry.pubDate ?? new Date("1970-01-01T00:00:00Z");
+    return {
+      slug: entry.slug,
+      title: entry.data?.title ?? entry.title ?? "",
+      description: entry.data?.description ?? entry.description ?? "",
+      pubDate: pubDate instanceof Date ? pubDate : new Date(pubDate),
+      readingTime: entry.readingTime ?? 5,
+      category: entry.data?.category ?? entry.category,
+      tags:
+        entry.normalizedTags?.map((tag: any) => tag.label) ??
+        entry.data?.tags ??
+        entry.tags ??
+        [],
+    };
+  });
+const getCategoryLabel = (category?: string) => {
+  if (!category) return undefined;
+  const meta = blogConfig.categories[category as CategoryId];
+  return meta?.name ?? category;
+};
 
 const { selectedResults, experience } = resumeData;
 const firstResult = selectedResults.items[0];
@@ -255,6 +339,29 @@ const firstResult = selectedResults.items[0];
     </article>
 
     <article class="p-style-guide-card">
+      <h3>Project Card</h3>
+      <p class="p-style-guide-code">
+        Powered by <code>ProjectPreview</code> with the Maze Solver entry.
+      </p>
+      <div class="p-style-guide-preview">
+        <div class="p-style-guide-project-preview">
+          <ul
+            class="projects-highlight-grid p-style-guide-project-grid"
+            aria-label="Project card example"
+          >
+            <ProjectPreview
+              project={mazeSolverProject}
+              highlighted={mazeSolverProject.isHighlight}
+            />
+          </ul>
+        </div>
+        <p class="p-style-guide-note">
+          The terminal-style preview comes straight from the Maze Solver demo.
+        </p>
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
       <h3>Code Block</h3>
       <div class="p-style-guide-preview">
         <Code code={pipelineCodeSample} lang="ts" />
@@ -276,55 +383,42 @@ const firstResult = selectedResults.items[0];
 
     <article class="p-style-guide-card">
       <h3>Article Previews</h3>
-      <div class="p-style-guide-grid">
-        <div class="p-style-guide-card">
-          <h4>Featured Article</h4>
-          <p>The main card from the blog index.</p>
-          <div class="p-style-guide-preview">
-            <ul class="blog-index-list">
-              <li>
-                <a href="#">
-                  <div class="blog-title-fallback" style="height: 150px;">
-                    <h3 style="font-size: 1.5rem;">
-                      Effective Analytics Tools
-                    </h3>
-                  </div>
-                  <h4 class="blog-index-title">
-                    Tips for Building Effective Analytics Tools
-                  </h4>
-                  <p class="blog-index-date">March 28, 2022</p>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="p-style-guide-grid p-style-guide-grid--two">
+      <p class="p-style-guide-code">
+        Mirrors the live blog feed cards with real post data.
+      </p>
+      <div class="p-style-guide-preview">
+        <ul class="blog-index-list p-style-guide-blog-list">
           {
-            Array.from({ length: 2 }).map((_, i) => (
-              <div class="p-style-guide-card" data-card-index={i}>
-                <h4>Standard Article</h4>
-                <p>The standard card from the blog feed.</p>
-                <div class="p-style-guide-preview">
-                  <ul class="blog-index-list">
-                    <li>
-                      <a href="#">
-                        <div class="blog-title-fallback" style="height: 150px;">
-                          <h3 style="font-size: 1.5rem;">
-                            Effective Analytics Tools
-                          </h3>
-                        </div>
-                        <h4 class="blog-index-title">
-                          Tips for Building Effective Analytics Tools
-                        </h4>
-                        <p class="blog-index-date">March 28, 2022</p>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            ))
+            previewPosts.map((post) => {
+              const categoryLabel = getCategoryLabel(post.category);
+              const hasTags = categoryLabel || post.tags.length > 0;
+              return (
+                <li class="blog-card">
+                  <a class="blog-card__link" href={`/blog/${post.slug}/`}>
+                    <p class="blog-card__meta">
+                      <FormattedDate date={post.pubDate} /> · {post.readingTime}{" "}
+                      min read
+                    </p>
+                    <h3 class="blog-card__title">{post.title}</h3>
+                    <p class="blog-card__description">{post.description}</p>
+                    {hasTags && (
+                      <div class="blog-card__tags">
+                        {categoryLabel && (
+                          <span class="blog-card__tag blog-card__category-chip">
+                            {categoryLabel}
+                          </span>
+                        )}
+                        {post.tags.map((tag) => (
+                          <span class="blog-card__tag">#{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                  </a>
+                </li>
+              );
+            })
           }
-        </div>
+        </ul>
       </div>
     </article>
 
