@@ -1,6 +1,6 @@
 .p-style-guide-wrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--width-container);
   margin: 0 auto;
   padding: 3rem 5vw 5rem;
   display: flex;
@@ -111,6 +111,14 @@
 
 .p-style-guide-swatch--accent .p-style-guide-swatch-sample {
   background: var(--color-accent);
+}
+
+.p-style-guide-swatch--action-start .p-style-guide-swatch-sample {
+  background: var(--color-action-start);
+}
+
+.p-style-guide-swatch--action-end .p-style-guide-swatch-sample {
+  background: var(--color-action-end);
 }
 
 .p-style-guide-type-scale {
@@ -286,6 +294,60 @@
   border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
   padding: 1rem 1.25rem;
   overflow-x: auto;
+}
+
+.p-style-guide-motion-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.p-style-guide-motion-item {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.p-style-guide-motion-tile {
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: var(--radius-base);
+  border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    transform var(--demo-duration, var(--duration-base)) var(--ease-default),
+    box-shadow var(--demo-duration, var(--duration-base)) var(--ease-default),
+    background var(--demo-duration, var(--duration-base)) var(--ease-default);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.p-style-guide-motion-tile:hover,
+.p-style-guide-motion-tile:focus-visible {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.4);
+  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+}
+
+.p-style-guide-motion-tile span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.p-style-guide-motion-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.p-style-guide-motion-meta strong {
+  color: var(--color-text);
 }
 
 @media (max-width: 720px) {

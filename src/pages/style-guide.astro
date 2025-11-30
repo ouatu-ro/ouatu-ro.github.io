@@ -46,6 +46,22 @@ const colorSwatches = [
     label: "Callouts",
     modifier: "p-style-guide-swatch--accent",
   },
+  {
+    name: "--color-action-start",
+    label: "Action Gradient Start",
+    modifier: "p-style-guide-swatch--action-start",
+  },
+  {
+    name: "--color-action-end",
+    label: "Action Gradient End",
+    modifier: "p-style-guide-swatch--action-end",
+  },
+];
+
+const motionTimings = [
+  { name: "--duration-fast", label: "Fast", value: "150ms" },
+  { name: "--duration-base", label: "Base", value: "220ms" },
+  { name: "--duration-slow", label: "Slow", value: "350ms" },
 ];
 
 const iconEntries = Object.keys(ICONS).sort();
@@ -204,24 +220,58 @@ const firstResult = selectedResults.items[0];
     </article>
 
     <article class="p-style-guide-card">
+      <h3>Motion & Timing</h3>
+      <p class="p-style-guide-code">
+        Transition tokens for hovers and subtle UI shifts.
+      </p>
+      <div class="p-style-guide-motion-grid">
+        {
+          motionTimings.map((timing) => (
+            <div class="p-style-guide-motion-item">
+              <button
+                type="button"
+                class="p-style-guide-motion-tile"
+                style={`--demo-duration: var(${timing.name});`}
+              >
+                <span>Hover or tap</span>
+              </button>
+              <div class="p-style-guide-motion-meta">
+                <strong>{timing.label}</strong>
+                <span>
+                  <code>{timing.name}</code> · {timing.value}
+                </span>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </article>
+
+    <article class="p-style-guide-card">
       <h3>Typography Scale</h3>
       <div class="p-style-guide-type-scale">
         <div class="p-style-guide-type-item">
           <h1 class="u-heading-font">Heading 1</h1>
           <span class="p-style-guide-code"
-            ><strong>Element</strong> <code>&lt;h1&gt;</code></span
+            ><strong>Element</strong>
+            <code>&lt;h1&gt;</code> · <strong>Font</strong>
+            <code>var(--font-heading)</code></span
           >
         </div>
         <div class="p-style-guide-type-item">
           <h2 class="u-heading-font">Heading 2</h2>
           <span class="p-style-guide-code"
-            ><strong>Element</strong> <code>&lt;h2&gt;</code></span
+            ><strong>Element</strong>
+            <code>&lt;h2&gt;</code> · <strong>Font</strong>
+            <code>var(--font-heading)</code></span
           >
         </div>
         <div class="p-style-guide-type-item">
           <h3 class="u-heading-font">Heading 3</h3>
           <span class="p-style-guide-code"
-            ><strong>Element</strong> <code>&lt;h3&gt;</code></span
+            ><strong>Element</strong>
+            <code>&lt;h3&gt;</code> · <strong>Font</strong>
+            <code>var(--font-heading)</code></span
           >
         </div>
         <div class="p-style-guide-type-item">
@@ -230,7 +280,9 @@ const firstResult = selectedResults.items[0];
             Pro.
           </p>
           <span class="p-style-guide-code"
-            ><strong>Class</strong> <code>u-body-font</code></span
+            ><strong>Class</strong>
+            <code>u-body-font</code> · <strong>Font</strong>
+            <code>var(--font-body)</code></span
           >
         </div>
       </div>
