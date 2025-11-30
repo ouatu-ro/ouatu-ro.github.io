@@ -33,13 +33,39 @@
   --color-danger: rgb(248, 81, 73);
   --color-danger-channels: 248, 81, 73;
 
+  /* ===== Action Colors ===== */
+  --color-action-start: #4cb6ff;
+  --color-action-end: #0078d4;
+  --color-action-channels: 0, 120, 212;
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-action-start),
+    var(--color-action-end)
+  );
+  --gradient-shine: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+
   /* ===== Typography ===== */
+  --font-heading: "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "Inter", "Source Sans Pro", system-ui, -apple-system, sans-serif;
+  --font-mono: "Fira Code", "Courier New", monospace;
   --font-size-min: 17px;
   --font-size-max: 19.5px;
   --line: 1.65;
   --measure: 65ch;
 
+  /* ===== Motion ===== */
+  --duration-fast: 150ms;
+  --duration-base: 220ms;
+  --duration-slow: 350ms;
+  --ease-default: ease;
+
   /* ===== Layout ===== */
+  --width-container: 1200px;
   --radius-base: 12px;
   --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-intense: 0 4px 40px rgba(0, 0, 0, 0.6);
@@ -47,6 +73,14 @@
   --shadow-inset-glow: inset 0 0 30px
     rgba(var(--color-accent-strong-channels), 0.2);
   --bp-tablet: 48rem; /* 768px */
+
+  /* ===== Z-Index ===== */
+  --z-negative: -1;
+  --z-normal: 1;
+  --z-badge: 5;
+  --z-nav: 100;
+  --z-dropdown: 200;
+  --z-tooltip: 1000;
 }
 
 html {

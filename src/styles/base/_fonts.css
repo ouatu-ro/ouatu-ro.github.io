@@ -39,27 +39,15 @@
 }
 
 .u-heading-font {
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-heading);
 }
 
 .u-body-font {
-  font-family:
-    "Source Sans Pro",
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-body);
 }
 
 .u-site-title {
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.025em;
 }

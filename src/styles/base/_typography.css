@@ -2,12 +2,7 @@
 body {
   font-size: 1.2rem;
   line-height: var(--line);
-  font-family:
-    "Inter",
-    "Source Sans Pro",
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-body);
   margin: 0;
   padding: 0;
   background-color: var(--color-bg);
@@ -53,8 +48,8 @@ a {
     transparent
   );
   transition:
-    color 0.2s ease,
-    text-decoration-color 0.2s ease;
+    color var(--duration-base) var(--ease-default),
+    text-decoration-color var(--duration-base) var(--ease-default);
 }
 
 a:hover {

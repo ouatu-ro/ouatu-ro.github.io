@@ -8,8 +8,8 @@
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease;
-  z-index: 1000;
+  transition: opacity var(--duration-base) var(--ease-default);
+  z-index: var(--z-tooltip);
   font-size: 0.9em;
   line-height: 1.4;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);

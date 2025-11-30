@@ -15,7 +15,7 @@ pre[data-language]:not([data-language="plaintext"])::before {
   background-color: var(--color-border);
   color: var(--color-muted);
   font-size: 0.8em;
-  font-family: "Fira Code", "Courier New", monospace;
+  font-family: var(--font-mono);
   padding: 0.2em 0.7em;
   border-bottom-right-radius: 5px;
   text-transform: uppercase;
@@ -32,11 +32,11 @@ pre[data-language]:not([data-language="plaintext"]) .copy-button {
   color: var(--color-muted);
   border: none;
   font-size: 0.8em;
-  font-family: "Fira Code", "Courier New", monospace;
+  font-family: var(--font-mono);
   padding: 0.2em 0.7em;
   border-bottom-left-radius: 5px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-base) var(--ease-default);
   z-index: 10;
   display: flex;
   align-items: center;
@@ -128,7 +128,7 @@ pre[data-language] .line:last-child:empty::before {
 }
 
 code {
-  font-family: "Fira Code", "Courier New", Courier, monospace;
+  font-family: var(--font-mono);
   font-size: 0.9em;
 }
 

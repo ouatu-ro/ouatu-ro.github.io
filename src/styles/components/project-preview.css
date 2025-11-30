@@ -23,10 +23,10 @@
   );
   backdrop-filter: blur(18px) saturate(140%);
   transition:
-    border-color 220ms ease,
-    box-shadow 220ms ease,
-    background 220ms ease,
-    filter 220ms ease;
+    border-color var(--duration-base) var(--ease-default),
+    box-shadow var(--duration-base) var(--ease-default),
+    background var(--duration-base) var(--ease-default),
+    filter var(--duration-base) var(--ease-default);
   overflow: visible;
   height: 100%;
   isolation: isolate;
@@ -52,8 +52,8 @@
   pointer-events: none;
   opacity: 0.4;
   transition:
-    opacity 240ms ease,
-    transform 240ms ease;
+    opacity var(--duration-base) var(--ease-default),
+    transform var(--duration-base) var(--ease-default);
 }
 
 .project-card-link::after {
@@ -68,7 +68,7 @@
   );
   opacity: 0;
   pointer-events: none;
-  transition: opacity 220ms ease;
+  transition: opacity var(--duration-base) var(--ease-default);
   z-index: 1;
 }
 
@@ -124,9 +124,9 @@
   );
   z-index: 1;
   transition:
-    border-color 220ms ease,
-    box-shadow 220ms ease,
-    transform 220ms ease;
+    border-color var(--duration-base) var(--ease-default),
+    box-shadow var(--duration-base) var(--ease-default),
+    transform var(--duration-base) var(--ease-default);
 }
 
 .project-card-link:hover .project-card-media,
@@ -170,7 +170,7 @@
 .project-card-body h3 {
   font-size: 1.26rem;
   margin: 0;
-  transition: color 220ms ease;
+  transition: color var(--duration-base) var(--ease-default);
 }
 
 .project-card-body p {
@@ -192,7 +192,7 @@
 }
 
 .project-card-meta span {
-  transition: color 220ms ease;
+  transition: color var(--duration-base) var(--ease-default);
 }
 
 /* ====================
