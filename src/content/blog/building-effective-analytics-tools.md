@@ -3,6 +3,7 @@ title: "The Analytics Tool My Developers Loved and My UX Team Hated"
 pubDate: 2022-03-28T00:29:54+03:00
 description: "I built an analytics tool developers loved but the UX team found unusable. This experience taught me crucial lessons about building for different minds-a story about user-centric design."
 category: "note"
+draft: true
 tags:
   - user-experience
   - product-design
