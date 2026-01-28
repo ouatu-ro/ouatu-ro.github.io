@@ -4,6 +4,7 @@ pubDate: 2021-11-06T02:53:16+02:00
 description: "This article explores closures and partial function application in Python, demonstrating how these powerful concepts can simplify state management and encapsulation. Through practical examples from NLP pipelines, including SpaCy and skweak, you'll learn common pitfalls, effective solutions, and best practices to write cleaner, more maintainable Python code."
 category: "lab"
 math: true
+draft: true
 ---
 
 While building some pipelines for automatic text annotation at work, I ran into a bug that completely threw me off. It made me realise I didn’t actually understand how Python closures behaved in a `for` loop. The catch was subtle: in Python, a `for` loop doesn’t create a new scope, and that detail can change the outcome of your code in surprising ways.
