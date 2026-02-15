@@ -5,7 +5,7 @@ import type { PreviewArtworkType } from "../components/artwork-manager";
 export const site = {
   title: "Bogdan Ouatu",
   description:
-    "Personal site by Bogdan Ouatu — essays, labs, and projects on systems, and machine learning.",
+    "Personal site by Bogdan Ouatu — essays and projects, from small interactive tools to experiments in systems and learning.",
   author: "Bogdan Ouatu",
   authorTitle: "Machine Learning Engineer",
   tagline: "Joy-Driven Programming",
